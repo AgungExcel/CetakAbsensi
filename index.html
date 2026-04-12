@@ -1142,6 +1142,14 @@
       </div>
 
       <div class="control-group">
+        <label>Database Tahun</label>
+        <select id="dbYearSelect">
+          <option value="">Memuat daftar tahun...</option>
+        </select>
+        <div style="font-size:11px;color:#64748b;line-height:1.45;">Struktur disiapkan untuk 1 file Google Sheet per tahun, lalu 1 sheet per bulan/periode.</div>
+      </div>
+
+      <div class="control-group">
         <label>Pilih Periode</label>
         <select id="sheetSelect" disabled>
           <option value="">Memuat daftar sheet...</option>
@@ -1217,7 +1225,17 @@
 
   <script>
     // URL Web App (Sesuai milik Anda yang sudah memiliki fungsi doPost untuk upload)
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbydwcka1DrUbJKXgTBrfBo6UuE1E4feRkZu_mB2K5O9Wu0wtxI_L2REBzNZFqL6QcHV/exec";
+    // 1 Web App dipakai bersama. Backend akan memilih spreadsheet berdasarkan tahun.
+    const DATABASE_CONFIG = {
+      "2025": {
+        label: "Attendance BIPO 2025",
+        webAppUrl: "https://script.google.com/macros/s/AKfycbydwcka1DrUbJKXgTBrfBo6UuE1E4feRkZu_mB2K5O9Wu0wtxI_L2REBzNZFqL6QcHV/exec"
+      },
+      "2026": {
+        label: "Attendance BIPO 2026",
+        webAppUrl: "https://script.google.com/macros/s/AKfycbydwcka1DrUbJKXgTBrfBo6UuE1E4feRkZu_mB2K5O9Wu0wtxI_L2REBzNZFqL6QcHV/exec"
+      }
+    };
 
     const appState = {
       sheetNames: [],
@@ -1225,6 +1243,7 @@
       workingRows: [],
       selectedCode: '',
       selectedSheet: '',
+      selectedYear: '',
       rowMapByKey: new Map(),
       employeeRowsMap: new Map(),
       employeeMetaMap: new Map(),
@@ -1252,6 +1271,7 @@
     };
 
     const el = {
+      dbYearSelect: document.getElementById('dbYearSelect'),
       sheetSelect: document.getElementById('sheetSelect'),
       searchInput: document.getElementById('searchInput'),
       searchSuggest: document.getElementById('searchSuggest'),
@@ -1511,7 +1531,7 @@
       const timeoutId = setTimeout(() => controller.abort(), 90000);
 
       try {
-        const response = await fetch(WEB_APP_URL, {
+        const response = await fetch(getActiveWebAppUrl(), {
           method: 'POST',
           headers: { 'Content-Type': contentType },
           body: JSON.stringify(payload),
@@ -1612,6 +1632,74 @@
           );
         }
       });
+    }
+
+
+    function getAvailableYears(){
+      return Object.keys(DATABASE_CONFIG).sort();
+    }
+
+    function getActiveDatabaseConfig(){
+      const years = getAvailableYears();
+      const selected = String(appState.selectedYear || '').trim();
+      if (selected && DATABASE_CONFIG[selected]) return DATABASE_CONFIG[selected];
+      const fallback = years[0] || '';
+      if (fallback) {
+        appState.selectedYear = fallback;
+        return DATABASE_CONFIG[fallback];
+      }
+      return null;
+    }
+
+    function getActiveWebAppUrl(){
+      const config = getActiveDatabaseConfig();
+      if (!config || !config.webAppUrl) {
+        throw new Error('Konfigurasi database tahun belum diisi.');
+      }
+      return config.webAppUrl;
+    }
+
+    function fillDatabaseYearOptions(){
+      const years = getAvailableYears();
+      if (!el.dbYearSelect) return;
+
+      if (!years.length) {
+        el.dbYearSelect.innerHTML = '<option value="">Belum ada konfigurasi</option>';
+        el.dbYearSelect.disabled = true;
+        return;
+      }
+
+      if (!appState.selectedYear || !DATABASE_CONFIG[appState.selectedYear]) {
+        appState.selectedYear = years[0];
+      }
+
+      el.dbYearSelect.innerHTML = years.map(year => {
+        const label = DATABASE_CONFIG[year]?.label ? `${year} - ${DATABASE_CONFIG[year].label}` : year;
+        return `<option value="${escapeHtml(year)}">${escapeHtml(label)}</option>`;
+      }).join('');
+      el.dbYearSelect.disabled = false;
+      el.dbYearSelect.value = appState.selectedYear;
+    }
+
+    function clearYearScopedState(){
+      appState.sheetNames = [];
+      appState.sourceRows = [];
+      appState.workingRows = [];
+      appState.selectedCode = '';
+      appState.selectedSheet = '';
+      appState.rowMapByKey = new Map();
+      appState.employeeRowsMap = new Map();
+      appState.employeeMetaMap = new Map();
+      appState.employeeOptions = [];
+      appState.sheetPeriod = { start: '', end: '' };
+      appState.sheetCache = new Map();
+      appState.bulkEntries = [];
+      appState.bulkEmployeeSearchCode = '';
+    }
+
+    function guessYearFromText(value){
+      const match = String(value || '').match(/(20\d{2})/);
+      return match ? match[1] : '';
     }
 
     function escapeHtml(value){
@@ -2138,7 +2226,8 @@
         return cloneRows(appState.sheetCache.get(sheetName));
       }
 
-      const url = `${WEB_APP_URL}?action=read&sheetName=${encodeURIComponent(sheetName)}`;
+      const baseUrl = getActiveWebAppUrl();
+      const url = `${baseUrl}?action=read&year=${encodeURIComponent(appState.selectedYear || '')}&sheetName=${encodeURIComponent(sheetName)}`;
       let payload = null;
 
       try {
@@ -2372,10 +2461,11 @@
     }
 
     async function loadAppAndSheets() {
-      showToast('Memuat nama Sheet dari server...', 'info');
+      showToast(`Memuat nama Sheet tahun ${appState.selectedYear || '-'}...`, 'info');
       el.sheetSelect.disabled = true;
 
-      const url = `${WEB_APP_URL}?action=getSheets`;
+      const baseUrl = getActiveWebAppUrl();
+      const url = `${baseUrl}?action=getSheets&year=${encodeURIComponent(appState.selectedYear || '')}`;
       let sheetsFound = [];
 
       try {
@@ -2420,9 +2510,10 @@
         return;
       }
 
-      const url = `${WEB_APP_URL}?action=read&sheetName=${encodeURIComponent(sheetName)}`;
+      const baseUrl = getActiveWebAppUrl();
+      const url = `${baseUrl}?action=read&year=${encodeURIComponent(appState.selectedYear || '')}&sheetName=${encodeURIComponent(sheetName)}`;
 
-      showToast(`Mengambil data: ${sheetName}...`, 'info');
+      showToast(`Mengambil data ${sheetName} dari database ${appState.selectedYear || '-'}...`, 'info');
       el.btnSync.disabled = true;
       el.sheetSelect.disabled = true;
 
@@ -2472,6 +2563,14 @@
     // Auto-fill nama sheet berdasarkan nama file
     el.excelFileInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
+      if (!file) return;
+
+      const guessedYear = guessYearFromText(file.name);
+      if (guessedYear && DATABASE_CONFIG[guessedYear]) {
+        appState.selectedYear = guessedYear;
+        fillDatabaseYearOptions();
+      }
+
       if(file && !el.uploadSheetName.value.trim()) {
         const nameWithoutExt = file.name.replace(/\.[^/.]+$/, "");
         el.uploadSheetName.value = makeSafeSheetName(nameWithoutExt);
@@ -2485,10 +2584,11 @@ async function uploadExcelToGSheet() {
       const targetSheetExists = appState.sheetNames.includes(targetSheet);
 
       if (!file) return showToast('Pilih file Excel terlebih dahulu!', 'warn');
+      if (!appState.selectedYear) return showToast('Pilih database tahun terlebih dahulu!', 'warn');
       if (!targetSheet) return showToast('Isi nama sheet tujuan!', 'warn');
 
       setUploadBusy(true, '⏳ Menyiapkan Upload...');
-      setUploadProgress(0, 'Mulai proses upload', `File: ${file.name}`, buildUploadStats(0, 0, 0, 0));
+      setUploadProgress(0, 'Mulai proses upload', `File: ${file.name} • Tahun: ${appState.selectedYear}`, buildUploadStats(0, 0, 0, 0));
 
       const reader = new FileReader();
 
@@ -2567,6 +2667,7 @@ async function uploadExcelToGSheet() {
             sheetName: targetSheet,
             mode: 'replace_period',
             rows: payloadRows,
+            databaseYear: appState.selectedYear,
             createSheetIfMissing: true,
             autoCreateSheet: true,
             createTargetSheet: true
@@ -3013,13 +3114,31 @@ async function uploadExcelToGSheet() {
       showToast('Header dikembalikan ke default.', 'success');
     });
 
+    el.dbYearSelect?.addEventListener('change', () => {
+      const nextYear = String(el.dbYearSelect.value || '').trim();
+      if (!nextYear || nextYear === appState.selectedYear) return;
+      appState.selectedYear = nextYear;
+      clearYearScopedState();
+      hideSearchSuggestions();
+      hideBulkEmployeeSuggestions();
+      resetUploadProgress();
+      if (!el.uploadSheetName.value.trim()) {
+        el.uploadSheetName.placeholder = `Msl: AttBIPO-01-${nextYear}`;
+      }
+      loadAppAndSheets();
+    });
+
     window.addEventListener('DOMContentLoaded', () => {
+      fillDatabaseYearOptions();
       setHeaderLayout(loadHeaderLayout(), false);
       resetUploadProgress();
       hideSearchSuggestions();
       updateBulkPeriodOptions();
       updateBulkEmployeeOptions();
       renderReport();
+      if (el.uploadSheetName && appState.selectedYear) {
+        el.uploadSheetName.placeholder = `Msl: AttBIPO-01-${appState.selectedYear}`;
+      }
       setTimeout(() => { loadAppAndSheets(); }, 300); 
     });
 
