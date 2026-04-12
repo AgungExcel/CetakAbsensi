@@ -1,0 +1,921 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Attendance Worker Report - Sync GSheet</title>
+  <style>
+    :root{
+      --bg:#eef2f7;
+      --card:#ffffff;
+      --text:#111827;
+      --muted:#64748b;
+      --line:#111111;
+      --soft:#dbe3ee;
+      --accent:#0f172a;
+      --accent-2:#1d4ed8;
+      --success:#14532d;
+      --danger:#7f1d1d;
+      --warning:#92400e;
+      --shadow:0 18px 45px rgba(15, 23, 42, .12);
+      --radius:18px;
+      --font: Arial, Helvetica, sans-serif;
+    }
+
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;font-family:var(--font);background:var(--bg);color:var(--text)}
+    body{padding:20px}
+    .app{max-width:1500px;margin:0 auto;display:grid;gap:18px}
+    .panel{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid rgba(15,23,42,.06);overflow:hidden}
+    .toolbar{padding:18px 20px 20px;display:grid;gap:14px}
+    .toolbar-top{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;flex-wrap:wrap}
+    .title{margin:0;font-size:28px;font-weight:800;letter-spacing:.2px}
+    .subtitle{margin:6px 0 0;color:var(--muted);font-size:13px;line-height:1.5;max-width:900px}
+    .note-inline{font-size:12px;color:var(--muted);line-height:1.5}
+    .grid-4{display:grid;grid-template-columns:2fr 1.2fr 1fr 1fr;gap:12px}
+    .grid-3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    label{display:block;font-size:12px;font-weight:700;color:#334155;margin-bottom:6px}
+    input[type="text"],input[type="search"],select,textarea{
+      width:100%;padding:11px 12px;border:1px solid #cbd5e1;border-radius:12px;
+      font:inherit;background:#fff;color:var(--text);outline:none
+    }
+    input:focus,select:focus,textarea:focus{border-color:#94a3b8;box-shadow:0 0 0 3px rgba(148,163,184,.2)}
+    textarea{min-height:70px;resize:vertical}
+    .help{display:block;margin-top:6px;color:var(--muted);font-size:11px;line-height:1.5}
+    .btn-row{display:flex;gap:10px;flex-wrap:wrap}
+    button{
+      appearance:none;border:0;border-radius:14px;padding:12px 16px;font:inherit;font-weight:700;
+      cursor:pointer;transition:transform .15s ease, box-shadow .15s ease, opacity .15s ease
+    }
+    button:hover{transform:translateY(-1px)}
+    button:disabled{opacity:.55;cursor:not-allowed;transform:none}
+    .btn-dark{background:var(--accent);color:#fff;box-shadow:0 12px 24px rgba(15,23,42,.18)}
+    .btn-blue{background:var(--accent-2);color:#fff;box-shadow:0 12px 24px rgba(29,78,216,.18)}
+    .btn-light{background:#f8fafc;color:#0f172a;border:1px solid #cbd5e1}
+    .btn-warn{background:#fff7ed;color:#9a3412;border:1px solid #fdba74}
+    .status{padding:12px 14px;border-radius:14px;background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;font-size:12px;line-height:1.55;white-space:pre-line}
+    .status.success{background:#f0fdf4;border-color:#bbf7d0;color:var(--success)}
+    .status.error{background:#fef2f2;border-color:#fecaca;color:var(--danger)}
+    .status.warn{background:#fff7ed;border-color:#fed7aa;color:var(--warning)}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+    .stat{background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;padding:12px}
+    .stat-value{font-size:22px;font-weight:800;line-height:1.1;margin-bottom:4px}
+    .stat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:700}
+    .editor-panel{padding:18px 20px;display:grid;gap:14px}
+    .section-title{margin:0;font-size:14px;font-weight:800;color:#0f172a;text-transform:uppercase;letter-spacing:.06em}
+    .match-row{display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px}
+    .editor-shell{border:1px solid #dbe3ee;border-radius:16px;overflow:auto;background:#fff}
+    .editor-table{width:100%;border-collapse:collapse;min-width:980px;font-size:12px}
+    .editor-table th,.editor-table td{border-bottom:1px solid #e5e7eb;padding:8px 9px;vertical-align:middle}
+    .editor-table th{background:#f8fafc;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+    .editor-table input{padding:8px 9px;border-radius:10px;font-size:12px;width:100%}
+    .badge{display:inline-flex;align-items:center;padding:5px 10px;border-radius:999px;font-size:11px;font-weight:700}
+    .badge.info{background:#e0ecff;color:#1d4ed8}
+    .badge.ok{background:#dcfce7;color:#166534}
+    .badge.gray{background:#e5e7eb;color:#374151}
+    .preview-topbar{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:18px 20px;border-bottom:1px solid #e5e7eb}
+    .preview-meta{font-size:12px;color:var(--muted);line-height:1.55}
+    .preview-stage{padding:28px;background:linear-gradient(180deg, #e9edf4 0%, #eef2f7 100%);overflow:auto}
+    .paper{width:210mm;min-height:297mm;margin:0 auto;background:#fff;color:#111;box-shadow:0 24px 60px rgba(15,23,42,.15);padding:22mm 15mm 18mm;position:relative}
+    .report{width:100%;font-family:Arial, Helvetica, sans-serif;color:#111}
+    .report-company{text-align:center;font-size:12px;font-weight:700;margin-bottom:8px}
+    .report-title{text-align:center;font-size:20px;font-weight:800;margin:0 0 10px}
+    .report-period{text-align:center;font-size:12px;font-weight:700;margin:0 0 4px}
+    .report-range{text-align:center;font-size:9px;font-weight:700;margin:0 0 12px}
+    .report-meta-row{display:flex;justify-content:space-between;align-items:flex-end;font-size:11px;margin-bottom:14px}
+    .report-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:11px}
+    .report-table thead th{text-align:left;font-size:10px;padding:3px 3px 4px;font-weight:800;border-top:2px solid var(--line);border-bottom:2px solid var(--line);vertical-align:bottom}
+    .report-table tbody td{padding:3px 3px;vertical-align:top;border-bottom:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;height:23px}
+    .report-table .col-code{width:11%}
+    .report-table .col-name{width:13%}
+    .report-table .col-dept{width:14%}
+    .report-table .col-date{width:10%}
+    .report-table .col-in{width:8.5%}
+    .report-table .col-out{width:9%}
+    .report-table .col-ot{width:8.5%;text-align:center}
+    .report-table .col-remarks{width:18%}
+    .report-footer-box{margin-top:4px;border-top:2px solid var(--line);border-bottom:2px solid var(--line);padding:5px 0;font-size:11px;display:flex;gap:12px;align-items:center}
+    .report-version{position:absolute;left:15mm;bottom:11mm;font-size:9px;color:#111}
+    .empty-box{padding:18px;border:1px dashed #cbd5e1;border-radius:16px;background:#f8fafc;color:#475569;font-size:13px;line-height:1.6}
+    .hidden{display:none !important}
+    @media (max-width: 1180px){
+      .grid-4,.grid-3,.grid-2,.match-row,.stats{grid-template-columns:1fr}
+    }
+    @media (max-width: 760px){
+      body{padding:12px}
+      .toolbar,.editor-panel,.preview-topbar{padding:14px}
+      .preview-stage{padding:12px}
+      .paper{transform-origin:top center;width:210mm}
+    }
+    @page{size:A4 portrait;margin:10mm}
+    @media print{
+      body{background:#fff;padding:0}
+      .toolbar.panel,.editor-wrap{display:none !important}
+      .panel{box-shadow:none;border:none;border-radius:0;overflow:visible}
+      .preview-topbar{display:none !important}
+      .preview-stage{background:#fff;padding:0}
+      .paper{box-shadow:none;width:auto;min-height:auto;margin:0;padding:0}
+      .report-version{position:fixed;left:15mm;bottom:8mm}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <section class="panel toolbar">
+      <div class="toolbar-top">
+        <div>
+          <h1 class="title">Attendance Worker Report</h1>
+          <p class="subtitle">
+            Aplikasi otomatis tersinkron dari Google Sheet saat dibuka. Cari berdasarkan <strong>ID / Nama</strong>,
+            preview otomatis muncul, dan data bisa diedit dulu sebelum dicetak.
+          </p>
+        </div>
+        <div class="note-inline">
+          Web App URL sudah dipasang sekali di dalam aplikasi.<br>
+          Data report tetap mengikuti format PDF contoh attendance worker.
+        </div>
+      </div>
+
+      <div class="grid-4">
+        <div>
+          <label for="webAppUrl">Apps Script Web App</label>
+          <input id="webAppUrl" type="text" value="https://script.google.com/macros/s/AKfycbzJgJDDDNMhLIgeIXJrkyv7BgDm9Mt1VKJuDYGogU4H7Mcie1kgWyeXjz9WHOk8tOjZ/exec" />
+          <details style="margin-top:6px;font-size:11px;">
+            <summary style="cursor:pointer;font-weight:700;color:var(--accent-2);outline:none;">Klik Bantuan jika gagal Sync</summary>
+            <div style="margin-top:8px;padding:10px;background:#fff;border:1px solid #cbd5e1;border-radius:8px;color:#334155;box-shadow:inset 0 2px 4px rgba(0,0,0,0.03);">
+              <div style="margin-bottom:4px;color:#b91c1c;font-weight:bold;">PENTING 1: Cek Setting Deployment</div>
+              Pastikan di menu <strong>Deploy > Manage Deployments (atau New Deployment)</strong>:<br>
+              - Execute as: <strong>Me</strong><br>
+              - Who has access: <strong>Anyone</strong>
+              
+              <div style="margin:12px 0 4px;color:#b91c1c;font-weight:bold;">PENTING 2: Gunakan Script Apps Script Berikut</div>
+              Ganti kode di Apps Script Anda dengan ini, lalu <strong>Deploy ulang</strong> (buat versi baru):
+              <pre style="background:#f1f5f9;padding:8px;border-radius:6px;overflow-x:auto;margin:4px 0 0;font-family:monospace;white-space:pre;font-size:10px;border:1px solid #e2e8f0;"><code>function doGet(e) {
+  var sheetName = (e.parameter && e.parameter.sheetName) ? e.parameter.sheetName : "Attendance_Raw";
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(sheetName);
+  
+  if (!sheet) {
+    return ContentService.createTextOutput(JSON.stringify({error: "Sheet '" + sheetName + "' tidak ditemukan"}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+  
+  var data = sheet.getDataRange().getValues();
+  return ContentService.createTextOutput(JSON.stringify({values: data}))
+    .setMimeType(ContentService.MimeType.JSON);
+}</code></pre>
+            </div>
+          </details>
+        </div>
+        <div>
+          <label for="sheetNameInput">Nama Sheet</label>
+          <input id="sheetNameInput" type="text" value="Attendance_Raw" placeholder="Contoh: Attendance_Raw" />
+        </div>
+        <div>
+          <label for="systemCodeInput">Kode Report</label>
+          <input id="systemCodeInput" type="text" value="HRIDIN01" />
+        </div>
+        <div>
+          <label for="versionInput">Versi Footer</label>
+          <input id="versionInput" type="text" value="1.25.02.28" />
+        </div>
+      </div>
+
+      <div class="grid-3">
+        <div>
+          <label for="searchInput">Cari ID / Nama</label>
+          <input id="searchInput" type="search" placeholder="Ketik Employee Code atau Employee Name" />
+          <span class="help">Ketik ID atau Nama. Preview akan otomatis menampilkan hasil yang cocok.</span>
+        </div>
+        <div>
+          <label for="employeeSelect">Hasil Pencarian</label>
+          <select id="employeeSelect">
+            <option value="">Pilih hasil</option>
+          </select>
+        </div>
+        <div>
+          <label for="periodSelect">Periode</label>
+          <select id="periodSelect">
+            <option value="">Periode otomatis</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button id="btnSync" class="btn-blue">Sync dari Google Sheet</button>
+        <button id="btnPrint" class="btn-dark">Print / Save PDF</button>
+        <button id="btnResetCurrent" class="btn-light">Reset Edit Karyawan Ini</button>
+        <button id="btnResetAll" class="btn-warn">Reset Semua Edit</button>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-value" id="statRows">0</div>
+          <div class="stat-label">Total Baris</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" id="statEmployees">0</div>
+          <div class="stat-label">Karyawan</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" id="statPeriods">0</div>
+          <div class="stat-label">Periode</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" id="statShown">0</div>
+          <div class="stat-label">Baris Preview</div>
+        </div>
+      </div>
+
+      <div id="statusBox" class="status">Memuat data secara otomatis...</div>
+    </section>
+
+    <section class="panel editor-wrap">
+      <div class="editor-panel">
+        <div class="toolbar-top">
+          <h2 class="section-title">Editor Data Sebelum Cetak</h2>
+          <div id="selectionInfo" class="badge gray">Belum ada karyawan terpilih</div>
+        </div>
+        <div id="editorRoot" class="empty-box">
+          Tunggu proses sinkronisasi, lalu cari ID / Nama untuk memunculkan tabel editor.
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="preview-topbar">
+        <div>
+          <div class="title" style="font-size:20px; margin:0 0 2px;">Preview Report</div>
+          <div class="preview-meta" id="previewMeta">Belum ada data.</div>
+        </div>
+        <div class="note-inline">
+          Layout cetak dipisahkan dari menu, jadi perubahan data tidak mengubah format report.
+        </div>
+      </div>
+      <div class="preview-stage">
+        <div class="paper">
+          <div id="reportRoot" class="report"></div>
+          <div id="reportVersion" class="report-version">Version: 1.25.02.28</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const appState = {
+      sourceRows: [],
+      workingRows: [],
+      selectedCode: '',
+      selectedPeriod: '',
+      lastSyncInfo: ''
+    };
+
+    const aliases = {
+      code: ['Employee Code','employee code','employee_code','code', 'id', 'nik', 'employee_id', 'id karyawan', 'employee no'],
+      name: ['Employee Name','employee name','employee_name','name', 'nama', 'nama karyawan', 'employee'],
+      department: ['Department','department', 'dept', 'departemen', 'bagian'],
+      clockDate: ['Clock Date','clock date','clock_date','date', 'tanggal', 'tanggal_absen', 'date record'],
+      clockIn: ['Clock In','clock in','clock_in', 'in', 'jam_masuk', 'masuk', 'time in'],
+      clockOut: ['Clock Out','clock out','clock_out', 'out', 'jam_keluar', 'keluar', 'time out'],
+      overtime: ['OT Authorized','Overtime','OT','ot authorized','overtime','ot', 'lembur', 'jam lembur'],
+      remarks: ['Remarks Description','Remarks','remarks description','remarks', 'keterangan', 'desc', 'keterangan/remarks'],
+      periodLabel: ['Period Label','period label','periodLabel', 'period', 'periode'],
+      sourceFile: ['Source File','source file','sourceFile', 'file'],
+      uniqueKey: ['Unique Key','unique key','uniqueKey', 'key']
+    };
+
+    const el = {
+      webAppUrl: document.getElementById('webAppUrl'),
+      sheetNameInput: document.getElementById('sheetNameInput'),
+      searchInput: document.getElementById('searchInput'),
+      employeeSelect: document.getElementById('employeeSelect'),
+      periodSelect: document.getElementById('periodSelect'),
+      systemCodeInput: document.getElementById('systemCodeInput'),
+      versionInput: document.getElementById('versionInput'),
+      btnSync: document.getElementById('btnSync'),
+      btnPrint: document.getElementById('btnPrint'),
+      btnResetCurrent: document.getElementById('btnResetCurrent'),
+      btnResetAll: document.getElementById('btnResetAll'),
+      statRows: document.getElementById('statRows'),
+      statEmployees: document.getElementById('statEmployees'),
+      statPeriods: document.getElementById('statPeriods'),
+      statShown: document.getElementById('statShown'),
+      statusBox: document.getElementById('statusBox'),
+      selectionInfo: document.getElementById('selectionInfo'),
+      editorRoot: document.getElementById('editorRoot'),
+      reportRoot: document.getElementById('reportRoot'),
+      reportVersion: document.getElementById('reportVersion'),
+      previewMeta: document.getElementById('previewMeta')
+    };
+
+    function setStatus(message, type='info'){
+      el.statusBox.textContent = message;
+      el.statusBox.className = 'status' + (type === 'info' ? '' : ' ' + type);
+    }
+
+    function escapeHtml(value){
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function pad(num){ return String(num).padStart(2, '0'); }
+
+    function parseToDate(value){
+      if (!value && value !== 0) return null;
+      if (value instanceof Date && !Number.isNaN(value.getTime())) {
+        return new Date(value.getFullYear(), value.getMonth(), value.getDate());
+      }
+      if (typeof value === 'string') {
+        const clean = value.trim();
+        if (!clean) return null;
+        if (/^\d{4}-\d{2}-\d{2}$/.test(clean)) {
+          const [y,m,d] = clean.split('-').map(Number);
+          return new Date(y, m - 1, d);
+        }
+        if (/^\d{2}-\d{2}-\d{4}$/.test(clean)) {
+          const [d,m,y] = clean.split('-').map(Number);
+          return new Date(y, m - 1, d);
+        }
+        const parsed = new Date(clean);
+        if (!Number.isNaN(parsed.getTime())) {
+          return new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate());
+        }
+      }
+      if (typeof value === 'number') {
+        const base = new Date(Math.round((value - 25569) * 86400 * 1000));
+        if (!Number.isNaN(base.getTime())) {
+          return new Date(base.getUTCFullYear(), base.getUTCMonth(), base.getUTCDate());
+        }
+      }
+      return null;
+    }
+
+    function formatDateISO(dateObj){
+      if (!(dateObj instanceof Date) || Number.isNaN(dateObj.getTime())) return '';
+      return `${dateObj.getFullYear()}-${pad(dateObj.getMonth()+1)}-${pad(dateObj.getDate())}`;
+    }
+
+    function formatDateDDMMYYYY(value){
+      const d = parseToDate(value);
+      if (!d) return '';
+      return `${pad(d.getDate())}-${pad(d.getMonth()+1)}-${d.getFullYear()}`;
+    }
+
+    function formatGeneratedDate(date = new Date()){
+      const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+      return `${pad(date.getDate())}-${pad(date.getMonth()+1)}-${date.getFullYear()} (${days[date.getDay()]})`;
+    }
+
+    function formatTimeValue(value){
+      if (value === null || value === undefined) return '';
+      if (typeof value === 'string') {
+        const clean = value.trim();
+        if (!clean || clean.toLowerCase() === 'nan') return '';
+        if (/^\d{1,2}:\d{2}(\+)?$/.test(clean)) {
+          const plus = clean.endsWith('+') ? '+' : '';
+          const [h, m] = clean.replace('+','').split(':').map(Number);
+          return `${pad(h)}:${pad(m)}${plus}`;
+        }
+        return clean;
+      }
+      if (typeof value === 'number') {
+        const totalMinutes = Math.round(value * 24 * 60);
+        const h = Math.floor(totalMinutes / 60) % 24;
+        const m = totalMinutes % 60;
+        return `${pad(h)}:${pad(m)}`;
+      }
+      return String(value);
+    }
+
+    function derivePeriodLabel(dateValue){
+      const date = parseToDate(dateValue);
+      if (!date) return '';
+      let year = date.getFullYear();
+      let month = date.getMonth() + 1;
+      if (date.getDate() >= 26) {
+        month += 1;
+        if (month === 13) {
+          month = 1;
+          year += 1;
+        }
+      }
+      return `${pad(month)}-${year}`;
+    }
+
+    function buildUniqueKey(row){
+      return [
+        row.code || row.name || '',
+        row.clockDate || '',
+        row.clockIn || '',
+        row.clockOut || '',
+        row.overtime || '',
+        row.remarks || ''
+      ].join('|');
+    }
+
+    function normalizeRow(raw){
+      const row = {
+        code: pickValue(raw, aliases.code),
+        name: pickValue(raw, aliases.name),
+        department: pickValue(raw, aliases.department),
+        clockDate: formatDateISO(parseToDate(pickValue(raw, aliases.clockDate))),
+        clockIn: formatTimeValue(pickValue(raw, aliases.clockIn)),
+        clockOut: formatTimeValue(pickValue(raw, aliases.clockOut)),
+        overtime: String(pickValue(raw, aliases.overtime) || '0.0').trim() || '0.0',
+        remarks: String(pickValue(raw, aliases.remarks) || '').trim(),
+        periodLabel: String(pickValue(raw, aliases.periodLabel) || '').trim(),
+        sourceFile: String(pickValue(raw, aliases.sourceFile) || '').trim(),
+        uniqueKey: String(pickValue(raw, aliases.uniqueKey) || '').trim()
+      };
+      if (!row.periodLabel) row.periodLabel = derivePeriodLabel(row.clockDate);
+      if (!row.uniqueKey) row.uniqueKey = buildUniqueKey(row);
+      return row;
+    }
+
+    function pickValue(obj, keys){
+      if (!obj || typeof obj !== 'object') return '';
+      const entries = Object.keys(obj);
+      for (const wanted of keys) {
+        const found = entries.find(key => String(key).trim() === wanted);
+        if (found !== undefined) return obj[found];
+      }
+      const lowerMap = entries.reduce((acc, key) => {
+        acc[String(key).trim().toLowerCase()] = obj[key];
+        return acc;
+      }, {});
+      for (const wanted of keys) {
+        const val = lowerMap[String(wanted).trim().toLowerCase()];
+        if (val !== undefined) return val;
+      }
+      return '';
+    }
+
+    function dedupeRows(rows){
+      const map = new Map();
+      rows.forEach(raw => {
+        const row = normalizeRow(raw);
+        if (!row.code && !row.name) return; // Drop hanya bila ID dan Nama sama-sama kosong
+        if (!map.has(row.uniqueKey)) map.set(row.uniqueKey, row);
+      });
+      return Array.from(map.values()).sort((a,b) => {
+        if (a.code !== b.code) return a.code.localeCompare(b.code);
+        if (a.periodLabel !== b.periodLabel) return sortPeriod(a.periodLabel, b.periodLabel);
+        if (a.clockDate !== b.clockDate) return a.clockDate.localeCompare(b.clockDate);
+        return a.clockIn.localeCompare(b.clockIn);
+      });
+    }
+
+    function sortPeriod(a,b){
+      const pa = parsePeriod(a);
+      const pb = parsePeriod(b);
+      return pa - pb;
+    }
+
+    function parsePeriod(label){
+      const match = String(label || '').match(/^(\d{2})-(\d{4})$/);
+      if (!match) return 0;
+      return Number(match[2]) * 100 + Number(match[1]);
+    }
+
+    function updateStats(){
+      const rows = appState.workingRows;
+      const employees = new Set(rows.map(r => r.code).filter(Boolean));
+      const periods = new Set(rows.map(r => r.periodLabel).filter(Boolean));
+      el.statRows.textContent = rows.length.toLocaleString('id-ID');
+      el.statEmployees.textContent = employees.size.toLocaleString('id-ID');
+      el.statPeriods.textContent = periods.size.toLocaleString('id-ID');
+      el.statShown.textContent = getSelectedRows().length.toLocaleString('id-ID');
+    }
+
+    function parseApiPayload(payload){
+      if (!payload) return [];
+      if (Array.isArray(payload)) {
+        if (payload.length > 0 && Array.isArray(payload[0])) { // Jika sudah berbentuk 2D array
+          const headers = payload[0].map(String);
+          return payload.slice(1).map(row => {
+            const obj = {};
+            headers.forEach((head, idx) => obj[head] = row[idx]);
+            return obj;
+          });
+        }
+        return payload; // Jika array of objects
+      }
+      if (Array.isArray(payload.rows)) return parseApiPayload(payload.rows);
+      if (Array.isArray(payload.data)) return parseApiPayload(payload.data);
+      if (Array.isArray(payload.records)) return parseApiPayload(payload.records);
+      if (payload.headers && Array.isArray(payload.values)) {
+        return payload.values.map(row => {
+          const obj = {};
+          payload.headers.forEach((head, idx) => obj[head] = row[idx]);
+          return obj;
+        });
+      }
+      if (Array.isArray(payload.values) && payload.values.length > 0) {
+        const first = payload.values[0];
+        if (Array.isArray(first)) { // Jika 2D array
+          const headers = first.map(String);
+          return payload.values.slice(1).map(row => {
+            const obj = {};
+            headers.forEach((head, idx) => obj[head] = row[idx]);
+            return obj;
+          });
+        } else if (typeof first === 'object') { // Jika array of objects
+           return payload.values;
+        }
+      }
+      return [];
+    }
+
+    async function fetchJson(url){
+      const res = await fetch(url, { method:'GET' });
+      const text = await res.text();
+      
+      // Deteksi jika API mengembalikan halaman login/HTML karena permission GAS yang salah.
+      if (text.trim().startsWith('<') || text.toLowerCase().includes('<!doctype html>')) {
+        throw new Error('Web App meminta Login (Merespon dengan HTML). Pastikan saat deploy, Who has access di-set ke "Anyone" dan Execute as di-set ke "Me".');
+      }
+      
+      let data = null;
+      try {
+        data = JSON.parse(text);
+      } catch(error) {
+        throw new Error('Data yang dikembalikan bukan format JSON yang valid.');
+      }
+      
+      if (data && data.error) {
+        throw new Error(data.error); // Error explicit dari script
+      }
+      
+      return data;
+    }
+
+    function jsonp(url){
+      return new Promise((resolve, reject) => {
+        const callbackName = '__gsheetSync_' + Math.random().toString(36).slice(2);
+        const script = document.createElement('script');
+        const timer = setTimeout(() => {
+          cleanup();
+          reject(new Error('Timeout JSONP. Pastikan URL Apps Script benar.'));
+        }, 15000);
+
+        function cleanup(){
+          clearTimeout(timer);
+          if (script.parentNode) script.parentNode.removeChild(script);
+          try { delete window[callbackName]; } catch (_e) { window[callbackName] = undefined; }
+        }
+
+        window[callbackName] = (data) => {
+          cleanup();
+          if (data && data.error) reject(new Error(data.error));
+          else resolve(data);
+        };
+
+        script.onerror = () => {
+          cleanup();
+          reject(new Error('Gagal memuat script (Kemungkinan diblokir browser atau URL salah).'));
+        };
+
+        const joiner = url.includes('?') ? '&' : '?';
+        script.src = url + joiner + 'callback=' + callbackName;
+        document.body.appendChild(script);
+      });
+    }
+
+    async function syncFromGSheet(){
+      const endpoint = el.webAppUrl.value.trim();
+      if(!endpoint) return;
+
+      const sheetName = el.sheetNameInput.value.trim() || 'Attendance_Raw';
+      const queries = [
+        `${endpoint}?action=read&sheetName=${encodeURIComponent(sheetName)}`,
+        `${endpoint}?mode=read&sheetName=${encodeURIComponent(sheetName)}`,
+        `${endpoint}?sheetName=${encodeURIComponent(sheetName)}`,
+        `${endpoint}`
+      ];
+
+      setStatus('Sinkronisasi otomatis berjalan, mengambil data dari Google Sheet...', 'info');
+      el.btnSync.disabled = true;
+
+      try {
+        let rows = [];
+        let firstErrorMsg = '';
+        let successFetch = false;
+
+        // Coba Fetch standar
+        for (const url of queries) {
+          try {
+            const payload = await fetchJson(url);
+            successFetch = true;
+            rows = parseApiPayload(payload);
+            break; // Jika berhasil terkoneksi & parsing JSON sukses (tidak peduli data kosong), kita langsung break
+          } catch (error) {
+            if (!firstErrorMsg) firstErrorMsg = error.message;
+          }
+        }
+
+        // Jika standar gagal (mungkin masalah CORS), coba JSONP
+        if (!successFetch && !firstErrorMsg.includes('Execute as') && !firstErrorMsg.includes('Login')) {
+          for (const url of queries) {
+            try {
+              const payload = await jsonp(url);
+              successFetch = true;
+              rows = parseApiPayload(payload);
+              break;
+            } catch (error) {
+              if (!firstErrorMsg) firstErrorMsg = error.message;
+            }
+          }
+        }
+
+        if (!successFetch) {
+          throw new Error(firstErrorMsg || 'Gagal menghubungi server Apps Script. Cek URL Web App.');
+        }
+
+        const normalized = dedupeRows(rows);
+        appState.sourceRows = JSON.parse(JSON.stringify(normalized));
+        appState.workingRows = JSON.parse(JSON.stringify(normalized));
+        appState.lastSyncInfo = `Sheet: ${sheetName} | Auto-Synced`;
+        
+        applySearch(true);
+        updateStats();
+
+        // Tidak lagi melempar error merah jika sheet ternyata kosong
+        if (normalized.length === 0) {
+          setStatus(`Sinkron berhasil terhubung, tapi tidak ada data yang ditemukan. Pastikan baris data (selain header) sudah terisi di Google Sheet.`, 'warn');
+        } else {
+          setStatus(`Sinkron berhasil. ${normalized.length.toLocaleString('id-ID')} baris dimuat dari sheet "${sheetName}".`, 'success');
+        }
+
+      } catch (error) {
+        console.error(error);
+        setStatus(`Sinkron gagal: ${error.message}\nSilakan klik "Bantuan jika gagal Sync" di atas.`, 'error');
+      } finally {
+        el.btnSync.disabled = false;
+      }
+    }
+
+    function getEmployeeMatches(term){
+      const employees = [...new Map(appState.workingRows.map(row => [row.code, row])).values()];
+      const clean = String(term || '').trim().toLowerCase();
+      if (!clean) {
+        return employees.sort((a,b) => a.code.localeCompare(b.code));
+      }
+      return employees.filter(emp =>
+        String(emp.code).toLowerCase().includes(clean) ||
+        String(emp.name).toLowerCase().includes(clean)
+      ).sort((a,b) => a.code.localeCompare(b.code));
+    }
+
+    function fillEmployeeSelect(matches){
+      const current = appState.selectedCode;
+      el.employeeSelect.innerHTML = '<option value="">Pilih hasil</option>' +
+        matches.map(emp => `<option value="${escapeHtml(emp.code)}">${escapeHtml(emp.name)} (${escapeHtml(emp.code)})</option>`).join('');
+      if (matches.some(m => m.code === current)) {
+        el.employeeSelect.value = current;
+      } else if (matches.length) {
+        appState.selectedCode = matches[0].code;
+        el.employeeSelect.value = matches[0].code;
+      } else {
+        appState.selectedCode = '';
+      }
+    }
+
+    function fillPeriodSelect(){
+      const code = appState.selectedCode;
+      const rows = appState.workingRows.filter(r => r.code === code);
+      const periods = [...new Set(rows.map(r => r.periodLabel).filter(Boolean))].sort(sortPeriodDesc);
+      el.periodSelect.innerHTML = '<option value="">Periode otomatis</option>' +
+        periods.map(period => `<option value="${escapeHtml(period)}">${escapeHtml(period)}</option>`).join('');
+
+      if (!periods.length) {
+        appState.selectedPeriod = '';
+        return;
+      }
+
+      if (periods.includes(appState.selectedPeriod)) {
+        el.periodSelect.value = appState.selectedPeriod;
+      } else {
+        appState.selectedPeriod = periods[0];
+        el.periodSelect.value = periods[0];
+      }
+    }
+
+    function sortPeriodDesc(a,b){ return sortPeriod(b,a); }
+
+    function applySearch(autoPreview = false){
+      const matches = getEmployeeMatches(el.searchInput.value);
+      fillEmployeeSelect(matches);
+      fillPeriodSelect();
+      if (autoPreview) renderAll();
+      else {
+        renderEditor();
+        renderReport();
+        updateStats();
+      }
+    }
+
+    function getSelectedRows(){
+      let rows = appState.workingRows;
+      if (appState.selectedCode) rows = rows.filter(r => r.code === appState.selectedCode);
+      const availablePeriods = [...new Set(rows.map(r => r.periodLabel).filter(Boolean))].sort(sortPeriodDesc);
+      let targetPeriod = appState.selectedPeriod || availablePeriods[0] || '';
+      if (targetPeriod) rows = rows.filter(r => r.periodLabel === targetPeriod);
+      return rows.sort((a,b) => a.clockDate.localeCompare(b.clockDate));
+    }
+
+    function renderEditor(){
+      const rows = getSelectedRows();
+      if (!rows.length) {
+        el.selectionInfo.className = 'badge gray';
+        el.selectionInfo.textContent = 'Belum ada karyawan terpilih';
+        el.editorRoot.innerHTML = 'Data tidak ditemukan. Pastikan sudah di-sync dan cari ID/Nama.';
+        return;
+      }
+
+      const first = rows[0];
+      el.selectionInfo.className = 'badge ok';
+      el.selectionInfo.textContent = `${first.name} (${first.code}) · ${first.periodLabel}`;
+
+      const header = `
+        <div class="editor-shell">
+          <table class="editor-table">
+            <thead>
+              <tr>
+                <th style="width:110px;">Tanggal</th>
+                <th style="width:130px;">Clock In</th>
+                <th style="width:130px;">Clock Out</th>
+                <th style="width:110px;">Overtime</th>
+                <th>Remarks</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows.map((row, idx) => `
+                <tr>
+                  <td>${escapeHtml(formatDateDDMMYYYY(row.clockDate))}</td>
+                  <td><input data-field="clockIn" data-key="${escapeHtml(row.uniqueKey)}" value="${escapeHtml(row.clockIn)}" placeholder="HH:MM" /></td>
+                  <td><input data-field="clockOut" data-key="${escapeHtml(row.uniqueKey)}" value="${escapeHtml(row.clockOut)}" placeholder="HH:MM" /></td>
+                  <td><input data-field="overtime" data-key="${escapeHtml(row.uniqueKey)}" value="${escapeHtml(row.overtime)}" placeholder="0.0" /></td>
+                  <td><input data-field="remarks" data-key="${escapeHtml(row.uniqueKey)}" value="${escapeHtml(row.remarks)}" placeholder="Remarks" /></td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+      el.editorRoot.innerHTML = header;
+      el.editorRoot.querySelectorAll('input[data-field]').forEach(input => {
+        input.addEventListener('input', handleEditInput);
+      });
+    }
+
+    function handleEditInput(event){
+      const key = event.target.dataset.key;
+      const field = event.target.dataset.field;
+      const value = event.target.value;
+      const row = appState.workingRows.find(item => item.uniqueKey === key);
+      if (!row) return;
+      row[field] = field === 'overtime' ? String(value).trim() : value;
+      renderReport();
+    }
+
+    function renderReport(){
+      const rows = getSelectedRows();
+      const version = el.versionInput.value.trim() || '1.25.02.28';
+      const systemCode = el.systemCodeInput.value.trim() || 'HRIDIN01';
+      el.reportVersion.textContent = `Version: ${version}`;
+      el.statShown.textContent = rows.length.toLocaleString('id-ID');
+
+      if (!rows.length) {
+        el.reportRoot.innerHTML = `
+          <div class="report-company">Hop Lun</div>
+          <div class="report-title">Report Attendance Worker</div>
+          <p class="report-period">Belum ada data untuk ditampilkan</p>
+          <p class="report-range">Tunggu sinkronisasi lalu cari ID / Nama.</p>
+        `;
+        el.previewMeta.textContent = 'Belum ada data terpilih.';
+        return;
+      }
+
+      const first = rows[0];
+      const dates = rows.map(r => parseToDate(r.clockDate)).filter(Boolean).sort((a,b) => a - b);
+      const start = dates.length ? formatDateDDMMYYYY(dates[0]) : '';
+      const end = dates.length ? formatDateDDMMYYYY(dates[dates.length - 1]) : '';
+      const generatedDate = formatGeneratedDate(new Date());
+
+      const body = rows.map(row => `
+        <tr>
+          <td class="col-code">${escapeHtml(row.code)}</td>
+          <td class="col-name">${escapeHtml(row.name)}</td>
+          <td class="col-dept">${escapeHtml(row.department)}</td>
+          <td class="col-date">${escapeHtml(formatDateDDMMYYYY(row.clockDate))}</td>
+          <td class="col-in">${escapeHtml(row.clockIn)}</td>
+          <td class="col-out">${escapeHtml(row.clockOut)}</td>
+          <td class="col-ot">${escapeHtml(row.overtime)}</td>
+          <td class="col-remarks">${escapeHtml(row.remarks)}</td>
+        </tr>
+      `).join('');
+
+      el.reportRoot.innerHTML = `
+        <div class="report-company">Hop Lun</div>
+        <div class="report-title">Report Attendance Worker</div>
+        <div class="report-meta-row">
+          <div>${escapeHtml(generatedDate)}</div>
+          <div>${escapeHtml(systemCode)} - Page 1 of 1</div>
+        </div>
+        <p class="report-period">Period: ${escapeHtml(start)} to ${escapeHtml(end)}. All Records</p>
+        <p class="report-range">Range: ((Employee Code='${escapeHtml(first.code)}'))</p>
+        <table class="report-table">
+          <thead>
+            <tr>
+              <th class="col-code">Employee<br>Code</th>
+              <th class="col-name">Employee<br>Name</th>
+              <th class="col-dept">Department</th>
+              <th class="col-date">Clock Date</th>
+              <th class="col-in">Clock In</th>
+              <th class="col-out">Clock Out</th>
+              <th class="col-ot">Overtime</th>
+              <th class="col-remarks">Remarks</th>
+            </tr>
+          </thead>
+          <tbody>${body}</tbody>
+        </table>
+        <div class="report-footer-box">
+          <strong>Record Count</strong>
+          <span>${rows.length}</span>
+        </div>
+      `;
+
+      el.previewMeta.innerHTML =
+        `Sync: <strong>${escapeHtml(appState.lastSyncInfo || '-')}</strong> &nbsp;|&nbsp; ` +
+        `Periode: <strong>${escapeHtml(first.periodLabel || '-')}</strong> &nbsp;|&nbsp; ` +
+        `Karyawan: <strong>${escapeHtml(first.name)} (${escapeHtml(first.code)})</strong> &nbsp;|&nbsp; ` +
+        `Baris: <strong>${rows.length}</strong>`;
+    }
+
+    function renderAll(){
+      renderEditor();
+      renderReport();
+      updateStats();
+    }
+
+    function resetCurrent(){
+      const currentRows = getSelectedRows();
+      if (!currentRows.length) return;
+      const keys = new Set(currentRows.map(r => r.uniqueKey));
+      appState.workingRows = appState.workingRows.map(row => {
+        if (!keys.has(row.uniqueKey)) return row;
+        const original = appState.sourceRows.find(src => src.uniqueKey === row.uniqueKey);
+        return original ? JSON.parse(JSON.stringify(original)) : row;
+      });
+      renderAll();
+      setStatus('Edit untuk karyawan/periode aktif sudah dikembalikan ke data asli sinkron.', 'success');
+    }
+
+    function resetAll(){
+      if (!appState.sourceRows.length) return;
+      appState.workingRows = JSON.parse(JSON.stringify(appState.sourceRows));
+      renderAll();
+      setStatus('Semua edit lokal sudah di-reset ke hasil sinkron terakhir.', 'success');
+    }
+
+    el.btnSync.addEventListener('click', syncFromGSheet);
+    el.btnPrint.addEventListener('click', () => window.print());
+    el.btnResetCurrent.addEventListener('click', resetCurrent);
+    el.btnResetAll.addEventListener('click', resetAll);
+    el.searchInput.addEventListener('input', () => {
+      appState.selectedCode = '';
+      appState.selectedPeriod = '';
+      applySearch(true);
+    });
+    el.employeeSelect.addEventListener('change', () => {
+      appState.selectedCode = el.employeeSelect.value.trim();
+      appState.selectedPeriod = '';
+      fillPeriodSelect();
+      renderAll();
+    });
+    el.periodSelect.addEventListener('change', () => {
+      appState.selectedPeriod = el.periodSelect.value.trim();
+      renderAll();
+    });
+    el.systemCodeInput.addEventListener('input', renderReport);
+    el.versionInput.addEventListener('input', renderReport);
+
+    renderAll();
+
+    // Auto Sync saat pertama kali aplikasi dibuka
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        if(el.webAppUrl.value.trim() !== "") {
+          syncFromGSheet();
+        }
+      }, 500); // jeda sedikit agar UI termuat sepenuhnya
+    });
+
+  </script>
+</body>
+</html>
