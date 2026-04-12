@@ -10,6 +10,9 @@
   
   <!-- Library untuk Konversi HTML ke PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  
+  <!-- Library untuk Membaca File Excel (SheetJS) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
   <style>
     :root{
@@ -80,6 +83,7 @@
     button:disabled { opacity: .55; cursor: not-allowed; transform: none; }
     .btn-dark { background: var(--accent); color: #fff; box-shadow: 0 4px 10px rgba(15,23,42,.15); }
     .btn-blue { background: var(--accent-2); color: #fff; box-shadow: 0 4px 10px rgba(29,78,216,.15); }
+    .btn-green { background: #166534; color: #fff; box-shadow: 0 4px 10px rgba(22,101,52,.15); }
     .btn-light { background: #f8fafc; color: #0f172a; border: 1px solid #cbd5e1; }
     
     /* Area Kanan (Preview Kertas) */
@@ -198,6 +202,24 @@
         </div>
       </div>
 
+      <!-- PANEL UPLOAD EXCEL (Baru) -->
+      <details class="settings-panel" style="background:#f0fdf4; border-color:#bbf7d0; margin-top:-8px;">
+        <summary style="cursor:pointer;font-weight:800;color:#166534;outline:none;font-size:12px;display:flex;align-items:center;gap:6px;">
+          📤 Upload Database Excel
+        </summary>
+        <div class="control-group" style="margin-top:10px;">
+          <label style="color:#15803d;">1. Pilih File (.xlsx / .xls)</label>
+          <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" style="border-color:#bbf7d0; padding:6px 10px; font-size:11px;" />
+        </div>
+        <div class="control-group">
+          <label style="color:#15803d;">2. Sheet GSheet Tujuan</label>
+          <input type="text" id="uploadSheetName" placeholder="Msl: AttBIPO-12-2025" style="border-color:#bbf7d0;" />
+        </div>
+        <button id="btnUploadExcel" class="btn-green" style="margin-top:4px;">
+          ⬆️ Upload ke Google Sheet
+        </button>
+      </details>
+
       <div class="control-group">
         <label>Pilih Sheet (Periode Otomatis)</label>
         <select id="sheetSelect" disabled>
@@ -219,7 +241,7 @@
 
       <div class="btn-col" style="margin-top:auto;">
         <button id="btnSync" class="btn-light">🔄 Refresh Sheet</button>
-        <button id="btnResetCurrent" class="btn-light" style="color:#9a3412; border-color:#fdba74; background:#fff7ed;">↺ Batal Edit</button>
+        <button id="btnResetCurrent" class="btn-light" style="color:#9a3412; border-color:#fdba74; background:#fff7ed;">↺ Batal Edit Lokal</button>
         <button id="btnPrint" class="btn-dark" title="Cetak ke Printer lalu Otomatis Download PDF">🖨️ Print & Download PDF</button>
       </div>
     </aside>
@@ -237,7 +259,7 @@
   <div id="toast" class="toast">Notifikasi</div>
 
   <script>
-    // URL Web App
+    // URL Web App (Sesuai milik Anda yang sudah memiliki fungsi doPost untuk upload)
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbydwcka1DrUbJKXgTBrfBo6UuE1E4feRkZu_mB2K5O9Wu0wtxI_L2REBzNZFqL6QcHV/exec";
 
     const appState = {
@@ -273,7 +295,11 @@
       settingsPanel: document.getElementById('settingsPanel'),
       reportRoot: document.getElementById('reportRoot'),
       reportVersion: document.getElementById('reportVersion'),
-      paperTarget: document.getElementById('paperTarget')
+      paperTarget: document.getElementById('paperTarget'),
+      // Upload Elements
+      excelFileInput: document.getElementById('excelFileInput'),
+      uploadSheetName: document.getElementById('uploadSheetName'),
+      btnUploadExcel: document.getElementById('btnUploadExcel')
     };
 
     // Toast Logic
@@ -353,7 +379,7 @@
       return [row.code || row.name || '', row.clockDate || '', row.clockIn || '', row.clockOut || '', row.overtime || '', row.remarks || ''].join('|');
     }
 
-    function normalizeRow(raw){
+    function normalizeRow(raw, targetSheetName = null){
       const row = {
         code: pickValue(raw, aliases.code),
         name: pickValue(raw, aliases.name),
@@ -364,7 +390,7 @@
         overtime: String(pickValue(raw, aliases.overtime) || '0.0').trim() || '0.0',
         remarks: String(pickValue(raw, aliases.remarks) || '').trim(),
         uniqueKey: String(pickValue(raw, aliases.uniqueKey) || '').trim(),
-        periodLabel: appState.selectedSheet
+        periodLabel: targetSheetName || appState.selectedSheet
       };
       if (!row.uniqueKey) row.uniqueKey = buildUniqueKey(row);
       return row;
@@ -490,8 +516,14 @@
         el.sheetSelect.innerHTML = sheetsFound.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
         el.sheetSelect.disabled = false;
         
-        el.sheetSelect.value = sheetsFound[0];
-        appState.selectedSheet = sheetsFound[0];
+        // Coba pertahankan pilihan sheet sebelumnya jika ada
+        if (appState.selectedSheet && sheetsFound.includes(appState.selectedSheet)) {
+          el.sheetSelect.value = appState.selectedSheet;
+        } else {
+          el.sheetSelect.value = sheetsFound[0];
+          appState.selectedSheet = sheetsFound[0];
+        }
+        
         syncFromGSheet();
       } else {
         showToast('Gagal memuat nama Sheet. Cek koneksi.', 'error');
@@ -560,6 +592,98 @@
         el.sheetSelect.disabled = false;
       }
     }
+
+    // --- FITUR UPLOAD EXCEL KE GSHEET ---
+    
+    // Auto-fill nama sheet berdasarkan nama file
+    el.excelFileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if(file && !el.uploadSheetName.value.trim()) {
+        // Hilangkan ekstensi file .xlsx / .xls
+        const nameWithoutExt = file.name.replace(/\.[^/.]+$/, "");
+        el.uploadSheetName.value = nameWithoutExt;
+      }
+    });
+
+    async function uploadExcelToGSheet() {
+      const file = el.excelFileInput.files[0];
+      const targetSheet = el.uploadSheetName.value.trim();
+
+      if (!file) return showToast('Pilih file Excel terlebih dahulu!', 'warn');
+      if (!targetSheet) return showToast('Isi nama sheet tujuan!', 'warn');
+
+      el.btnUploadExcel.disabled = true;
+      el.btnUploadExcel.innerHTML = '⏳ Sedang Membaca...';
+
+      const reader = new FileReader();
+      reader.onload = async function(e) {
+        try {
+          const data = new Uint8Array(e.target.result);
+          // Baca Workbook
+          const workbook = XLSX.read(data, {type: 'array'});
+          const firstSheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[firstSheetName];
+          
+          // Konversi ke JSON
+          const excelRows = XLSX.utils.sheet_to_json(worksheet, {defval: ""});
+          if (!excelRows.length) throw new Error("File Excel kosong (Tidak ada data baris).");
+
+          showToast(`Mempersiapkan ${excelRows.length} data...`, 'info');
+          el.btnUploadExcel.innerHTML = '🚀 Mengirim ke GSheet...';
+
+          // Format ke bentuk baku yang dikenali Apps Script (doPost)
+          const payloadRows = excelRows.map(raw => {
+            const norm = normalizeRow(raw, targetSheet);
+            norm.sourceFile = file.name; // Tag file sumber
+            norm.uniqueKey = buildUniqueKey(norm); // Refresh Key
+            return norm;
+          }).filter(r => r.code); // Hanya ambil baris yang ada ID Karyawan-nya
+
+          const payload = {
+            sheetName: targetSheet,
+            mode: 'replace_period', // atau 'dedupe'
+            rows: payloadRows
+          };
+
+          // Kirim POST ke Apps Script
+          const response = await fetch(WEB_APP_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain' }, // Menghindari preflight CORS
+            body: JSON.stringify(payload)
+          });
+
+          const result = await response.json();
+          
+          if (result.ok) {
+            showToast(`Upload Sukses! ${result.inserted || payloadRows.length} baris masuk.`, 'success');
+            // Bersihkan form
+            el.excelFileInput.value = '';
+            // Refresh list Dropdown Sheet dan data
+            appState.selectedSheet = targetSheet;
+            loadAppAndSheets(); 
+          } else {
+            throw new Error(result.message || "Gagal menyimpan ke Sheet.");
+          }
+
+        } catch (err) {
+          console.error(err);
+          showToast(`Upload Gagal: ${err.message}`, 'error');
+        } finally {
+          el.btnUploadExcel.disabled = false;
+          el.btnUploadExcel.innerHTML = '⬆️ Upload ke Google Sheet';
+        }
+      };
+
+      reader.onerror = () => {
+        showToast('Gagal membaca file dari komputer.', 'error');
+        el.btnUploadExcel.disabled = false;
+        el.btnUploadExcel.innerHTML = '⬆️ Upload ke Google Sheet';
+      };
+
+      reader.readAsArrayBuffer(file);
+    }
+    el.btnUploadExcel.addEventListener('click', uploadExcelToGSheet);
+    // ------------------------------------
 
     function getEmployeeMatches(term){
       const employees = [...new Map(appState.workingRows.map(row => [row.code, row])).values()];
@@ -744,7 +868,8 @@
          return;
       }
       window.print();
-      downloadPdf(); 
+      // Tunggu jendela print tertutup, lalu otomatis download PDF
+      setTimeout(() => { downloadPdf(); }, 500);
     });
     
     el.btnResetCurrent.addEventListener('click', resetCurrent);
