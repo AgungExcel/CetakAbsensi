@@ -148,23 +148,6 @@
               Pastikan di menu <strong>Deploy > Manage Deployments (atau New Deployment)</strong>:<br>
               - Execute as: <strong>Me</strong><br>
               - Who has access: <strong>Anyone</strong>
-              
-              <div style="margin:12px 0 4px;color:#b91c1c;font-weight:bold;">PENTING 2: Gunakan Script Apps Script Berikut</div>
-              Ganti kode di Apps Script Anda dengan ini, lalu <strong>Deploy ulang</strong> (buat versi baru):
-              <pre style="background:#f1f5f9;padding:8px;border-radius:6px;overflow-x:auto;margin:4px 0 0;font-family:monospace;white-space:pre;font-size:10px;border:1px solid #e2e8f0;"><code>function doGet(e) {
-  var sheetName = (e.parameter && e.parameter.sheetName) ? e.parameter.sheetName : "Attendance_Raw";
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var sheet = ss.getSheetByName(sheetName);
-  
-  if (!sheet) {
-    return ContentService.createTextOutput(JSON.stringify({error: "Sheet '" + sheetName + "' tidak ditemukan"}))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-  
-  var data = sheet.getDataRange().getValues();
-  return ContentService.createTextOutput(JSON.stringify({values: data}))
-    .setMimeType(ContentService.MimeType.JSON);
-}</code></pre>
             </div>
           </details>
         </div>
@@ -272,8 +255,8 @@
     };
 
     const aliases = {
-      code: ['Employee Code','employee code','employee_code','code', 'id', 'nik', 'employee_id', 'id karyawan', 'employee no'],
-      name: ['Employee Name','employee name','employee_name','name', 'nama', 'nama karyawan', 'employee'],
+      code: ['Employee Code','employee code','employee_code','code', 'id', 'nik', 'employee_id', 'id karyawan', 'employee no', 'pin', 'emp code', 'emp. code'],
+      name: ['Employee Name','employee name','employee_name','name', 'nama', 'nama karyawan', 'employee', 'emp name', 'emp. name'],
       department: ['Department','department', 'dept', 'departemen', 'bagian'],
       clockDate: ['Clock Date','clock date','clock_date','date', 'tanggal', 'tanggal_absen', 'date record'],
       clockIn: ['Clock In','clock in','clock_in', 'in', 'jam_masuk', 'masuk', 'time in'],
@@ -535,7 +518,6 @@
       const res = await fetch(url, { method:'GET' });
       const text = await res.text();
       
-      // Deteksi jika API mengembalikan halaman login/HTML karena permission GAS yang salah.
       if (text.trim().startsWith('<') || text.toLowerCase().includes('<!doctype html>')) {
         throw new Error('Web App meminta Login (Merespon dengan HTML). Pastikan saat deploy, Who has access di-set ke "Anyone" dan Execute as di-set ke "Me".');
       }
@@ -547,9 +529,9 @@
         throw new Error('Data yang dikembalikan bukan format JSON yang valid.');
       }
       
-      if (data && data.error) {
-        throw new Error(data.error); // Error explicit dari script
-      }
+      // Menerima response format baru dari Google Script
+      if (data && data.ok === false && data.message) throw new Error(data.message);
+      if (data && data.error) throw new Error(data.error);
       
       return data;
     }
@@ -571,7 +553,9 @@
 
         window[callbackName] = (data) => {
           cleanup();
-          if (data && data.error) reject(new Error(data.error));
+          // Menerima response format baru dari Google Script untuk jsonp fallback
+          if (data && data.ok === false && data.message) reject(new Error(data.message));
+          else if (data && data.error) reject(new Error(data.error));
           else resolve(data);
         };
 
@@ -605,25 +589,28 @@
         let rows = [];
         let firstErrorMsg = '';
         let successFetch = false;
+        let serverMessage = '';
 
         // Coba Fetch standar
         for (const url of queries) {
           try {
             const payload = await fetchJson(url);
             successFetch = true;
+            if (payload && payload.message) serverMessage = payload.message;
             rows = parseApiPayload(payload);
-            break; // Jika berhasil terkoneksi & parsing JSON sukses (tidak peduli data kosong), kita langsung break
+            break; 
           } catch (error) {
             if (!firstErrorMsg) firstErrorMsg = error.message;
           }
         }
 
-        // Jika standar gagal (mungkin masalah CORS), coba JSONP
+        // Jika standar gagal, coba JSONP
         if (!successFetch && !firstErrorMsg.includes('Execute as') && !firstErrorMsg.includes('Login')) {
           for (const url of queries) {
             try {
               const payload = await jsonp(url);
               successFetch = true;
+              if (payload && payload.message) serverMessage = payload.message;
               rows = parseApiPayload(payload);
               break;
             } catch (error) {
@@ -644,16 +631,20 @@
         applySearch(true);
         updateStats();
 
-        // Tidak lagi melempar error merah jika sheet ternyata kosong
+        // Validasi dan menampilkan pesan yang jelas
         if (normalized.length === 0) {
-          setStatus(`Sinkron berhasil terhubung, tapi tidak ada data yang ditemukan. Pastikan baris data (selain header) sudah terisi di Google Sheet.`, 'warn');
+          let warnMsg = `Sinkron berhasil terhubung, tapi tidak ada data yang valid untuk ditampilkan.`;
+          if (serverMessage) warnMsg += `\nInfo dari Server: "${serverMessage}"`;
+          else warnMsg += `\nPastikan baris data (selain header) sudah terisi di Sheet.`;
+          
+          setStatus(warnMsg, 'warn');
         } else {
           setStatus(`Sinkron berhasil. ${normalized.length.toLocaleString('id-ID')} baris dimuat dari sheet "${sheetName}".`, 'success');
         }
 
       } catch (error) {
         console.error(error);
-        setStatus(`Sinkron gagal: ${error.message}\nSilakan klik "Bantuan jika gagal Sync" di atas.`, 'error');
+        setStatus(`Sinkron gagal: ${error.message}`, 'error');
       } finally {
         el.btnSync.disabled = false;
       }
