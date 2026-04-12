@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Attendance Worker Report - Sync GSheet</title>
+  <title>Cetak Time Record - Attendance Bipo System</title>
   
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="time.png">
@@ -13,6 +13,7 @@
   
   <!-- Library untuk Membaca File Excel (SheetJS) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
   <style>
     :root{
@@ -50,7 +51,7 @@
     .header-top { display: flex; justify-content: space-between; align-items: flex-start; }
     .header-logo { display: flex; align-items: center; gap: 12px; }
     .header-logo img { height: 42px; width: auto; border-radius: 8px; object-fit: contain; }
-    .title { margin: 0; font-size: 20px; font-weight: 800; letter-spacing: .2px; color: #0f172a; }
+    .title { margin: 0; font-size: 17px; line-height: 1.1; font-weight: 800; letter-spacing: .1px; color: #0f172a; white-space: nowrap; }
     .subtitle { margin: 4px 0 0; color: var(--muted); font-size: 11px; line-height: 1.5; }
     
     /* Tombol Pengaturan Meta */
@@ -67,7 +68,7 @@
 
     .control-group { display: flex; flex-direction: column; gap: 6px; }
     label { font-size: 11px; font-weight: 700; color: #334155; text-transform: uppercase; letter-spacing: .05em; }
-    input[type="text"], input[type="search"], select {
+    input[type="text"], input[type="search"], input[type="date"], select {
       width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 10px;
       font: inherit; font-size: 13px; background: #fff; color: var(--text); outline: none; transition: border 0.2s;
     }
@@ -111,53 +112,316 @@
     .report { width: 100%; font-family: Arial, Helvetica, sans-serif; color: #111; }
     .report-header {
       --company-font-size: 12px;
-      --title-font-size: 18px;
-      --meta-font-size: 11px;
-      --period-font-size: 12px;
-      --range-font-size: 8px;
-      --company-gap: 2px;
-      --title-gap: 6px;
-      --meta-gap: 4px;
-      --period-gap: 2px;
-      --range-bottom-gap: 10px;
+      --title-font-size: 14.4px;
+      --meta-font-size: 9.6px;
+      --period-font-size: 9.6px;
+      --range-font-size: 7.2px;
+      --company-gap: 1px;
+      --title-gap: 7px;
+      --meta-gap: 5px;
+      --period-gap: 0px;
+      --range-bottom-gap: 6px;
     }
-    .report-company { text-align: center; font-size: var(--company-font-size); font-weight: 700; margin-bottom: var(--company-gap); line-height: 1.05; }
-    .report-title { text-align: center; font-size: var(--title-font-size); font-weight: 800; margin: 0 0 var(--title-gap); line-height: 1.05; }
-    .report-period { text-align: center; font-size: var(--period-font-size); font-weight: 700; margin: 0 0 var(--period-gap); line-height: 1.1; }
-    .report-range { text-align: center; font-size: var(--range-font-size); font-weight: 700; margin: 0 0 var(--range-bottom-gap); line-height: 1.05; }
-    .report-meta-row { display: flex; justify-content: space-between; align-items: flex-end; font-size: var(--meta-font-size); margin-bottom: var(--meta-gap); line-height: 1.05; }
+    .report-company {
+      text-align: center;
+      font-size: var(--company-font-size);
+      font-weight: 700;
+      margin-bottom: var(--company-gap);
+      line-height: 1;
+    }
+    .report-title {
+      text-align: center;
+      font-size: var(--title-font-size);
+      font-weight: 800;
+      margin: 0 0 var(--title-gap);
+      line-height: 1;
+    }
+    .report-meta-band {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: end;
+      column-gap: 8px;
+      margin: 0 0 var(--meta-gap);
+      line-height: 1;
+    }
+    .report-meta-left,
+    .report-meta-right {
+      font-size: var(--meta-font-size);
+      font-weight: 400;
+      white-space: nowrap;
+    }
+    .report-meta-left { text-align: left; }
+    .report-meta-right { text-align: right; }
+    .report-period {
+      text-align: center;
+      font-size: var(--period-font-size);
+      font-weight: 700;
+      margin: 0;
+      line-height: 1;
+      white-space: nowrap;
+    }
+    .report-range {
+      text-align: center;
+      font-size: var(--range-font-size);
+      font-weight: 700;
+      margin: 0 0 var(--range-bottom-gap);
+      line-height: 1;
+    }
     .layout-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
     .layout-actions { display:flex; gap:8px; margin-top:8px; }
     .btn-xs { padding:8px 10px; font-size:12px; }
     .layout-help { margin-top:6px; font-size:11px; color:#475569; line-height:1.4; }
     
-    .report-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 11px; }
-    .report-table thead th { text-align: left; font-size: 10px; padding: 3px 3px 4px; font-weight: 800; border-top: 2px solid var(--line); border-bottom: 2px solid var(--line); vertical-align: bottom; }
-    .report-table tbody td { padding: 2px 3px; vertical-align: middle; border-bottom: none; white-space: nowrap; overflow: hidden; height: 23px; }
-    
-    .report-table .col-code { width: 11%; }
-    .report-table .col-name { width: 13%; }
-    .report-table .col-dept { width: 14%; }
-    .report-table .col-date { width: 10%; }
-    .report-table .col-in { width: 8.5%; text-align: center; }
-    .report-table .col-out { width: 9%; text-align: center; }
-    .report-table .col-ot { width: 8.5%; text-align: center; }
-    .report-table .col-remarks { width: 18%; }
+    .report-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      font-size: 9.6px;
+      line-height: 1;
+    }
+    .report-table thead th {
+      text-align: center;
+      font-size: 10.88px;
+      padding: 2px 2px 1px;
+      font-weight: 800;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      vertical-align: middle;
+      line-height: 1.02;
+    }
+    .report-table tbody td {
+      padding: 1px 2px;
+      vertical-align: middle;
+      border-bottom: none;
+      white-space: nowrap;
+      overflow: hidden;
+      height: auto;
+      min-height: 18px;
+      line-height: 1.08;
+    }
+    .report-table tbody td.col-name,
+    .report-table tbody td.col-dept {
+      white-space: normal;
+      overflow: visible;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      line-height: 1.08;
+    }
+
+    .report-table .col-code { width: 10.5%; }
+    .report-table .col-name { width: 12%; }
+    .report-table .col-dept { width: 12.7%; }
+    .report-table .col-date { width: 9.8%; }
+    .report-table .col-in { width: 8.9%; text-align: center; }
+    .report-table .col-out { width: 9.9%; text-align: center; }
+    .report-table .col-ot { width: 8.6%; text-align: center; }
+    .report-table .col-remarks { width: 27.6%; }
     
     /* Style Edit Langsung (Input Tembus Pandang) */
     .report-table input {
-      width: 100%; border: 1px solid transparent; background: transparent; border-radius: 4px;
-      font-family: inherit; font-size: inherit; color: inherit; padding: 2px 4px; margin: -2px -4px;
+      width: 100%; border: 1px solid transparent; background: transparent; border-radius: 2px;
+      font-family: inherit; font-size: inherit; color: inherit; padding: 1px 2px; margin: -1px -2px;
       text-align: inherit; outline: none; transition: background 0.2s, border 0.2s;
     }
     .report-table input:hover, .report-table input:focus {
       background: #f1f5f9; border-color: #cbd5e1; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
     }
     
-    .report-footer-box { margin-top: 4px; border-top: 2px solid var(--line); border-bottom: 2px solid var(--line); padding: 5px 0; font-size: 11px; display: flex; gap: 12px; align-items: center; }
+    .report-footer-box { margin-top: 4px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 3px 0; font-size: 9.6px; display: flex; gap: 10px; align-items: center; line-height: 1; }
     .report-version { position: absolute; left: 15mm; bottom: 11mm; font-size: 9px; color: #111; }
     
     .hidden { display: none !important; }
+
+
+    .search-box-wrap { position: relative; }
+    .search-suggest {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 0;
+      background: #fff;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      box-shadow: 0 12px 28px rgba(15,23,42,.12);
+      max-height: 240px;
+      overflow-y: auto;
+      z-index: 50;
+    }
+    .search-suggest.hidden { display: none !important; }
+    .search-suggest-item {
+      padding: 10px 12px;
+      cursor: pointer;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .search-suggest-item:last-child { border-bottom: none; }
+    .search-suggest-item:hover,
+    .search-suggest-item.active {
+      background: #eff6ff;
+    }
+    .search-suggest-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #0f172a;
+      line-height: 1.2;
+    }
+    .search-suggest-sub {
+      margin-top: 2px;
+      font-size: 11px;
+      color: #64748b;
+      line-height: 1.3;
+    }
+    .bulk-panel {
+      background:#f8fafc;
+      border:1px solid #cbd5e1;
+      border-radius:14px;
+      padding:12px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      overflow:visible;
+    }
+    .bulk-inline {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+    .bulk-hint {
+      font-size:11px;
+      color:#64748b;
+      line-height:1.45;
+      margin-top:2px;
+    }
+    .bulk-entry-grid {
+      display:grid;
+      grid-template-columns:minmax(96px,110px) minmax(0,1fr);
+      gap:10px;
+      align-items:end;
+    }
+    .bulk-field {
+      min-width:0;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .bulk-field-label {
+      font-size:10px;
+      font-weight:800;
+      color:#475569;
+      text-transform:uppercase;
+      letter-spacing:.04em;
+      line-height:1.2;
+    }
+    .bulk-entry-grid select,
+    .bulk-entry-grid input {
+      width:100%;
+      min-width:0;
+      height:40px;
+      padding:10px 12px;
+      font-size:13px;
+      border-radius:12px;
+    }
+    .bulk-entry-grid .search-box-wrap {
+      min-width:0;
+    }
+    .bulk-add-row {
+      display:flex;
+      justify-content:flex-end;
+      margin-top:2px;
+    }
+    .bulk-add-row button {
+      min-width:116px;
+      height:40px;
+      padding:0 16px;
+    }
+    .bulk-entry-list {
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-height:72px;
+      padding:10px;
+      border:1px dashed #cbd5e1;
+      border-radius:12px;
+      background:#fff;
+    }
+    .bulk-chip-empty {
+      font-size:11px;
+      color:#94a3b8;
+      align-self:center;
+      padding:10px 0;
+      text-align:center;
+      line-height:1.45;
+    }
+    .bulk-entry-row {
+      display:grid;
+      grid-template-columns:1fr auto;
+      grid-template-areas:
+        'meta remove'
+        'employee remove';
+      gap:8px 10px;
+      align-items:start;
+      padding:10px 12px;
+      border:1px solid #e2e8f0;
+      border-radius:14px;
+      background:#f8fafc;
+    }
+    .bulk-entry-meta {
+      grid-area:meta;
+      display:flex;
+      flex-wrap:wrap;
+      align-items:center;
+      gap:8px;
+      min-width:0;
+    }
+    .bulk-entry-index {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:34px;
+      height:24px;
+      padding:0 8px;
+      border-radius:999px;
+      background:#dbeafe;
+      color:#1d4ed8;
+      font-size:11px;
+      font-weight:800;
+      line-height:1;
+    }
+    .bulk-entry-period {
+      font-size:13px;
+      font-weight:800;
+      color:#0f172a;
+      line-height:1.2;
+      word-break:break-word;
+    }
+    .bulk-entry-employee {
+      grid-area:employee;
+      min-width:0;
+      font-size:12px;
+      color:#334155;
+      line-height:1.4;
+      word-break:break-word;
+    }
+    .bulk-entry-employee strong {
+      color:#0f172a;
+    }
+    .bulk-entry-remove {
+      grid-area:remove;
+      width:30px;
+      height:30px;
+      min-width:30px;
+      padding:0;
+      align-self:center;
+      border-radius:999px;
+      background:#fee2e2;
+      color:#b91c1c;
+      box-shadow:none;
+      font-size:14px;
+    }
+    .bulk-entry-remove:hover {
+      background:#fecaca;
+      transform:none;
+    }
+
 
     /* Toast Notification */
     .toast {
@@ -176,6 +440,197 @@
       background: #ffffff; display: flex; flex-direction: column; gap: 8px;
     }
     .upload-progress-card.hidden { display: none !important; }
+
+
+    .search-box-wrap { position: relative; }
+    .search-suggest {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 0;
+      background: #fff;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      box-shadow: 0 12px 28px rgba(15,23,42,.12);
+      max-height: 240px;
+      overflow-y: auto;
+      z-index: 50;
+    }
+    .search-suggest.hidden { display: none !important; }
+    .search-suggest-item {
+      padding: 10px 12px;
+      cursor: pointer;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .search-suggest-item:last-child { border-bottom: none; }
+    .search-suggest-item:hover,
+    .search-suggest-item.active {
+      background: #eff6ff;
+    }
+    .search-suggest-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #0f172a;
+      line-height: 1.2;
+    }
+    .search-suggest-sub {
+      margin-top: 2px;
+      font-size: 11px;
+      color: #64748b;
+      line-height: 1.3;
+    }
+    .bulk-panel {
+      background:#f8fafc;
+      border:1px solid #cbd5e1;
+      border-radius:14px;
+      padding:12px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      overflow:visible;
+    }
+    .bulk-inline {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+    .bulk-hint {
+      font-size:11px;
+      color:#64748b;
+      line-height:1.45;
+      margin-top:2px;
+    }
+    .bulk-entry-grid {
+      display:grid;
+      grid-template-columns:minmax(96px,110px) minmax(0,1fr);
+      gap:10px;
+      align-items:end;
+    }
+    .bulk-field {
+      min-width:0;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .bulk-field-label {
+      font-size:10px;
+      font-weight:800;
+      color:#475569;
+      text-transform:uppercase;
+      letter-spacing:.04em;
+      line-height:1.2;
+    }
+    .bulk-entry-grid select,
+    .bulk-entry-grid input {
+      width:100%;
+      min-width:0;
+      height:40px;
+      padding:10px 12px;
+      font-size:13px;
+      border-radius:12px;
+    }
+    .bulk-entry-grid .search-box-wrap {
+      min-width:0;
+    }
+    .bulk-add-row {
+      display:flex;
+      justify-content:flex-end;
+      margin-top:2px;
+    }
+    .bulk-add-row button {
+      min-width:116px;
+      height:40px;
+      padding:0 16px;
+    }
+    .bulk-entry-list {
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-height:72px;
+      padding:10px;
+      border:1px dashed #cbd5e1;
+      border-radius:12px;
+      background:#fff;
+    }
+    .bulk-chip-empty {
+      font-size:11px;
+      color:#94a3b8;
+      align-self:center;
+      padding:10px 0;
+      text-align:center;
+      line-height:1.45;
+    }
+    .bulk-entry-row {
+      display:grid;
+      grid-template-columns:1fr auto;
+      grid-template-areas:
+        'meta remove'
+        'employee remove';
+      gap:8px 10px;
+      align-items:start;
+      padding:10px 12px;
+      border:1px solid #e2e8f0;
+      border-radius:14px;
+      background:#f8fafc;
+    }
+    .bulk-entry-meta {
+      grid-area:meta;
+      display:flex;
+      flex-wrap:wrap;
+      align-items:center;
+      gap:8px;
+      min-width:0;
+    }
+    .bulk-entry-index {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:34px;
+      height:24px;
+      padding:0 8px;
+      border-radius:999px;
+      background:#dbeafe;
+      color:#1d4ed8;
+      font-size:11px;
+      font-weight:800;
+      line-height:1;
+    }
+    .bulk-entry-period {
+      font-size:13px;
+      font-weight:800;
+      color:#0f172a;
+      line-height:1.2;
+      word-break:break-word;
+    }
+    .bulk-entry-employee {
+      grid-area:employee;
+      min-width:0;
+      font-size:12px;
+      color:#334155;
+      line-height:1.4;
+      word-break:break-word;
+    }
+    .bulk-entry-employee strong {
+      color:#0f172a;
+    }
+    .bulk-entry-remove {
+      grid-area:remove;
+      width:30px;
+      height:30px;
+      min-width:30px;
+      padding:0;
+      align-self:center;
+      border-radius:999px;
+      background:#fee2e2;
+      color:#b91c1c;
+      box-shadow:none;
+      font-size:14px;
+    }
+    .bulk-entry-remove:hover {
+      background:#fecaca;
+      transform:none;
+    }
+
     .upload-progress-head { display:flex; justify-content:space-between; align-items:center; gap:8px; }
     .upload-progress-title { font-size: 12px; font-weight: 800; color: #166534; }
     .upload-progress-percent { font-size: 12px; font-weight: 800; color: #166534; }
@@ -188,12 +643,179 @@
     .upload-stat-label { font-size:10px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:.04em; }
     .upload-stat-value { font-size:13px; font-weight:800; color:#0f172a; margin-top:2px; }
 
+
+    .search-box-wrap { position: relative; }
+    .search-suggest {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      right: 0;
+      background: rgba(255,255,255,.98);
+      backdrop-filter: blur(10px);
+      border: 1px solid #dbe4ef;
+      border-radius: 14px;
+      box-shadow: 0 18px 36px rgba(15,23,42,.16);
+      max-height: 280px;
+      overflow-y: auto;
+      z-index: 80;
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity .16s ease, transform .16s ease, box-shadow .16s ease;
+    }
+    .search-suggest.hidden {
+      display: none !important;
+    }
+    .search-suggest-item {
+      padding: 10px 12px;
+      cursor: pointer;
+      border-bottom: 1px solid #eef2f7;
+      transition: background .14s ease, transform .14s ease;
+    }
+    .search-suggest-item:last-child { border-bottom: none; }
+    .search-suggest-item:hover,
+    .search-suggest-item.active {
+      background: #eef6ff;
+    }
+    .search-suggest-item.active {
+      box-shadow: inset 3px 0 0 #2563eb;
+    }
+    .search-suggest-row {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .search-suggest-code {
+      font-size:12px;
+      font-weight:800;
+      color:#1d4ed8;
+      letter-spacing:.02em;
+    }
+    .search-suggest-name {
+      font-size:13px;
+      font-weight:700;
+      color:#0f172a;
+      line-height:1.25;
+      flex:1;
+      min-width:0;
+    }
+    .search-suggest-sub {
+      margin-top:4px;
+      font-size:11px;
+      color:#64748b;
+      line-height:1.35;
+    }
+    .search-suggest-mark {
+      background: linear-gradient(180deg, #fde68a 0%, #fcd34d 100%);
+      color:#111827;
+      border-radius:5px;
+      padding:0 2px;
+      box-shadow: inset 0 -1px 0 rgba(0,0,0,.05);
+      font-weight:800;
+    }
+
+    .bulk-panel {
+      background:#f8fafc;
+      border:1px solid #cbd5e1;
+      border-radius:12px;
+      padding:12px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .bulk-inline {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+    .bulk-entry-grid {
+      display:grid;
+      grid-template-columns: 1fr 1.3fr auto;
+      gap:10px;
+      align-items:start;
+    }
+    .bulk-hint {
+      font-size:11px;
+      color:#64748b;
+      line-height:1.45;
+      margin-top:2px;
+    }
+    .bulk-entry-list {
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      min-height:56px;
+      padding:10px;
+      border:1px dashed #cbd5e1;
+      border-radius:12px;
+      background:#fff;
+    }
+    .bulk-chip-empty {
+      font-size:11px;
+      color:#94a3b8;
+      align-self:center;
+      padding:6px 0;
+    }
+    .bulk-entry-row {
+      display:grid;
+      grid-template-columns: 100px 100px minmax(0,1fr) 32px;
+      gap:8px;
+      align-items:center;
+      padding:8px 10px;
+      border:1px solid #e2e8f0;
+      border-radius:12px;
+      background:#f8fafc;
+    }
+    .bulk-entry-index,
+    .bulk-entry-period {
+      font-size:12px;
+      font-weight:800;
+      color:#0f172a;
+    }
+    .bulk-entry-employee {
+      min-width:0;
+      font-size:12px;
+      color:#334155;
+      line-height:1.35;
+    }
+    .bulk-entry-employee strong {
+      color:#0f172a;
+    }
+    .bulk-entry-remove {
+      width:30px;
+      height:30px;
+      min-width:30px;
+      padding:0;
+      border-radius:999px;
+      background:#fee2e2;
+      color:#b91c1c;
+      box-shadow:none;
+      font-size:14px;
+    }
+    .bulk-entry-remove:hover {
+      background:#fecaca;
+      transform:none;
+    }
+
+
     /* Responsif Layar Kecil */
     @media (max-width: 900px) {
       .app { flex-direction: column; overflow-y: auto; }
       .sidebar { width: 100%; min-width: 100%; border-right: none; border-bottom: 1px solid #e2e8f0; height: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.05); padding: 16px; }
       .main-stage { padding: 16px; overflow-y: visible; }
       .paper { transform-origin: top center; width: 210mm; }
+      .bulk-entry-grid {
+        grid-template-columns:1fr;
+      }
+      .bulk-add-row {
+        justify-content:stretch;
+      }
+      .bulk-add-row button {
+        width:100%;
+      }
+      .bulk-inline {
+        grid-template-columns:1fr;
+      }
     }
     
     /* Aturan Print */
@@ -206,7 +828,184 @@
       .report-version { position: fixed; left: 15mm; bottom: 8mm; }
       .report-table input { border: none !important; background: transparent !important; box-shadow: none !important; }
     }
-  </style>
+  
+    /* Bulk print panel final compact layout */
+    .bulk-panel {
+      overflow: visible;
+    }
+    .bulk-entry-grid {
+      display:grid !important;
+      grid-template-columns: 92px minmax(0, 1fr) 42px !important;
+      gap:8px !important;
+      align-items:end !important;
+    }
+    .bulk-field {
+      min-width:0;
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+    .bulk-field-label {
+      font-size:11px;
+      font-weight:800;
+      color:#334155;
+      text-transform:uppercase;
+      letter-spacing:.05em;
+      line-height:1.1;
+    }
+    #bulkEntryPeriod,
+    #bulkEmployeeInput {
+      width:100%;
+      min-width:0;
+      height:38px;
+      padding:8px 10px;
+      font-size:12px;
+      line-height:1.2;
+      border-radius:12px;
+    }
+    #bulkEmployeeInput::placeholder {
+      font-size:11px;
+    }
+    .bulk-icon-btn {
+      width:42px;
+      min-width:42px;
+      height:38px;
+      padding:0;
+      font-size:22px;
+      line-height:1;
+    }
+    .bulk-toolbar {
+      display:flex;
+      justify-content:flex-end;
+      margin-top:-2px;
+    }
+    .bulk-clear-btn {
+      width:36px;
+      min-width:36px;
+      height:32px;
+      padding:0;
+      border-radius:10px;
+      font-size:15px;
+      line-height:1;
+    }
+    .bulk-search-wrap .search-suggest {
+      left:0;
+      right:auto;
+      width:min(340px, calc(100vw - 40px));
+      max-width:none;
+      border-radius:12px;
+    }
+    .bulk-search-wrap .search-suggest-item {
+      padding:8px 10px;
+    }
+    .bulk-search-wrap .search-suggest-row {
+      display:grid;
+      grid-template-columns: 82px minmax(0, 1fr);
+      gap:8px;
+      align-items:start;
+      flex-wrap:nowrap;
+    }
+    .bulk-search-wrap .search-suggest-code {
+      font-size:11px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .bulk-search-wrap .search-suggest-name {
+      font-size:12px;
+      line-height:1.3;
+      overflow-wrap:anywhere;
+    }
+    .bulk-entry-list {
+      min-height:62px;
+      padding:0;
+      background:#fff;
+      overflow:hidden;
+    }
+    .bulk-list-table {
+      display:flex;
+      flex-direction:column;
+      width:100%;
+    }
+    .bulk-list-head,
+    .bulk-list-row {
+      display:grid;
+      grid-template-columns: 28px 88px minmax(0, 1fr) 24px;
+      gap:8px;
+      align-items:start;
+      padding:8px 10px;
+    }
+    .bulk-list-head {
+      background:#eef2f7;
+      border-bottom:1px solid #dbe5ef;
+      font-size:10px;
+      font-weight:800;
+      color:#475569;
+      text-transform:uppercase;
+      letter-spacing:.05em;
+    }
+    .bulk-list-row {
+      background:#fff;
+      border-bottom:1px solid #e2e8f0;
+      font-size:11px;
+    }
+    .bulk-list-row:last-child {
+      border-bottom:none;
+    }
+    .bulk-list-no,
+    .bulk-list-period {
+      font-weight:700;
+      color:#0f172a;
+      line-height:1.25;
+      word-break:break-word;
+    }
+    .bulk-list-employee {
+      min-width:0;
+      line-height:1.25;
+      word-break:break-word;
+    }
+    .bulk-list-code {
+      font-weight:700;
+      color:#0f172a;
+    }
+    .bulk-list-name {
+      margin-top:2px;
+      color:#475569;
+    }
+    .bulk-list-remove {
+      width:24px;
+      height:24px;
+      min-width:24px;
+      padding:0;
+      border-radius:999px;
+      background:#fee2e2;
+      color:#b91c1c;
+      box-shadow:none;
+      font-size:13px;
+      line-height:1;
+      align-self:center;
+      justify-self:end;
+    }
+    .bulk-list-remove:hover {
+      background:#fecaca;
+      transform:none;
+    }
+    @media (max-width: 900px) {
+      .bulk-entry-grid {
+        grid-template-columns: 88px minmax(0, 1fr) 38px !important;
+      }
+      .bulk-search-wrap .search-suggest {
+        width:min(320px, calc(100vw - 36px));
+      }
+      .bulk-list-head,
+      .bulk-list-row {
+        grid-template-columns: 26px 84px minmax(0, 1fr) 22px;
+        gap:6px;
+        padding:8px;
+      }
+    }
+
+</style>
 </head>
 <body>
   <div class="app">
@@ -216,8 +1015,8 @@
         <div class="header-logo">
           <img src="hoplun128.png" alt="Logo" onerror="this.style.display='none'">
           <div>
-            <h1 class="title">Absensi</h1>
-            <p class="subtitle">Auto Sync & Edit Cepat</p>
+            <h1 class="title">Cetak Time Record</h1>
+            <p class="subtitle">Attendance Bipo System</p>
           </div>
         </div>
         <button id="btnSettings" class="btn-settings" title="Pengaturan & Upload Database">⚙️</button>
@@ -247,46 +1046,46 @@
             </div>
             <div class="control-group">
               <label style="color:#1d4ed8;">Font Title</label>
-              <input id="titleFontInput" type="number" min="10" max="30" step="1" value="18" />
+              <input id="titleFontInput" type="number" min="10" max="30" step="0.1" value="14.4" />
             </div>
             <div class="control-group">
               <label style="color:#1d4ed8;">Font Meta Kiri/Kanan</label>
-              <input id="metaFontInput" type="number" min="8" max="18" step="1" value="11" />
+              <input id="metaFontInput" type="number" min="8" max="18" step="0.1" value="9.6" />
             </div>
             <div class="control-group">
               <label style="color:#1d4ed8;">Font Period</label>
-              <input id="periodFontInput" type="number" min="8" max="18" step="1" value="12" />
+              <input id="periodFontInput" type="number" min="8" max="18" step="0.1" value="9.6" />
             </div>
             <div class="control-group">
               <label style="color:#1d4ed8;">Font Range</label>
-              <input id="rangeFontInput" type="number" min="6" max="16" step="1" value="8" />
+              <input id="rangeFontInput" type="number" min="6" max="16" step="0.1" value="7.2" />
             </div>
             <div class="control-group">
               <label style="color:#1d4ed8;">Jarak Company → Title</label>
-              <input id="companyGapInput" type="number" min="0" max="20" step="1" value="2" />
+              <input id="companyGapInput" type="number" min="0" max="20" step="0.1" value="1" />
             </div>
             <div class="control-group">
-              <label style="color:#1d4ed8;">Jarak Title → Meta</label>
-              <input id="titleGapInput" type="number" min="0" max="20" step="1" value="6" />
+              <label style="color:#1d4ed8;">Jarak Title → Baris Tengah</label>
+              <input id="titleGapInput" type="number" min="0" max="20" step="0.1" value="7" />
             </div>
             <div class="control-group">
-              <label style="color:#1d4ed8;">Jarak Meta → Period</label>
-              <input id="metaGapInput" type="number" min="0" max="20" step="1" value="4" />
+              <label style="color:#1d4ed8;">Jarak Baris Tengah → Range</label>
+              <input id="metaGapInput" type="number" min="0" max="20" step="0.1" value="5" />
             </div>
             <div class="control-group">
-              <label style="color:#1d4ed8;">Jarak Period → Range</label>
-              <input id="periodGapInput" type="number" min="0" max="20" step="1" value="2" />
+              <label style="color:#1d4ed8;">Jarak tambahan Period</label>
+              <input id="periodGapInput" type="number" min="0" max="20" step="0.1" value="0" />
             </div>
             <div class="control-group">
               <label style="color:#1d4ed8;">Jarak Range → Tabel</label>
-              <input id="rangeBottomGapInput" type="number" min="0" max="24" step="1" value="10" />
+              <input id="rangeBottomGapInput" type="number" min="0" max="24" step="0.1" value="6" />
             </div>
           </div>
           <div class="layout-actions">
             <button id="btnApplyHeaderPreset" type="button" class="btn-light btn-xs">🖼️ Sesuaikan dengan gambar</button>
             <button id="btnResetHeaderLayout" type="button" class="btn-light btn-xs">↺ Reset Header</button>
           </div>
-          <div class="layout-help">Nilai bisa diubah sendiri. Perubahan langsung terlihat di preview dan disimpan di browser.</div>
+          <div class="layout-help">Default sudah disetel mendekati file contoh. Nilai tetap bisa diubah sendiri dan disimpan di browser.</div>
         </details>
 
         <div style="height:1px;background:#e2e8f0;margin:4px 0;"></div>
@@ -343,15 +1142,16 @@
       </div>
 
       <div class="control-group">
-        <label>Pilih Sheet (Periode Otomatis)</label>
+        <label>Pilih Periode</label>
         <select id="sheetSelect" disabled>
           <option value="">Memuat daftar sheet...</option>
         </select>
       </div>
       
-      <div class="control-group">
+      <div class="control-group search-box-wrap">
         <label>Cari No ID / Nama</label>
-        <input id="searchInput" type="search" placeholder="Ketik lalu pilih di bawah..." />
+        <input id="searchInput" type="search" placeholder="Ketik nama / ID, lalu pilih seperti pencarian Google..." autocomplete="off" />
+        <div id="searchSuggest" class="search-suggest hidden"></div>
       </div>
       
       <div class="control-group">
@@ -361,9 +1161,44 @@
         </select>
       </div>
 
+      <details class="bulk-panel">
+        <summary style="cursor:pointer;font-weight:800;color:#0f172a;outline:none;font-size:12px;display:flex;align-items:center;gap:6px;">
+          🗂️ Menu Cetak Banyak
+        </summary>
+        <div class="control-group" style="margin-top:8px;">
+          <label>Tambah ke List Cetak</label>
+          <div class="bulk-entry-grid">
+            <div class="bulk-field">
+              <div class="bulk-field-label">Periode</div>
+              <select id="bulkEntryPeriod"></select>
+            </div>
+            <div class="bulk-field">
+              <div class="bulk-field-label">No ID / Nama</div>
+              <div class="search-box-wrap bulk-search-wrap">
+                <input id="bulkEmployeeInput" type="search" placeholder="Ketik ID / Nama..." autocomplete="off" />
+                <div id="bulkEmployeeSuggest" class="search-suggest hidden"></div>
+              </div>
+            </div>
+            <button id="btnBulkAddEntry" type="button" class="btn-light bulk-icon-btn" title="Tambah ke list cetak" aria-label="Tambah ke list cetak">＋</button>
+          </div>
+          <div class="bulk-hint">Pilih periode, lalu ketik No ID / Nama.</div>
+        </div>
+        <div class="bulk-toolbar">
+          <button id="btnBulkClearEntries" type="button" class="btn-light bulk-clear-btn" title="Kosongkan list cetak" aria-label="Kosongkan list cetak">🧹</button>
+        </div>
+        <div class="control-group">
+          <label>List Cetak Banyak</label>
+          <div id="bulkEntryList" class="bulk-entry-list">
+            <div class="bulk-chip-empty">Belum ada item dalam list cetak.</div>
+          </div>
+          <div class="bulk-hint">Setelah semua item dimasukkan, klik Cetak Banyak. Hasil akan dibuat per file 1 ID_Nama dan diunduh dalam 1 file ZIP.</div>
+        </div>
+        <button id="btnBulkPdf" type="button" class="btn-dark">🖨️ Cetak Banyak</button>
+      </details>
+
       <div class="btn-col" style="margin-top:auto;">
-        <button id="btnSync" class="btn-light">🔄 Refresh Sheet</button>
-        <button id="btnResetCurrent" class="btn-light" style="color:#9a3412; border-color:#fdba74; background:#fff7ed;">↺ Batal Edit Lokal</button>
+        <button id="btnSync" class="btn-light">🔄 Refresh</button>
+        <button id="btnResetCurrent" class="btn-light" style="color:#9a3412; border-color:#fdba74; background:#fff7ed;">↺ Batal</button>
         <button id="btnPrint" class="btn-dark" title="Cetak ke Printer lalu Otomatis Download PDF">🖨️ Print & Download PDF</button>
       </div>
     </aside>
@@ -396,7 +1231,12 @@
       employeeOptions: [],
       sheetPeriod: { start: '', end: '' },
       sheetCache: new Map(),
-      headerLayout: null
+      headerLayout: null,
+      searchSuggestIndex: -1,
+      searchDebounceTimer: null,
+      bulkEntries: [],
+      bulkSuggestIndex: -1,
+      bulkEmployeeSearchCode: ''
     };
 
     const aliases = {
@@ -414,7 +1254,16 @@
     const el = {
       sheetSelect: document.getElementById('sheetSelect'),
       searchInput: document.getElementById('searchInput'),
+      searchSuggest: document.getElementById('searchSuggest'),
       employeeSelect: document.getElementById('employeeSelect'),
+      bulkEntryPeriod: document.getElementById('bulkEntryPeriod'),
+      bulkEmployeeInput: document.getElementById('bulkEmployeeInput'),
+      bulkEmployeeSuggest: document.getElementById('bulkEmployeeSuggest'),
+      bulkEntryList: document.getElementById('bulkEntryList'),
+      btnBulkAddEntry: document.getElementById('btnBulkAddEntry'),
+      btnBulkClearEntries: document.getElementById('btnBulkClearEntries'),
+      btnBulkPdf: document.getElementById('btnBulkPdf'),
+      btnBulkUseCurrentEmployee: document.getElementById('btnBulkUseCurrentEmployee'),
       systemCodeInput: document.getElementById('systemCodeInput'),
       versionInput: document.getElementById('versionInput'),
       btnSync: document.getElementById('btnSync'),
@@ -479,28 +1328,28 @@
 
     const HEADER_LAYOUT_DEFAULT = {
       companyFont: 12,
-      titleFont: 18,
-      metaFont: 11,
-      periodFont: 12,
-      rangeFont: 8,
-      companyGap: 2,
-      titleGap: 6,
-      metaGap: 4,
-      periodGap: 2,
-      rangeBottomGap: 10
+      titleFont: 14.4,
+      metaFont: 9.6,
+      periodFont: 9.6,
+      rangeFont: 7.2,
+      companyGap: 1,
+      titleGap: 7,
+      metaGap: 5,
+      periodGap: 0,
+      rangeBottomGap: 6
     };
 
     const HEADER_LAYOUT_IMAGE = {
       companyFont: 12,
-      titleFont: 17,
-      metaFont: 11,
-      periodFont: 12,
-      rangeFont: 7,
+      titleFont: 14.4,
+      metaFont: 9.6,
+      periodFont: 9.6,
+      rangeFont: 7.2,
       companyGap: 1,
-      titleGap: 4,
-      metaGap: 3,
-      periodGap: 1,
-      rangeBottomGap: 8
+      titleGap: 7,
+      metaGap: 5,
+      periodGap: 0,
+      rangeBottomGap: 6
     };
 
     function clampNumber(value, min, max, fallback) {
@@ -809,7 +1658,7 @@
       if (value === null || value === undefined) return '';
       if (typeof value === 'string') {
         const clean = value.trim();
-        if (!clean || clean.toLowerCase() === 'nan') return '';
+        if (!clean || clean.toLowerCase() === 'nan' || /^0(?:\.0+)?$/.test(clean)) return '';
         if (/^\d{1,2}:\d{2}(\+)?$/.test(clean)) {
           const plus = clean.endsWith('+') ? '+' : '';
           const [h, m] = clean.replace('+','').split(':').map(Number);
@@ -938,6 +1787,517 @@
       if (useAsSource) {
         appState.sourceRows = cloneRows(rows);
       }
+
+      updateBulkEmployeeOptions();
+    }
+
+    function updateBulkPeriodOptions(){
+      if (!el.bulkEntryPeriod) return;
+      const available = appState.sheetNames || [];
+      const currentValue = available.includes(el.bulkEntryPeriod.value) ? el.bulkEntryPeriod.value : '';
+      el.bulkEntryPeriod.innerHTML = available.map(name =>
+        `<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`
+      ).join('');
+      if (currentValue) {
+        el.bulkEntryPeriod.value = currentValue;
+      } else if (available[0]) {
+        el.bulkEntryPeriod.value = available[0];
+      }
+
+      const availableSet = new Set(available);
+      appState.bulkEntries = (appState.bulkEntries || []).filter(entry => availableSet.has(entry.period));
+      renderBulkEntryList();
+    }
+
+    function updateBulkEmployeeOptions(){
+      if (appState.bulkEmployeeSearchCode) {
+        const employee = (appState.employeeOptions || []).find(emp => emp.code === appState.bulkEmployeeSearchCode);
+        if (employee && el.bulkEmployeeInput) {
+          el.bulkEmployeeInput.value = `${employee.code} - ${employee.name}`;
+        }
+      }
+    }
+
+    function hideSearchSuggestions(){
+      appState.searchSuggestIndex = -1;
+      if (el.searchSuggest) {
+        el.searchSuggest.classList.add('hidden');
+        el.searchSuggest.innerHTML = '';
+      }
+    }
+
+    function hideBulkEmployeeSuggestions(){
+      appState.bulkSuggestIndex = -1;
+      if (el.bulkEmployeeSuggest) {
+        el.bulkEmployeeSuggest.classList.add('hidden');
+        el.bulkEmployeeSuggest.innerHTML = '';
+      }
+    }
+
+    function escapeRegExp(value){
+      return String(value || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    function buildHighlightRanges(textValue, term){
+      const source = String(textValue || '');
+      const lowerText = source.toLowerCase();
+      const tokens = String(term || '')
+        .trim()
+        .toLowerCase()
+        .split(/\s+/)
+        .filter(Boolean);
+
+      const ranges = [];
+
+      tokens.forEach(token => {
+        let fromIndex = 0;
+        while (token && fromIndex < lowerText.length) {
+          const foundAt = lowerText.indexOf(token, fromIndex);
+          if (foundAt === -1) break;
+          ranges.push([foundAt, foundAt + token.length]);
+          fromIndex = foundAt + token.length;
+        }
+      });
+
+      if (!ranges.length) {
+        const compact = String(term || '').replace(/\s+/g, '').toLowerCase();
+        let pointer = 0;
+        Array.from(compact).forEach(char => {
+          const foundAt = lowerText.indexOf(char, pointer);
+          if (foundAt !== -1) {
+            ranges.push([foundAt, foundAt + 1]);
+            pointer = foundAt + 1;
+          }
+        });
+      }
+
+      if (!ranges.length) return [];
+
+      ranges.sort((a,b) => a[0] - b[0]);
+      const merged = [ranges[0]];
+
+      for (let i = 1; i < ranges.length; i++) {
+        const current = ranges[i];
+        const prev = merged[merged.length - 1];
+        if (current[0] <= prev[1]) {
+          prev[1] = Math.max(prev[1], current[1]);
+        } else {
+          merged.push(current);
+        }
+      }
+
+      return merged;
+    }
+
+    function highlightSearchMatch(textValue, term){
+      const safeText = String(textValue || '');
+      const ranges = buildHighlightRanges(safeText, term);
+      if (!ranges.length) return escapeHtml(safeText);
+
+      let cursor = 0;
+      let html = '';
+
+      ranges.forEach(([start, end]) => {
+        if (cursor < start) html += escapeHtml(safeText.slice(cursor, start));
+        html += `<span class="search-suggest-mark">${escapeHtml(safeText.slice(start, end))}</span>`;
+        cursor = end;
+      });
+
+      if (cursor < safeText.length) html += escapeHtml(safeText.slice(cursor));
+      return html;
+    }
+
+    function renderSearchSuggestions(matches, term = ''){
+      if (!el.searchSuggest) return;
+      const keyword = String(term || '').trim();
+
+      if (!keyword) {
+        hideSearchSuggestions();
+        return;
+      }
+
+      const topMatches = matches.slice(0, 8);
+      if (!topMatches.length) {
+        el.searchSuggest.innerHTML = '<div class="search-suggest-item"><div class="search-suggest-row"><div class="search-suggest-name">Tidak ada hasil</div></div><div class="search-suggest-sub">Coba kata kunci lain.</div></div>';
+        el.searchSuggest.classList.remove('hidden');
+        return;
+      }
+
+      el.searchSuggest.innerHTML = topMatches.map((emp, idx) => {
+        const meta = appState.employeeMetaMap.get(emp.code) || { count: 0, start: '', end: '' };
+        const periodInfo = meta.start && meta.end
+          ? ` • ${formatDateDDMMYYYY(meta.start)} s/d ${formatDateDDMMYYYY(meta.end)}`
+          : '';
+        return `
+          <div class="search-suggest-item${idx === appState.searchSuggestIndex ? ' active' : ''}" data-code="${escapeHtml(emp.code)}">
+            <div class="search-suggest-row">
+              <div class="search-suggest-code">${highlightSearchMatch(emp.code, keyword)}</div>
+              <div class="search-suggest-name">${highlightSearchMatch(emp.name, keyword)}</div>
+            </div>
+            <div class="search-suggest-sub">${meta.count || 0} record${(meta.count || 0) > 1 ? 's' : ''}${periodInfo}</div>
+          </div>
+        `;
+      }).join('');
+      el.searchSuggest.classList.remove('hidden');
+    }
+
+    function renderBulkEmployeeSuggestions(term = ''){
+      if (!el.bulkEmployeeSuggest) return;
+      const keyword = String(term || '').trim();
+
+      if (!keyword) {
+        hideBulkEmployeeSuggestions();
+        return;
+      }
+
+      const matches = getEmployeeMatches(keyword).slice(0, 8);
+      if (!matches.length) {
+        el.bulkEmployeeSuggest.innerHTML = '<div class="search-suggest-item"><div class="search-suggest-row"><div class="search-suggest-name">Tidak ada hasil</div></div><div class="search-suggest-sub">Ketik No ID atau Nama lain.</div></div>';
+        el.bulkEmployeeSuggest.classList.remove('hidden');
+        return;
+      }
+
+      el.bulkEmployeeSuggest.innerHTML = matches.map((emp, idx) => `
+        <div class="search-suggest-item${idx === appState.bulkSuggestIndex ? ' active' : ''}" data-bulk-code="${escapeHtml(emp.code)}">
+          <div class="search-suggest-row">
+            <div class="search-suggest-code">${highlightSearchMatch(emp.code, keyword)}</div>
+            <div class="search-suggest-name">${highlightSearchMatch(emp.name, keyword)}</div>
+          </div>
+        </div>
+      `).join('');
+      el.bulkEmployeeSuggest.classList.remove('hidden');
+    }
+
+    function selectEmployeeByCode(code, updateInput = true){
+      if (!code) return;
+      const employee = (appState.employeeOptions || []).find(emp => emp.code === code);
+      appState.selectedCode = code;
+      if (updateInput && employee) {
+        el.searchInput.value = `${employee.code} - ${employee.name}`;
+      }
+      el.employeeSelect.value = code;
+      hideSearchSuggestions();
+      renderReport();
+    }
+
+    function selectBulkEmployeeByCode(code){
+      if (!code) return;
+      const employee = (appState.employeeOptions || []).find(emp => emp.code === code);
+      appState.bulkEmployeeSearchCode = code;
+      if (employee && el.bulkEmployeeInput) {
+        el.bulkEmployeeInput.value = `${employee.code} - ${employee.name}`;
+      }
+      hideBulkEmployeeSuggestions();
+    }
+
+    function resolveBulkEmployeeInput(){
+      const raw = String(el.bulkEmployeeInput?.value || '').trim();
+      if (!raw) return null;
+
+      if (appState.bulkEmployeeSearchCode) {
+        const employee = (appState.employeeOptions || []).find(emp => emp.code === appState.bulkEmployeeSearchCode);
+        if (employee) return { code: employee.code, name: employee.name };
+      }
+
+      const employee = (appState.employeeOptions || []).find(emp => {
+        const label = `${emp.code} - ${emp.name}`;
+        return normalizeSearchValue(emp.code) === normalizeSearchValue(raw)
+          || normalizeSearchValue(label) === normalizeSearchValue(raw)
+          || normalizeSearchValue(emp.name) === normalizeSearchValue(raw);
+      });
+
+      if (employee) {
+        return { code: employee.code, name: employee.name };
+      }
+
+      const parts = raw.split(' - ');
+      return {
+        code: String(parts[0] || '').trim(),
+        name: String(parts.slice(1).join(' - ') || '').trim()
+      };
+    }
+
+    function renderBulkEntryList(){
+      if (!el.bulkEntryList) return;
+
+      if (!appState.bulkEntries.length) {
+        el.bulkEntryList.innerHTML = '<div class="bulk-chip-empty">Belum ada item dalam list cetak.</div>';
+        return;
+      }
+
+      el.bulkEntryList.innerHTML = `
+        <div class="bulk-list-table">
+          <div class="bulk-list-head">
+            <div>No</div>
+            <div>Periode</div>
+            <div>ID / Nama</div>
+            <div></div>
+          </div>
+          ${appState.bulkEntries.map((entry, idx) => `
+            <div class="bulk-list-row" data-entry-id="${escapeHtml(entry.id)}">
+              <div class="bulk-list-no">${idx + 1}</div>
+              <div class="bulk-list-period">${escapeHtml(entry.period)}</div>
+              <div class="bulk-list-employee">
+                <div class="bulk-list-code">${escapeHtml(entry.code)}</div>
+                <div class="bulk-list-name">${escapeHtml(entry.name || '')}</div>
+              </div>
+              <button type="button" class="bulk-list-remove" data-remove-bulk-entry="${escapeHtml(entry.id)}" title="Hapus item">×</button>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+        function addBulkEntry(){
+      const period = String(el.bulkEntryPeriod?.value || '').trim();
+      const employee = resolveBulkEmployeeInput();
+
+      if (!period) {
+        showToast('Pilih dulu 1 periode.', 'warn');
+        return;
+      }
+      if (!employee || !employee.code) {
+        showToast('Ketik lalu pilih No ID / Nama yang akan dicetak.', 'warn');
+        return;
+      }
+
+      const duplicate = appState.bulkEntries.some(entry => entry.period === period && entry.code === employee.code);
+      if (duplicate) {
+        showToast('Pasangan periode dan karyawan itu sudah ada di list.', 'warn');
+        return;
+      }
+
+      appState.bulkEntries.push({
+        id: `entry_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+        period,
+        code: employee.code,
+        name: employee.name || ''
+      });
+
+      el.bulkEmployeeInput.value = '';
+      appState.bulkEmployeeSearchCode = '';
+      hideBulkEmployeeSuggestions();
+      renderBulkEntryList();
+      showToast(`Masuk ke list: ${employee.code} • ${period}`, 'success');
+    }
+
+    function removeBulkEntry(id){
+      appState.bulkEntries = appState.bulkEntries.filter(entry => entry.id !== id);
+      renderBulkEntryList();
+    }
+
+    function clearBulkEntries(){
+      appState.bulkEntries = [];
+      renderBulkEntryList();
+    }
+
+    function sanitizeFileName(value){
+      return String(value || '')
+        .replace(/[\\/:*?"<>|]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function buildUniqueRowKey(row){
+      return String(row.uniqueKey || buildUniqueKey(row));
+    }
+
+    function chunkRows(rows, size = 25){
+      const chunks = [];
+      for (let i = 0; i < rows.length; i += size) {
+        chunks.push(rows.slice(i, i + size));
+      }
+      return chunks;
+    }
+
+    async function exportElementToPdfBlob(element, filename){
+      return await html2pdf().set({
+        margin: [5, 5, 5, 5],
+        filename,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, logging: false },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      }).from(element).toPdf().outputPdf('blob');
+    }
+
+    function downloadBlob(blob, filename){
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement('a');
+      anchor.href = url;
+      anchor.download = filename;
+      document.body.appendChild(anchor);
+      anchor.click();
+      setTimeout(() => {
+        URL.revokeObjectURL(url);
+        document.body.removeChild(anchor);
+      }, 400);
+    }
+
+    async function getRowsForSheet(sheetName, forceRefresh = false){
+      if (!forceRefresh && appState.sheetCache.has(sheetName)) {
+        return cloneRows(appState.sheetCache.get(sheetName));
+      }
+
+      const url = `${WEB_APP_URL}?action=read&sheetName=${encodeURIComponent(sheetName)}`;
+      let payload = null;
+
+      try {
+        payload = await fetchJson(url);
+      } catch (_error) {
+        payload = await jsonp(url);
+      }
+
+      const rows = dedupeRows(parseApiPayload(payload));
+      appState.sheetCache.set(sheetName, cloneRows(rows));
+      return cloneRows(rows);
+    }
+
+    function buildReportPageHtml(rows, employeeCode, systemCode, version, pageNumber, totalPages){
+      if (!rows.length) return '';
+      const first = rows[0];
+      const dates = rows.map(r => parseToDate(r.clockDate)).filter(Boolean).sort((a,b) => a - b);
+      const start = dates.length ? formatDateDDMMYYYY(dates[0]) : '';
+      const end = dates.length ? formatDateDDMMYYYY(dates[dates.length - 1]) : '';
+      const generatedDate = formatGeneratedDate(new Date());
+      const headerStyle = buildHeaderStyleVars(appState.headerLayout);
+
+      const body = rows.map(row => `
+        <tr>
+          <td class="col-code">${escapeHtml(row.code)}</td>
+          <td class="col-name">${escapeHtml(row.name)}</td>
+          <td class="col-dept">${escapeHtml(row.department)}</td>
+          <td class="col-date">${escapeHtml(formatDateDDMMYYYY(row.clockDate))}</td>
+          <td class="col-in">${escapeHtml(row.clockIn || '')}</td>
+          <td class="col-out">${escapeHtml(row.clockOut || '')}</td>
+          <td class="col-ot">${escapeHtml(row.overtime || '0.0')}</td>
+          <td class="col-remarks">${escapeHtml(row.remarks || '')}</td>
+        </tr>
+      `).join('');
+
+      return `
+        <div class="paper bulk-paper">
+          <div class="report" style="padding: 0;">
+            <div class="report-header" style="${headerStyle}">
+              <div class="report-company">Hop Lun</div>
+              <div class="report-title">Report Attendance Worker</div>
+              <div class="report-meta-band">
+                <div class="report-meta-left">${escapeHtml(generatedDate)}</div>
+                <div class="report-period">Period: ${escapeHtml(start)} to ${escapeHtml(end)}. All Records</div>
+                <div class="report-meta-right">${escapeHtml(systemCode)} - Page ${pageNumber} of ${totalPages}</div>
+              </div>
+              <div class="report-range">Range: ((Employee Code='${escapeHtml(employeeCode)}'))</div>
+            </div>
+            <table class="report-table">
+              <thead>
+                <tr>
+                  <th class="col-code">Employee<br>Code</th>
+                  <th class="col-name">Employee<br>Name</th>
+                  <th class="col-dept">Department</th>
+                  <th class="col-date">Clock Date</th>
+                  <th class="col-in">Clock In</th>
+                  <th class="col-out">Clock Out</th>
+                  <th class="col-ot">Overtime</th>
+                  <th class="col-remarks">Remarks</th>
+                </tr>
+              </thead>
+              <tbody>${body}</tbody>
+            </table>
+            <div class="report-footer-box">
+              <strong>Record Count</strong>
+              <span>${rows.length}</span>
+            </div>
+            <div class="report-version">Version: ${escapeHtml(version)}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    async function downloadBulkPdf(){
+      const entries = (appState.bulkEntries || []).slice();
+      const systemCode = el.systemCodeInput.value.trim() || 'HRIDIN01';
+      const version = el.versionInput.value.trim() || '1.25.02.28';
+
+      if (!entries.length) {
+        showToast('Masukkan dulu item ke list cetak banyak.', 'warn');
+        return;
+      }
+      if (typeof JSZip === 'undefined') {
+        showToast('Library ZIP belum termuat. Coba refresh halaman.', 'error');
+        return;
+      }
+
+      showToast('Menyiapkan file cetak banyak...', 'info');
+
+      const groupedByEmployee = new Map();
+      entries.forEach(entry => {
+        if (!groupedByEmployee.has(entry.code)) {
+          groupedByEmployee.set(entry.code, { code: entry.code, name: entry.name || '', periods: [] });
+        }
+        const bucket = groupedByEmployee.get(entry.code);
+        if (entry.name && !bucket.name) bucket.name = entry.name;
+        if (!bucket.periods.includes(entry.period)) bucket.periods.push(entry.period);
+      });
+
+      const zip = new JSZip();
+      let fileCount = 0;
+      const groups = Array.from(groupedByEmployee.values()).sort((a,b) => a.code.localeCompare(b.code));
+
+      for (let index = 0; index < groups.length; index++) {
+        const group = groups[index];
+        showToast(`Membuat PDF ${index + 1}/${groups.length}: ${group.code}`, 'info');
+
+        const collectedRows = [];
+        const rowKeySet = new Set();
+
+        for (const period of group.periods) {
+          const rows = await getRowsForSheet(period, false);
+          rows.filter(row => String(row.code || '') === group.code).forEach(row => {
+            const key = buildUniqueRowKey(row);
+            if (rowKeySet.has(key)) return;
+            rowKeySet.add(key);
+            collectedRows.push({ ...row });
+          });
+        }
+
+        collectedRows.sort((a,b) => {
+          if (a.clockDate !== b.clockDate) return String(a.clockDate || '').localeCompare(String(b.clockDate || ''));
+          return String(a.clockIn || '').localeCompare(String(b.clockIn || ''));
+        });
+
+        if (!collectedRows.length) continue;
+        if (!group.name) group.name = String(collectedRows[0].name || '').trim();
+
+        const pageChunks = chunkRows(collectedRows, 25);
+        const container = document.createElement('div');
+        container.style.padding = '0';
+        container.style.background = '#fff';
+        container.innerHTML = pageChunks.map((chunk, pageIdx) =>
+          buildReportPageHtml(chunk, group.code, systemCode, version, pageIdx + 1, pageChunks.length)
+        ).join('<div style="page-break-after:always;"></div>');
+
+        document.body.appendChild(container);
+
+        try {
+          const safeName = sanitizeFileName(`${group.code}_${group.name || 'Tanpa Nama'}`) || group.code;
+          const pdfBlob = await exportElementToPdfBlob(container, `${safeName}.pdf`);
+          zip.file(`${safeName}.pdf`, pdfBlob);
+          fileCount += 1;
+        } finally {
+          document.body.removeChild(container);
+        }
+
+        await yieldToUI();
+      }
+
+      if (!fileCount) {
+        showToast('Tidak ada data yang cocok untuk list cetak tersebut.', 'warn');
+        return;
+      }
+
+      const zipBlob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE' });
+      const zipName = `Cetak_Banyak_${formatGeneratedDate(new Date()).replace(/[^0-9A-Za-z_-]+/g, '_')}.zip`;
+      downloadBlob(zipBlob, zipName);
+      showToast(`${fileCount} file PDF berhasil dibuat dalam ZIP.`, 'success');
     }
 
     function parseApiPayload(payload){
@@ -1030,6 +2390,7 @@
         appState.sheetNames = sheetsFound;
         el.sheetSelect.innerHTML = sheetsFound.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
         el.sheetSelect.disabled = false;
+        updateBulkPeriodOptions();
         
         // Coba pertahankan pilihan sheet sebelumnya jika ada
         if (appState.selectedSheet && sheetsFound.includes(appState.selectedSheet)) {
@@ -1270,42 +2631,72 @@ async function uploadExcelToGSheet() {
     el.btnUploadExcel.addEventListener('click', uploadExcelToGSheet);
     // ------------------------------------
 
+    function normalizeSearchValue(value){
+      return String(value || '').toLowerCase().replace(/\s+/g, ' ').trim();
+    }
+
     function getEmployeeMatches(term){
       const employees = appState.employeeOptions || [];
-      const clean = String(term || '').trim().toLowerCase();
-      if (!clean) return employees;
+      const clean = normalizeSearchValue(term);
+      if (!clean) return employees.slice(0, 50);
 
-      return employees.filter(emp =>
-        String(emp.code).toLowerCase().includes(clean) ||
-        String(emp.name).toLowerCase().includes(clean)
-      );
+      const tokens = clean.split(/\s+/).filter(Boolean);
+
+      return employees
+        .map(emp => {
+          const code = String(emp.code || '');
+          const name = String(emp.name || '');
+          const codeNorm = normalizeSearchValue(code);
+          const nameNorm = normalizeSearchValue(name);
+          const fullNorm = `${codeNorm} ${nameNorm}`.trim();
+          let score = 0;
+
+          if (codeNorm === clean) score += 1000;
+          if (codeNorm.startsWith(clean)) score += 700;
+          if (nameNorm.startsWith(clean)) score += 540;
+          if (fullNorm.includes(clean)) score += 420;
+
+          tokens.forEach(token => {
+            if (codeNorm.includes(token)) score += 160;
+            if (nameNorm.includes(token)) score += 140;
+          });
+
+          if (!score) return null;
+          return { ...emp, _score: score };
+        })
+        .filter(Boolean)
+        .sort((a,b) => (b._score - a._score) || String(a.code || '').localeCompare(String(b.code || '')))
+        .slice(0, 20);
     }
 
     function fillEmployeeSelect(matches){
       const current = appState.selectedCode;
       if (matches.length === 0) {
          el.employeeSelect.innerHTML = '<option value="">Tidak ada hasil</option>';
-         appState.selectedCode = '';
+         if (!el.searchInput.value.trim()) appState.selectedCode = '';
          return;
       }
 
       el.employeeSelect.innerHTML = '<option value="">Pilih Karyawan...</option>' +
         matches.map(emp => `<option value="${escapeHtml(emp.code)}">${escapeHtml(emp.code)} - ${escapeHtml(emp.name)}</option>`).join('');
-      
+
       if (matches.some(m => m.code === current)) {
         el.employeeSelect.value = current;
-      } else if (el.searchInput.value.trim() !== '') {
-        appState.selectedCode = matches[0].code;
-        el.employeeSelect.value = matches[0].code;
       } else {
-        appState.selectedCode = '';
+        el.employeeSelect.value = '';
       }
     }
 
     function applySearch(autoPreview = false){
       const matches = getEmployeeMatches(el.searchInput.value);
       fillEmployeeSelect(matches);
-      renderReport();
+      renderSearchSuggestions(matches, el.searchInput.value);
+
+      if (autoPreview && appState.selectedCode) {
+        renderReport();
+      } else if (!el.searchInput.value.trim() && !appState.selectedCode) {
+        renderReport();
+      }
     }
 
     function getSelectedRows(){
@@ -1338,8 +2729,12 @@ async function uploadExcelToGSheet() {
           <div class="report-header" style="${headerStyle}">
             <div class="report-company">Hop Lun</div>
             <div class="report-title">Report Attendance Worker</div>
-            <p class="report-period" style="margin-top:20px;color:#94a3b8;">Tidak ada data.</p>
-            <p class="report-range" style="color:#94a3b8;">Cari dan pilih ID Karyawan di panel kiri terlebih dahulu.</p>
+            <div class="report-meta-band">
+              <div class="report-meta-left">&nbsp;</div>
+              <div class="report-period" style="color:#94a3b8;">Tidak ada data.</div>
+              <div class="report-meta-right">&nbsp;</div>
+            </div>
+            <div class="report-range" style="color:#94a3b8;">Cari dan pilih ID Karyawan di panel kiri terlebih dahulu.</div>
           </div>
         `;
         return;
@@ -1359,10 +2754,10 @@ async function uploadExcelToGSheet() {
           <td class="col-name">${escapeHtml(row.name)}</td>
           <td class="col-dept">${escapeHtml(row.department)}</td>
           <td class="col-date">${escapeHtml(formatDateDDMMYYYY(row.clockDate))}</td>
-          <td class="col-in"><input type="text" data-field="clockIn" data-key="${escapeHtml(row.uniqueKey)}" value="${escapeHtml(row.clockIn)}" placeholder="-" /></td>
-          <td class="col-out"><input type="text" data-field="clockOut" data-key="${escapeHtml(row.uniqueKey)}" value="${escapeHtml(row.clockOut)}" placeholder="-" /></td>
+          <td class="col-in"><input type="text" data-field="clockIn" data-key="${escapeHtml(row.uniqueKey)}" value="${escapeHtml(row.clockIn)}" placeholder="" /></td>
+          <td class="col-out"><input type="text" data-field="clockOut" data-key="${escapeHtml(row.uniqueKey)}" value="${escapeHtml(row.clockOut)}" placeholder="" /></td>
           <td class="col-ot"><input type="text" data-field="overtime" data-key="${escapeHtml(row.uniqueKey)}" value="${escapeHtml(row.overtime)}" placeholder="0.0" /></td>
-          <td class="col-remarks"><input type="text" data-field="remarks" data-key="${escapeHtml(row.uniqueKey)}" value="${escapeHtml(row.remarks)}" placeholder="..." /></td>
+          <td class="col-remarks"><input type="text" data-field="remarks" data-key="${escapeHtml(row.uniqueKey)}" value="${escapeHtml(row.remarks)}" placeholder="" /></td>
         </tr>
       `).join('');
 
@@ -1370,12 +2765,12 @@ async function uploadExcelToGSheet() {
         <div class="report-header" style="${headerStyle}">
           <div class="report-company">Hop Lun</div>
           <div class="report-title">Report Attendance Worker</div>
-          <div class="report-meta-row">
-            <div>${escapeHtml(generatedDate)}</div>
-            <div>${escapeHtml(systemCode)} - Page 1 of 1</div>
+          <div class="report-meta-band">
+            <div class="report-meta-left">${escapeHtml(generatedDate)}</div>
+            <div class="report-period">Period: ${escapeHtml(start)} to ${escapeHtml(end)}. All Records</div>
+            <div class="report-meta-right">${escapeHtml(systemCode)} - Page 1 of 1</div>
           </div>
-          <p class="report-period">Period: ${escapeHtml(start)} to ${escapeHtml(end)}. All Records</p>
-          <p class="report-range">Range: ((Employee Code='${escapeHtml(first.code)}'))</p>
+          <div class="report-range">Range: ((Employee Code='${escapeHtml(first.code)}'))</div>
         </div>
         <table class="report-table">
           <thead>
@@ -1472,14 +2867,121 @@ async function uploadExcelToGSheet() {
     });
 
     el.searchInput.addEventListener('input', () => {
-      appState.selectedCode = '';
-      applySearch(true);
+      appState.searchSuggestIndex = -1;
+      clearTimeout(appState.searchDebounceTimer);
+      appState.searchDebounceTimer = setTimeout(() => {
+        applySearch(false);
+      }, 90);
+    });
+
+    el.searchInput.addEventListener('focus', () => {
+      if (el.searchInput.value.trim()) {
+        renderSearchSuggestions(getEmployeeMatches(el.searchInput.value), el.searchInput.value);
+      }
+    });
+
+    el.searchInput.addEventListener('keydown', (event) => {
+      const matches = getEmployeeMatches(el.searchInput.value).slice(0, 8);
+      if (!matches.length) {
+        if (event.key === 'Escape') hideSearchSuggestions();
+        return;
+      }
+
+      if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        appState.searchSuggestIndex = (appState.searchSuggestIndex + 1 + matches.length) % matches.length;
+        renderSearchSuggestions(matches, el.searchInput.value);
+      } else if (event.key === 'ArrowUp') {
+        event.preventDefault();
+        appState.searchSuggestIndex = (appState.searchSuggestIndex - 1 + matches.length) % matches.length;
+        renderSearchSuggestions(matches, el.searchInput.value);
+      } else if (event.key === 'Enter') {
+        event.preventDefault();
+        const idx = appState.searchSuggestIndex >= 0 ? appState.searchSuggestIndex : 0;
+        selectEmployeeByCode(matches[idx].code);
+      } else if (event.key === 'Escape') {
+        hideSearchSuggestions();
+      }
+    });
+
+    el.searchInput.addEventListener('blur', () => {
+      setTimeout(hideSearchSuggestions, 140);
+    });
+
+    el.searchSuggest.addEventListener('mousedown', (event) => {
+      const item = event.target.closest('.search-suggest-item[data-code]');
+      if (!item) return;
+      selectEmployeeByCode(item.dataset.code);
+    });
+
+    el.bulkEmployeeInput.addEventListener('input', () => {
+      appState.bulkSuggestIndex = -1;
+      appState.bulkEmployeeSearchCode = '';
+      renderBulkEmployeeSuggestions(el.bulkEmployeeInput.value);
+    });
+
+    el.bulkEmployeeInput.addEventListener('focus', () => {
+      if (el.bulkEmployeeInput.value.trim()) {
+        renderBulkEmployeeSuggestions(el.bulkEmployeeInput.value);
+      }
+    });
+
+    el.bulkEmployeeInput.addEventListener('keydown', (event) => {
+      const matches = getEmployeeMatches(el.bulkEmployeeInput.value).slice(0, 8);
+
+      if (event.key === 'ArrowDown' && matches.length) {
+        event.preventDefault();
+        appState.bulkSuggestIndex = (appState.bulkSuggestIndex + 1 + matches.length) % matches.length;
+        renderBulkEmployeeSuggestions(el.bulkEmployeeInput.value);
+      } else if (event.key === 'ArrowUp' && matches.length) {
+        event.preventDefault();
+        appState.bulkSuggestIndex = (appState.bulkSuggestIndex - 1 + matches.length) % matches.length;
+        renderBulkEmployeeSuggestions(el.bulkEmployeeInput.value);
+      } else if (event.key === 'Enter') {
+        event.preventDefault();
+        if (matches.length) {
+          const idx = appState.bulkSuggestIndex >= 0 ? appState.bulkSuggestIndex : 0;
+          selectBulkEmployeeByCode(matches[idx].code);
+        } else {
+          addBulkEntry();
+        }
+      } else if (event.key === 'Escape') {
+        hideBulkEmployeeSuggestions();
+      }
+    });
+
+    el.bulkEmployeeInput.addEventListener('blur', () => {
+      setTimeout(hideBulkEmployeeSuggestions, 140);
+    });
+
+    el.bulkEmployeeSuggest.addEventListener('mousedown', (event) => {
+      const item = event.target.closest('.search-suggest-item[data-bulk-code]');
+      if (!item) return;
+      selectBulkEmployeeByCode(item.dataset.bulkCode);
     });
 
     el.employeeSelect.addEventListener('change', () => {
-      appState.selectedCode = el.employeeSelect.value.trim();
-      renderReport();
+      const code = el.employeeSelect.value.trim();
+      if (!code) return;
+      selectEmployeeByCode(code, false);
     });
+
+    el.btnBulkAddEntry.addEventListener('click', addBulkEntry);
+
+    if (el.btnBulkClearEntries) {
+      el.btnBulkClearEntries.addEventListener('click', () => {
+        clearBulkEntries();
+        showToast('List cetak banyak dikosongkan.', 'success');
+      });
+    }
+
+    el.bulkEntryList.addEventListener('click', (event) => {
+      const button = event.target.closest('[data-remove-bulk-entry]');
+      if (!button) return;
+      removeBulkEntry(button.dataset.removeBulkEntry);
+    });
+
+    el.btnBulkPdf.addEventListener('click', downloadBulkPdf);
 
     el.systemCodeInput.addEventListener('input', renderReport);
     el.versionInput.addEventListener('input', renderReport);
@@ -1514,6 +3016,9 @@ async function uploadExcelToGSheet() {
     window.addEventListener('DOMContentLoaded', () => {
       setHeaderLayout(loadHeaderLayout(), false);
       resetUploadProgress();
+      hideSearchSuggestions();
+      updateBulkPeriodOptions();
+      updateBulkEmployeeOptions();
       renderReport();
       setTimeout(() => { loadAppAndSheets(); }, 300); 
     });
