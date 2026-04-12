@@ -155,6 +155,23 @@
     .toast.success { background: #15803d; }
     .toast.warn { background: #ca8a04; color: #fff; }
 
+    .upload-progress-card {
+      margin-top: 10px; padding: 12px; border: 1px solid #bbf7d0; border-radius: 12px;
+      background: #ffffff; display: flex; flex-direction: column; gap: 8px;
+    }
+    .upload-progress-card.hidden { display: none !important; }
+    .upload-progress-head { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+    .upload-progress-title { font-size: 12px; font-weight: 800; color: #166534; }
+    .upload-progress-percent { font-size: 12px; font-weight: 800; color: #166534; }
+    .progress-track { width: 100%; height: 10px; background: #dcfce7; border-radius: 999px; overflow: hidden; }
+    .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #22c55e 0%, #16a34a 100%); transition: width .2s ease; }
+    .upload-progress-stage { font-size: 12px; font-weight: 700; color: #166534; }
+    .upload-progress-detail { font-size: 11px; line-height: 1.45; color: #475569; min-height: 16px; }
+    .upload-stats { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+    .upload-stat { background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:8px; }
+    .upload-stat-label { font-size:10px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:.04em; }
+    .upload-stat-value { font-size:13px; font-weight:800; color:#0f172a; margin-top:2px; }
+
     /* Responsif Layar Kecil */
     @media (max-width: 900px) {
       .app { flex-direction: column; overflow-y: auto; }
@@ -187,7 +204,7 @@
             <p class="subtitle">Auto Sync & Edit Cepat</p>
           </div>
         </div>
-        <button id="btnSettings" class="btn-settings" title="Pengaturan Laporan">⚙️</button>
+        <button id="btnSettings" class="btn-settings" title="Pengaturan & Upload Database">⚙️</button>
       </div>
 
       <!-- PANEL PENGATURAN META (Tersembunyi by default) -->
@@ -200,25 +217,59 @@
           <label>Versi Footer</label>
           <input id="versionInput" type="text" value="1.25.02.28" />
         </div>
-      </div>
 
-      <!-- PANEL UPLOAD EXCEL (Baru) -->
-      <details class="settings-panel" style="background:#f0fdf4; border-color:#bbf7d0; margin-top:-8px;">
-        <summary style="cursor:pointer;font-weight:800;color:#166534;outline:none;font-size:12px;display:flex;align-items:center;gap:6px;">
-          📤 Upload Database Excel
-        </summary>
-        <div class="control-group" style="margin-top:10px;">
-          <label style="color:#15803d;">1. Pilih File (.xlsx / .xls)</label>
-          <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" style="border-color:#bbf7d0; padding:6px 10px; font-size:11px;" />
-        </div>
-        <div class="control-group">
-          <label style="color:#15803d;">2. Sheet GSheet Tujuan</label>
-          <input type="text" id="uploadSheetName" placeholder="Msl: AttBIPO-12-2025" style="border-color:#bbf7d0;" />
-        </div>
-        <button id="btnUploadExcel" class="btn-green" style="margin-top:4px;">
-          ⬆️ Upload ke Google Sheet
-        </button>
-      </details>
+        <div style="height:1px;background:#e2e8f0;margin:4px 0;"></div>
+
+        <details open style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:12px; padding:12px;">
+          <summary style="cursor:pointer;font-weight:800;color:#166534;outline:none;font-size:12px;display:flex;align-items:center;gap:6px;">
+            📤 Upload Database Excel
+          </summary>
+          <div class="control-group" style="margin-top:10px;">
+            <label style="color:#15803d;">1. Pilih File (.xlsx / .xls)</label>
+            <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" style="border-color:#bbf7d0; padding:6px 10px; font-size:11px;" />
+          </div>
+          <div class="control-group">
+            <label style="color:#15803d;">2. Nama Sheet Tujuan</label>
+            <input type="text" id="uploadSheetName" placeholder="Msl: AttBIPO-12-2025" style="border-color:#bbf7d0;" />
+            <div style="margin-top:6px;font-size:11px;color:#166534;line-height:1.45;">Jika nama sheet belum ada di Google Sheet, aplikasi akan meminta server membuat sheet baru otomatis.</div>
+          </div>
+          <button id="btnUploadExcel" class="btn-green" style="margin-top:4px;">
+            ⬆️ Upload ke Google Sheet
+          </button>
+          <div id="uploadProgressCard" class="upload-progress-card hidden">
+            <div class="upload-progress-head">
+              <div id="uploadProgressTitle" class="upload-progress-title">Progress Upload</div>
+              <div id="uploadProgressPercent" class="upload-progress-percent">0%</div>
+            </div>
+            <div class="progress-track">
+              <div id="uploadProgressBar" class="progress-fill"></div>
+            </div>
+            <div id="uploadProgressStage" class="upload-progress-stage">Menunggu file dipilih</div>
+            <div id="uploadProgressDetail" class="upload-progress-detail">Aplikasi akan menampilkan status baca file, parsing, validasi, dan kirim ke Google Sheet.</div>
+            <div class="upload-stats">
+              <div class="upload-stat">
+                <div class="upload-stat-label">Total Baris Excel</div>
+                <div id="statTotalRows" class="upload-stat-value">0</div>
+              </div>
+              <div class="upload-stat">
+                <div class="upload-stat-label">Siap Upload</div>
+                <div id="statReadyRows" class="upload-stat-value">0</div>
+              </div>
+              <div class="upload-stat">
+                <div class="upload-stat-label">Dilewati</div>
+                <div id="statSkippedRows" class="upload-stat-value">0</div>
+              </div>
+              <div class="upload-stat">
+                <div class="upload-stat-label">Duplikat Lokal</div>
+                <div id="statDuplicateRows" class="upload-stat-value">0</div>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:8px;font-size:11px;color:#166534;line-height:1.45;">
+            Jika browser memblokir request biasa, aplikasi akan otomatis mencoba mode kirim yang lebih kompatibel.
+          </div>
+        </details>
+      </div>
 
       <div class="control-group">
         <label>Pilih Sheet (Periode Otomatis)</label>
@@ -299,7 +350,17 @@
       // Upload Elements
       excelFileInput: document.getElementById('excelFileInput'),
       uploadSheetName: document.getElementById('uploadSheetName'),
-      btnUploadExcel: document.getElementById('btnUploadExcel')
+      btnUploadExcel: document.getElementById('btnUploadExcel'),
+      uploadProgressCard: document.getElementById('uploadProgressCard'),
+      uploadProgressTitle: document.getElementById('uploadProgressTitle'),
+      uploadProgressPercent: document.getElementById('uploadProgressPercent'),
+      uploadProgressBar: document.getElementById('uploadProgressBar'),
+      uploadProgressStage: document.getElementById('uploadProgressStage'),
+      uploadProgressDetail: document.getElementById('uploadProgressDetail'),
+      statTotalRows: document.getElementById('statTotalRows'),
+      statReadyRows: document.getElementById('statReadyRows'),
+      statSkippedRows: document.getElementById('statSkippedRows'),
+      statDuplicateRows: document.getElementById('statDuplicateRows')
     };
 
     // Toast Logic
@@ -312,6 +373,191 @@
       toastTimeout = setTimeout(() => {
         toast.classList.remove('show');
       }, 4000);
+    }
+
+    function formatNumber(num){
+      return Number(num || 0).toLocaleString('id-ID');
+    }
+
+    function sleep(ms){
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function yieldToUI(){
+      await new Promise(resolve => requestAnimationFrame(() => resolve()));
+    }
+
+    function resetUploadProgress() {
+      el.uploadProgressCard.classList.add('hidden');
+      el.uploadProgressBar.style.width = '0%';
+      el.uploadProgressPercent.textContent = '0%';
+      el.uploadProgressStage.textContent = 'Menunggu file dipilih';
+      el.uploadProgressDetail.textContent = 'Aplikasi akan menampilkan status baca file, parsing, validasi, dan kirim ke Google Sheet.';
+      el.statTotalRows.textContent = '0';
+      el.statReadyRows.textContent = '0';
+      el.statSkippedRows.textContent = '0';
+      el.statDuplicateRows.textContent = '0';
+    }
+
+    function setUploadBusy(isBusy, buttonLabel = '⬆️ Upload ke Google Sheet') {
+      el.btnUploadExcel.disabled = isBusy;
+      el.excelFileInput.disabled = isBusy;
+      el.uploadSheetName.disabled = isBusy;
+      el.btnUploadExcel.innerHTML = buttonLabel;
+    }
+
+    function setUploadProgress(percent, stage, detail = '', stats = {}) {
+      const safePercent = Math.max(0, Math.min(100, Math.round(percent)));
+      el.uploadProgressCard.classList.remove('hidden');
+      el.uploadProgressBar.style.width = `${safePercent}%`;
+      el.uploadProgressPercent.textContent = `${safePercent}%`;
+      if (stage) el.uploadProgressStage.textContent = stage;
+      if (detail !== undefined) el.uploadProgressDetail.textContent = detail;
+      if (stats.total !== undefined) el.statTotalRows.textContent = formatNumber(stats.total);
+      if (stats.ready !== undefined) el.statReadyRows.textContent = formatNumber(stats.ready);
+      if (stats.skipped !== undefined) el.statSkippedRows.textContent = formatNumber(stats.skipped);
+      if (stats.duplicates !== undefined) el.statDuplicateRows.textContent = formatNumber(stats.duplicates);
+    }
+
+    function buildUploadStats(totalRows, readyRows, skippedRows, duplicateRows) {
+      return { total: totalRows, ready: readyRows, skipped: skippedRows, duplicates: duplicateRows };
+    }
+
+    function parseJsonFromText(text) {
+      const raw = String(text || '').trim();
+
+      if (!raw) return { ok: true };
+
+      const lowerRaw = raw.toLowerCase();
+      if (lowerRaw.startsWith('<!doctype html') || lowerRaw.startsWith('<html') || lowerRaw.includes('<body')) {
+        throw new Error('Server mengembalikan HTML, bukan JSON. Cek deployment Google Apps Script dan izin akses Web App.');
+      }
+
+      let candidate = raw;
+      const firstBrace = raw.indexOf('{');
+      const lastBrace = raw.lastIndexOf('}');
+      if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+        candidate = raw.slice(firstBrace, lastBrace + 1);
+      }
+
+      let data = null;
+      try {
+        data = JSON.parse(candidate);
+      } catch (error) {
+        throw new Error('Respons server bukan JSON yang valid.');
+      }
+
+      if (data && data.ok === false && data.message) throw new Error(data.message);
+      if (data && data.error) throw new Error(data.error);
+      return data;
+    }
+
+    async function postPayloadWithFetch(payload, contentType = 'text/plain;charset=utf-8', useNoCors = false) {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 90000);
+
+      try {
+        const response = await fetch(WEB_APP_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': contentType },
+          body: JSON.stringify(payload),
+          signal: controller.signal,
+          redirect: 'follow',
+          mode: useNoCors ? 'no-cors' : 'cors'
+        });
+
+        if (useNoCors) {
+          return { ok: true, opaque: true, message: 'Request upload berhasil dikirim dalam mode kompatibel browser.' };
+        }
+
+        const responseText = await response.text();
+
+        if (!response.ok) {
+          const shortMessage = String(responseText || '').trim().slice(0, 160);
+          throw new Error(shortMessage ? `HTTP ${response.status}: ${shortMessage}` : `HTTP ${response.status}: Upload gagal.`);
+        }
+
+        return parseJsonFromText(responseText);
+      } catch (error) {
+        if (error && error.name === 'AbortError') {
+          throw new Error('Upload timeout.');
+        }
+        if (error instanceof TypeError || /Failed to fetch/i.test(String(error && error.message || ''))) {
+          throw new Error('BLOCKED_REQUEST');
+        }
+        throw error;
+      } finally {
+        clearTimeout(timeoutId);
+      }
+    }
+
+    async function verifyUploadAfterFallback(targetSheet) {
+      for (let attempt = 1; attempt <= 4; attempt++) {
+        await sleep(1200);
+        try {
+          await loadAppAndSheets();
+          if (appState.sheetNames.includes(targetSheet)) {
+            return true;
+          }
+        } catch (_error) {}
+      }
+      return false;
+    }
+
+    function uploadPayloadWithProgress(payload, onProgress) {
+      const payloadText = JSON.stringify(payload);
+      const totalBytes = Math.max(payloadText.length, 1);
+
+      return new Promise(async (resolve, reject) => {
+        let simulatedBytes = Math.max(Math.round(totalBytes * 0.08), 1024);
+        if (typeof onProgress === 'function') {
+          onProgress(Math.min(simulatedBytes, totalBytes), totalBytes);
+        }
+
+        const ticker = setInterval(() => {
+          simulatedBytes = Math.min(
+            simulatedBytes + Math.max(Math.round(totalBytes * 0.07), 2048),
+            Math.max(Math.round(totalBytes * 0.9), simulatedBytes)
+          );
+          if (typeof onProgress === 'function') {
+            onProgress(Math.min(simulatedBytes, totalBytes), totalBytes);
+          }
+        }, 220);
+
+        try {
+          let result = null;
+
+          try {
+            result = await postPayloadWithFetch(payload, 'text/plain;charset=utf-8');
+          } catch (firstError) {
+            if (String(firstError.message || '') === 'BLOCKED_REQUEST') {
+              result = await postPayloadWithFetch(payload, 'text/plain;charset=utf-8', true);
+            } else {
+              try {
+                result = await postPayloadWithFetch(payload, 'application/json;charset=utf-8');
+              } catch (secondError) {
+                if (String(secondError.message || '') === 'BLOCKED_REQUEST') {
+                  result = await postPayloadWithFetch(payload, 'text/plain;charset=utf-8', true);
+                } else {
+                  throw secondError;
+                }
+              }
+            }
+          }
+
+          clearInterval(ticker);
+          if (typeof onProgress === 'function') {
+            onProgress(totalBytes, totalBytes);
+          }
+          resolve(result);
+        } catch (error) {
+          clearInterval(ticker);
+          reject(error.message === 'BLOCKED_REQUEST'
+            ? new Error('Koneksi upload gagal karena browser memblokir request ke Apps Script.')
+            : error
+          );
+        }
+      });
     }
 
     function escapeHtml(value){
@@ -594,90 +840,169 @@
     }
 
     // --- FITUR UPLOAD EXCEL KE GSHEET ---
-    
+
+    function makeSafeSheetName(name){
+      const cleaned = String(name || '')
+        .replace(/[\\\/\?\*\[\]:]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+      return cleaned.slice(0, 95) || `Upload-${new Date().getFullYear()}`;
+    }
+
     // Auto-fill nama sheet berdasarkan nama file
     el.excelFileInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
       if(file && !el.uploadSheetName.value.trim()) {
-        // Hilangkan ekstensi file .xlsx / .xls
         const nameWithoutExt = file.name.replace(/\.[^/.]+$/, "");
-        el.uploadSheetName.value = nameWithoutExt;
+        el.uploadSheetName.value = makeSafeSheetName(nameWithoutExt);
       }
     });
 
-    async function uploadExcelToGSheet() {
+
+async function uploadExcelToGSheet() {
       const file = el.excelFileInput.files[0];
       const targetSheet = el.uploadSheetName.value.trim();
+      const targetSheetExists = appState.sheetNames.includes(targetSheet);
 
       if (!file) return showToast('Pilih file Excel terlebih dahulu!', 'warn');
       if (!targetSheet) return showToast('Isi nama sheet tujuan!', 'warn');
 
-      el.btnUploadExcel.disabled = true;
-      el.btnUploadExcel.innerHTML = '⏳ Sedang Membaca...';
+      setUploadBusy(true, '⏳ Menyiapkan Upload...');
+      setUploadProgress(0, 'Mulai proses upload', `File: ${file.name}`, buildUploadStats(0, 0, 0, 0));
 
       const reader = new FileReader();
+
+      reader.onprogress = (event) => {
+        if (!event.lengthComputable) return;
+        const readPercent = Math.round((event.loaded / event.total) * 15);
+        setUploadProgress(readPercent, 'Membaca file Excel', `${formatNumber(event.loaded)} / ${formatNumber(event.total)} byte terbaca`, buildUploadStats(0, 0, 0, 0));
+      };
+
       reader.onload = async function(e) {
         try {
+          setUploadBusy(true, '🧠 Parsing Excel...');
+          setUploadProgress(18, 'Membaca workbook', 'Sheet sedang diproses ke format aplikasi...', buildUploadStats(0, 0, 0, 0));
+          await yieldToUI();
+
           const data = new Uint8Array(e.target.result);
-          // Baca Workbook
-          const workbook = XLSX.read(data, {type: 'array'});
+          const workbook = XLSX.read(data, { type: 'array' });
           const firstSheetName = workbook.SheetNames[0];
           const worksheet = workbook.Sheets[firstSheetName];
-          
-          // Konversi ke JSON
-          const excelRows = XLSX.utils.sheet_to_json(worksheet, {defval: ""});
-          if (!excelRows.length) throw new Error("File Excel kosong (Tidak ada data baris).");
+          const excelRows = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
 
-          showToast(`Mempersiapkan ${excelRows.length} data...`, 'info');
-          el.btnUploadExcel.innerHTML = '🚀 Mengirim ke GSheet...';
+          if (!excelRows.length) throw new Error('File Excel kosong (Tidak ada data baris).');
 
-          // Format ke bentuk baku yang dikenali Apps Script (doPost)
-          const payloadRows = excelRows.map(raw => {
-            const norm = normalizeRow(raw, targetSheet);
-            norm.sourceFile = file.name; // Tag file sumber
-            norm.uniqueKey = buildUniqueKey(norm); // Refresh Key
-            return norm;
-          }).filter(r => r.code); // Hanya ambil baris yang ada ID Karyawan-nya
+          setUploadProgress(28, 'Validasi struktur file', `Sheet aktif: ${firstSheetName}`, buildUploadStats(excelRows.length, 0, 0, 0));
+          showToast(`Mempersiapkan ${excelRows.length.toLocaleString('id-ID')} data...`, 'info');
+          await yieldToUI();
+
+          const payloadRows = [];
+          const uniqueKeys = new Set();
+          let skippedRows = 0;
+          let duplicateRows = 0;
+          const normalizeChunkSize = 400;
+
+          for (let start = 0; start < excelRows.length; start += normalizeChunkSize) {
+            const batch = excelRows.slice(start, start + normalizeChunkSize);
+            for (const raw of batch) {
+              const norm = normalizeRow(raw, targetSheet);
+              norm.sourceFile = file.name;
+              norm.uniqueKey = buildUniqueKey(norm);
+
+              if (!norm.code) {
+                skippedRows += 1;
+                continue;
+              }
+
+              if (uniqueKeys.has(norm.uniqueKey)) {
+                duplicateRows += 1;
+                continue;
+              }
+
+              uniqueKeys.add(norm.uniqueKey);
+              payloadRows.push(norm);
+            }
+
+            const processed = Math.min(start + batch.length, excelRows.length);
+            const normalizePercent = 28 + Math.round((processed / excelRows.length) * 40);
+            setUploadProgress(
+              normalizePercent,
+              'Normalisasi data Excel',
+              `Memproses ${formatNumber(processed)} dari ${formatNumber(excelRows.length)} baris`,
+              buildUploadStats(excelRows.length, payloadRows.length, skippedRows, duplicateRows)
+            );
+            await yieldToUI();
+          }
+
+          if (!payloadRows.length) {
+            throw new Error('Tidak ada data valid untuk diupload. Pastikan kolom ID karyawan terisi.');
+          }
+
+          setUploadBusy(true, '📦 Menyusun Payload...');
+          setUploadProgress(72, targetSheetExists ? 'Finalisasi data upload' : 'Menyiapkan sheet baru', targetSheetExists ? `Siap kirim ${formatNumber(payloadRows.length)} baris ke sheet ${targetSheet}` : `Sheet ${targetSheet} belum ada. Aplikasi akan meminta server membuat sheet baru otomatis.`, buildUploadStats(excelRows.length, payloadRows.length, skippedRows, duplicateRows));
+          await yieldToUI();
+          await sleep(80);
 
           const payload = {
             sheetName: targetSheet,
-            mode: 'replace_period', // atau 'dedupe'
-            rows: payloadRows
+            mode: 'replace_period',
+            rows: payloadRows,
+            createSheetIfMissing: true,
+            autoCreateSheet: true,
+            createTargetSheet: true
           };
 
-          // Kirim POST ke Apps Script
-          const response = await fetch(WEB_APP_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/plain' }, // Menghindari preflight CORS
-            body: JSON.stringify(payload)
+          setUploadBusy(true, targetSheetExists ? '🚀 Mengirim ke Google Sheet...' : '🆕 Membuat sheet & upload...');
+          const result = await uploadPayloadWithProgress(payload, (loaded, total) => {
+            if (!total) return;
+            const uploadPercent = 78 + Math.round((loaded / total) * 20);
+            setUploadProgress(
+              uploadPercent,
+              targetSheetExists ? 'Upload ke Google Sheet' : 'Membuat sheet baru & upload',
+              `${formatNumber(loaded)} / ${formatNumber(total)} byte terkirim`,
+              buildUploadStats(excelRows.length, payloadRows.length, skippedRows, duplicateRows)
+            );
           });
 
-          const result = await response.json();
-          
+          setUploadProgress(99, 'Sinkronisasi akhir', targetSheetExists ? 'Aplikasi sedang memverifikasi hasil upload...' : `Aplikasi sedang memverifikasi pembuatan sheet ${targetSheet} dan hasil upload...`, buildUploadStats(excelRows.length, payloadRows.length, skippedRows, duplicateRows));
+
           if (result.ok) {
-            showToast(`Upload Sukses! ${result.inserted || payloadRows.length} baris masuk.`, 'success');
-            // Bersihkan form
             el.excelFileInput.value = '';
-            // Refresh list Dropdown Sheet dan data
             appState.selectedSheet = targetSheet;
-            loadAppAndSheets(); 
+
+            if (result.opaque) {
+              setUploadProgress(99, 'Mode kompatibel browser aktif', targetSheetExists ? 'Request biasa diblokir browser. Upload dikirim ulang dengan mode kompatibel dan sedang diverifikasi...' : `Request biasa diblokir browser. Aplikasi mencoba membuat sheet ${targetSheet} dan upload dengan mode kompatibel...`, buildUploadStats(excelRows.length, payloadRows.length, skippedRows, duplicateRows));
+              const verified = await verifyUploadAfterFallback(targetSheet);
+              if (verified) {
+                setUploadProgress(100, 'Upload selesai', targetSheetExists ? `Request berhasil dikirim. Silakan cek sheet ${targetSheet} pada daftar sebelah kiri.` : `Sheet ${targetSheet} berhasil dibuat atau ditemukan, lalu upload dikirim. Silakan cek daftar sheet di sebelah kiri.`, buildUploadStats(excelRows.length, payloadRows.length, skippedRows, duplicateRows));
+                showToast(targetSheetExists ? 'Upload dikirim dalam mode kompatibel browser. Sheet berhasil dimuat ulang.' : `Sheet ${targetSheet} berhasil dibuat/dimuat ulang dalam mode kompatibel browser.`, 'success');
+              } else {
+                setUploadProgress(100, 'Upload kemungkinan terkirim', targetSheetExists ? 'Browser memblokir pembacaan respons server, tetapi request upload sudah dikirim. Tekan Refresh Sheet beberapa detik lagi untuk verifikasi.' : `Browser memblokir pembacaan respons server. Request membuat sheet ${targetSheet} dan upload sudah dikirim. Tekan Refresh Sheet beberapa detik lagi untuk verifikasi.`, buildUploadStats(excelRows.length, payloadRows.length, skippedRows, duplicateRows));
+                showToast(targetSheetExists ? 'Request upload terkirim, tetapi respons server tidak bisa dibaca browser. Tekan Refresh Sheet untuk cek hasilnya.' : `Request buat sheet ${targetSheet} dan upload terkirim. Tekan Refresh Sheet untuk cek hasilnya.`, 'warn');
+              }
+            } else {
+              const inserted = result.inserted || payloadRows.length;
+              setUploadProgress(100, 'Upload selesai', targetSheetExists ? `${formatNumber(inserted)} baris berhasil masuk ke Google Sheet` : `Sheet ${targetSheet} siap dipakai. ${formatNumber(inserted)} baris berhasil masuk ke Google Sheet`, buildUploadStats(excelRows.length, payloadRows.length, skippedRows, duplicateRows));
+              showToast(targetSheetExists ? `Upload Sukses! ${inserted.toLocaleString('id-ID')} baris masuk.` : `Sheet ${targetSheet} berhasil dibuat. ${inserted.toLocaleString('id-ID')} baris masuk.`, 'success');
+              await loadAppAndSheets();
+            }
           } else {
-            throw new Error(result.message || "Gagal menyimpan ke Sheet.");
+            throw new Error(result.message || 'Gagal menyimpan ke Sheet.');
           }
 
         } catch (err) {
           console.error(err);
+          setUploadProgress(100, 'Upload gagal', err.message, { });
           showToast(`Upload Gagal: ${err.message}`, 'error');
         } finally {
-          el.btnUploadExcel.disabled = false;
-          el.btnUploadExcel.innerHTML = '⬆️ Upload ke Google Sheet';
+          setUploadBusy(false);
         }
       };
 
       reader.onerror = () => {
+        setUploadBusy(false);
+        setUploadProgress(100, 'Gagal membaca file', 'Browser tidak bisa membaca file dari komputer.', buildUploadStats(0, 0, 0, 0));
         showToast('Gagal membaca file dari komputer.', 'error');
-        el.btnUploadExcel.disabled = false;
-        el.btnUploadExcel.innerHTML = '⬆️ Upload ke Google Sheet';
       };
 
       reader.readAsArrayBuffer(file);
@@ -894,6 +1219,7 @@
     el.versionInput.addEventListener('input', renderReport);
 
     window.addEventListener('DOMContentLoaded', () => {
+      resetUploadProgress();
       setTimeout(() => { loadAppAndSheets(); }, 300); 
     });
 
