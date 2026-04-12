@@ -318,7 +318,13 @@
       sourceRows: [],
       workingRows: [],
       selectedCode: '',
-      selectedSheet: ''
+      selectedSheet: '',
+      rowMapByKey: new Map(),
+      employeeRowsMap: new Map(),
+      employeeMetaMap: new Map(),
+      employeeOptions: [],
+      sheetPeriod: { start: '', end: '' },
+      sheetCache: new Map()
     };
 
     const aliases = {
@@ -661,7 +667,7 @@
       const map = new Map();
       rows.forEach(raw => {
         const row = normalizeRow(raw);
-        if (!row.code && !row.name) return; 
+        if (!row.code && !row.name) return;
         if (!map.has(row.uniqueKey)) map.set(row.uniqueKey, row);
       });
       return Array.from(map.values()).sort((a,b) => {
@@ -669,6 +675,70 @@
         if (a.clockDate !== b.clockDate) return a.clockDate.localeCompare(b.clockDate);
         return a.clockIn.localeCompare(b.clockIn);
       });
+    }
+
+    function cloneRows(rows){
+      return rows.map(row => ({ ...row }));
+    }
+
+    function buildFastIndexes(rows){
+      const rowMapByKey = new Map();
+      const employeeRowsMap = new Map();
+      const employeeMetaMap = new Map();
+      const employeeIdentityMap = new Map();
+      let sheetStart = '';
+      let sheetEnd = '';
+
+      for (const row of rows) {
+        rowMapByKey.set(row.uniqueKey, row);
+
+        if (row.clockDate) {
+          if (!sheetStart || row.clockDate < sheetStart) sheetStart = row.clockDate;
+          if (!sheetEnd || row.clockDate > sheetEnd) sheetEnd = row.clockDate;
+        }
+
+        if (!row.code) continue;
+
+        if (!employeeRowsMap.has(row.code)) {
+          employeeRowsMap.set(row.code, []);
+          employeeMetaMap.set(row.code, { start: '', end: '', count: 0 });
+          employeeIdentityMap.set(row.code, { code: row.code, name: row.name || '' });
+        }
+
+        employeeRowsMap.get(row.code).push(row);
+        const meta = employeeMetaMap.get(row.code);
+        meta.count += 1;
+
+        if (row.clockDate) {
+          if (!meta.start || row.clockDate < meta.start) meta.start = row.clockDate;
+          if (!meta.end || row.clockDate > meta.end) meta.end = row.clockDate;
+        }
+      }
+
+      const employeeOptions = Array.from(employeeIdentityMap.values())
+        .sort((a,b) => a.code.localeCompare(b.code));
+
+      return {
+        rowMapByKey,
+        employeeRowsMap,
+        employeeMetaMap,
+        employeeOptions,
+        sheetPeriod: { start: sheetStart, end: sheetEnd }
+      };
+    }
+
+    function applyIndexedState(rows, useAsSource = false){
+      const indexes = buildFastIndexes(rows);
+      appState.workingRows = rows;
+      appState.rowMapByKey = indexes.rowMapByKey;
+      appState.employeeRowsMap = indexes.employeeRowsMap;
+      appState.employeeMetaMap = indexes.employeeMetaMap;
+      appState.employeeOptions = indexes.employeeOptions;
+      appState.sheetPeriod = indexes.sheetPeriod;
+
+      if (useAsSource) {
+        appState.sourceRows = cloneRows(rows);
+      }
     }
 
     function parseApiPayload(payload){
@@ -770,65 +840,55 @@
           appState.selectedSheet = sheetsFound[0];
         }
         
-        syncFromGSheet();
+        syncFromGSheet(false);
       } else {
         showToast('Gagal memuat nama Sheet. Cek koneksi.', 'error');
       }
     }
 
-    async function syncFromGSheet(){
+    async function syncFromGSheet(forceRefresh = false){
       const sheetName = el.sheetSelect.value.trim();
       if(!sheetName) return;
 
       appState.selectedSheet = sheetName;
-      const queries = [
-        `${WEB_APP_URL}?action=read&sheetName=${encodeURIComponent(sheetName)}`,
-        `${WEB_APP_URL}?mode=read&sheetName=${encodeURIComponent(sheetName)}`,
-        `${WEB_APP_URL}?sheetName=${encodeURIComponent(sheetName)}`,
-        `${WEB_APP_URL}`
-      ];
+
+      if (!forceRefresh && appState.sheetCache.has(sheetName)) {
+        const cachedRows = cloneRows(appState.sheetCache.get(sheetName));
+        applyIndexedState(cachedRows, false);
+        applySearch(true);
+        showToast(`Sheet ${sheetName} dibuka dari cache lokal.`, 'success');
+        return;
+      }
+
+      const url = `${WEB_APP_URL}?action=read&sheetName=${encodeURIComponent(sheetName)}`;
 
       showToast(`Mengambil data: ${sheetName}...`, 'info');
       el.btnSync.disabled = true;
       el.sheetSelect.disabled = true;
 
       try {
-        let rows = [];
-        let firstErrorMsg = '';
-        let successFetch = false;
+        let payload = null;
 
-        for (const url of queries) {
-          try {
-            const payload = await fetchJson(url);
-            successFetch = true;
-            rows = parseApiPayload(payload);
-            break; 
-          } catch (error) { if (!firstErrorMsg) firstErrorMsg = error.message; }
+        try {
+          payload = await fetchJson(url);
+        } catch (_error) {
+          payload = await jsonp(url);
         }
 
-        if (!successFetch && !firstErrorMsg.includes('Execute as') && !firstErrorMsg.includes('Login')) {
-          for (const url of queries) {
-            try {
-              const payload = await jsonp(url);
-              successFetch = true;
-              rows = parseApiPayload(payload);
-              break;
-            } catch (error) { if (!firstErrorMsg) firstErrorMsg = error.message; }
-          }
-        }
-
-        if (!successFetch) throw new Error(firstErrorMsg || 'Gagal menghubungi server Apps Script.');
-
+        const rows = parseApiPayload(payload);
         const normalized = dedupeRows(rows);
-        appState.sourceRows = JSON.parse(JSON.stringify(normalized));
-        appState.workingRows = JSON.parse(JSON.stringify(normalized));
-        
+
+        appState.sheetCache.set(sheetName, cloneRows(normalized));
+        applyIndexedState(cloneRows(normalized), true);
         applySearch(true);
 
         if (normalized.length === 0) {
           showToast(`Sheet "${sheetName}" kosong.`, 'warn');
         } else {
-          showToast(`Sinkron selesai! ${normalized.length.toLocaleString('id-ID')} baris diambil.`, 'success');
+          const periodText = appState.sheetPeriod.start && appState.sheetPeriod.end
+            ? ` | Periode ${formatDateDDMMYYYY(appState.sheetPeriod.start)} s/d ${formatDateDDMMYYYY(appState.sheetPeriod.end)}`
+            : '';
+          showToast(`Sinkron selesai! ${normalized.length.toLocaleString('id-ID')} baris diambil${periodText}.`, 'success');
         }
 
       } catch (error) {
@@ -969,6 +1029,7 @@ async function uploadExcelToGSheet() {
           if (result.ok) {
             el.excelFileInput.value = '';
             appState.selectedSheet = targetSheet;
+            appState.sheetCache.delete(targetSheet);
 
             if (result.opaque) {
               setUploadProgress(99, 'Mode kompatibel browser aktif', targetSheetExists ? 'Request biasa diblokir browser. Upload dikirim ulang dengan mode kompatibel dan sedang diverifikasi...' : `Request biasa diblokir browser. Aplikasi mencoba membuat sheet ${targetSheet} dan upload dengan mode kompatibel...`, buildUploadStats(excelRows.length, payloadRows.length, skippedRows, duplicateRows));
@@ -1011,14 +1072,14 @@ async function uploadExcelToGSheet() {
     // ------------------------------------
 
     function getEmployeeMatches(term){
-      const employees = [...new Map(appState.workingRows.map(row => [row.code, row])).values()];
+      const employees = appState.employeeOptions || [];
       const clean = String(term || '').trim().toLowerCase();
-      if (!clean) return employees.sort((a,b) => a.code.localeCompare(b.code));
-      
+      if (!clean) return employees;
+
       return employees.filter(emp =>
         String(emp.code).toLowerCase().includes(clean) ||
         String(emp.name).toLowerCase().includes(clean)
-      ).sort((a,b) => a.code.localeCompare(b.code));
+      );
     }
 
     function fillEmployeeSelect(matches){
@@ -1050,9 +1111,7 @@ async function uploadExcelToGSheet() {
 
     function getSelectedRows(){
       if (!appState.selectedCode) return [];
-      return appState.workingRows
-               .filter(r => r.code === appState.selectedCode)
-               .sort((a,b) => a.clockDate.localeCompare(b.clockDate));
+      return appState.employeeRowsMap.get(appState.selectedCode) || [];
     }
 
     // Tangkap event Edit Langsung dari Kertas
@@ -1061,7 +1120,7 @@ async function uploadExcelToGSheet() {
         const key = event.target.dataset.key;
         const field = event.target.dataset.field;
         const value = event.target.value;
-        const row = appState.workingRows.find(item => item.uniqueKey === key);
+        const row = appState.rowMapByKey.get(key);
         if (row) {
           row[field] = field === 'overtime' ? String(value).trim() : value;
         }
@@ -1085,9 +1144,9 @@ async function uploadExcelToGSheet() {
       }
 
       const first = rows[0];
-      const dates = rows.map(r => parseToDate(r.clockDate)).filter(Boolean).sort((a,b) => a - b);
-      const start = dates.length ? formatDateDDMMYYYY(dates[0]) : '';
-      const end = dates.length ? formatDateDDMMYYYY(dates[dates.length - 1]) : '';
+      const employeeMeta = appState.employeeMetaMap.get(appState.selectedCode) || { start: '', end: '' };
+      const start = employeeMeta.start ? formatDateDDMMYYYY(employeeMeta.start) : '';
+      const end = employeeMeta.end ? formatDateDDMMYYYY(employeeMeta.end) : '';
       const generatedDate = formatGeneratedDate(new Date());
 
       // Render Langsung Input Box di dalam TD untuk Edit Cepat
@@ -1139,11 +1198,13 @@ async function uploadExcelToGSheet() {
       const currentRows = getSelectedRows();
       if (!currentRows.length) return;
       const keys = new Set(currentRows.map(r => r.uniqueKey));
-      appState.workingRows = appState.workingRows.map(row => {
+      const sourceMap = new Map(appState.sourceRows.map(row => [row.uniqueKey, row]));
+      const restoredRows = appState.workingRows.map(row => {
         if (!keys.has(row.uniqueKey)) return row;
-        const original = appState.sourceRows.find(src => src.uniqueKey === row.uniqueKey);
-        return original ? JSON.parse(JSON.stringify(original)) : row;
+        const original = sourceMap.get(row.uniqueKey);
+        return original ? { ...original } : row;
       });
+      applyIndexedState(restoredRows, false);
       renderReport();
       showToast('Edit dibatalkan. Kembali ke data Sheet.', 'success');
     }
@@ -1184,7 +1245,7 @@ async function uploadExcelToGSheet() {
       el.settingsPanel.classList.toggle('hidden');
     });
 
-    el.btnSync.addEventListener('click', syncFromGSheet);
+    el.btnSync.addEventListener('click', () => syncFromGSheet(true));
     
     // Logic gabungan: Print Kertas kemudian langsung Download PDF setelah jendela dialog tertutup
     el.btnPrint.addEventListener('click', () => {
@@ -1202,7 +1263,7 @@ async function uploadExcelToGSheet() {
     el.sheetSelect.addEventListener('change', () => {
       appState.selectedCode = '';
       appState.selectedSheet = el.sheetSelect.value;
-      syncFromGSheet();
+      syncFromGSheet(true);
     });
 
     el.searchInput.addEventListener('input', () => {
