@@ -4,88 +4,246 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Attendance Worker Report - Sync GSheet</title>
+  <link rel="icon" type="image/png" href="./time.png" />
   <style>
     :root{
-      --bg:#eef2f7;
-      --card:#ffffff;
-      --text:#111827;
-      --muted:#64748b;
-      --line:#111111;
-      --soft:#dbe3ee;
-      --accent:#0f172a;
-      --accent-2:#1d4ed8;
-      --success:#14532d;
-      --danger:#7f1d1d;
-      --warning:#92400e;
-      --shadow:0 18px 45px rgba(15, 23, 42, .12);
-      --radius:18px;
-      --font: Arial, Helvetica, sans-serif;
+      --bg: #07111f;
+      --bg-soft: #0b172a;
+      --panel: rgba(255,255,255,.9);
+      --panel-strong: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --line: #dbe4f0;
+      --line-strong: #c9d6e6;
+      --primary: #4f46e5;
+      --primary-2: #7c3aed;
+      --success: #15803d;
+      --danger: #b91c1c;
+      --warning: #b45309;
+      --shadow-lg: 0 28px 90px rgba(15, 23, 42, .28);
+      --shadow-md: 0 18px 45px rgba(15, 23, 42, .12);
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
+      --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
     *{box-sizing:border-box}
-    html,body{margin:0;padding:0;font-family:var(--font);background:var(--bg);color:var(--text)}
-    body{padding:20px}
-    .app{max-width:1500px;margin:0 auto;display:grid;gap:18px}
-    .panel{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid rgba(15,23,42,.06);overflow:hidden}
-    .toolbar{padding:18px 20px 20px;display:grid;gap:14px}
-    .toolbar-top{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;flex-wrap:wrap}
-    .title{margin:0;font-size:28px;font-weight:800;letter-spacing:.2px}
-    .subtitle{margin:6px 0 0;color:var(--muted);font-size:13px;line-height:1.5;max-width:900px}
-    .note-inline{font-size:12px;color:var(--muted);line-height:1.5}
-    .grid-4{display:grid;grid-template-columns:2fr 1.2fr 1fr 1fr;gap:12px}
-    .grid-3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px}
-    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    label{display:block;font-size:12px;font-weight:700;color:#334155;margin-bottom:6px}
-    input[type="text"],input[type="search"],select,textarea{
-      width:100%;padding:11px 12px;border:1px solid #cbd5e1;border-radius:12px;
-      font:inherit;background:#fff;color:var(--text);outline:none
+    html,body{margin:0;padding:0;font-family:var(--font);color:var(--text);background:
+      radial-gradient(circle at top left, rgba(124,58,237,.22), transparent 28%),
+      radial-gradient(circle at top right, rgba(79,70,229,.22), transparent 24%),
+      linear-gradient(180deg, var(--bg) 0%, var(--bg-soft) 100%);
+      min-height:100%;}
+    body{padding:24px}
+    img{max-width:100%;display:block}
+    button,input,select,textarea{font:inherit}
+
+    .shell{max-width:1550px;margin:0 auto;display:grid;gap:18px}
+    .glass{
+      background:linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.86));
+      backdrop-filter: blur(18px);
+      border:1px solid rgba(255,255,255,.5);
+      box-shadow:var(--shadow-lg);
+      border-radius:var(--radius-xl);
+      overflow:hidden;
     }
-    input:focus,select:focus,textarea:focus{border-color:#94a3b8;box-shadow:0 0 0 3px rgba(148,163,184,.2)}
-    textarea{min-height:70px;resize:vertical}
-    .help{display:block;margin-top:6px;color:var(--muted);font-size:11px;line-height:1.5}
+
+    .hero{
+      position:relative;
+      padding:24px;
+      color:#fff;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(196,181,253,.32), transparent 32%),
+        radial-gradient(circle at 100% 0%, rgba(96,165,250,.24), transparent 24%),
+        linear-gradient(135deg, rgba(79,70,229,.92), rgba(91,33,182,.9));
+      border-radius:32px;
+      box-shadow:var(--shadow-lg);
+      overflow:hidden;
+    }
+    .hero::after{
+      content:"";
+      position:absolute;
+      inset:auto -8% -60% auto;
+      width:360px;
+      height:360px;
+      border-radius:50%;
+      background:rgba(255,255,255,.08);
+      filter:blur(10px);
+    }
+    .hero-top{
+      position:relative;
+      z-index:1;
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:20px;
+      flex-wrap:wrap;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:16px;
+    }
+    .brand-logo{
+      width:70px;
+      height:70px;
+      border-radius:22px;
+      background:rgba(255,255,255,.18);
+      border:1px solid rgba(255,255,255,.28);
+      padding:8px;
+      box-shadow:0 10px 30px rgba(0,0,0,.14);
+    }
+    .brand-title{margin:0;font-size:30px;font-weight:800;letter-spacing:.01em}
+    .brand-subtitle{margin:8px 0 0;font-size:14px;line-height:1.65;max-width:820px;color:rgba(255,255,255,.88)}
+    .hero-badge{
+      padding:12px 14px;
+      border-radius:18px;
+      background:rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.2);
+      font-size:12px;
+      line-height:1.6;
+      min-width:260px;
+    }
+
+    .toolbar{padding:22px;display:grid;gap:16px}
+    .grid-4,.grid-3,.grid-2,.stats{display:grid;gap:14px}
+    .grid-4{grid-template-columns:2fr 1.2fr 1fr 1fr}
+    .grid-3{grid-template-columns:2fr 1fr 1fr}
+    .grid-2{grid-template-columns:1fr 1fr}
+    .stats{grid-template-columns:repeat(4,1fr)}
+
+    label{display:flex;align-items:center;gap:8px;margin-bottom:7px;font-size:12px;font-weight:800;color:#334155;letter-spacing:.02em}
+    .field{
+      position:relative;
+      border-radius:18px;
+      background:linear-gradient(180deg, #fff, #f8fbff);
+      border:1px solid var(--line);
+      box-shadow:0 8px 24px rgba(15,23,42,.05);
+      padding:4px;
+    }
+    input[type="text"],input[type="search"],select,textarea{
+      width:100%;
+      padding:13px 14px;
+      border:0;
+      border-radius:14px;
+      background:transparent;
+      color:var(--text);
+      outline:none;
+    }
+    textarea{min-height:78px;resize:vertical}
+    .field:focus-within{
+      border-color:rgba(79,70,229,.42);
+      box-shadow:0 0 0 4px rgba(79,70,229,.12), 0 12px 30px rgba(79,70,229,.12);
+    }
+    .help{display:block;margin-top:8px;font-size:11px;line-height:1.55;color:var(--muted)}
+    details.inline-help{
+      margin-top:8px;
+      padding:12px 14px;
+      border:1px solid #c7d2fe;
+      border-radius:16px;
+      background:linear-gradient(180deg, #eef2ff, #faf5ff);
+      color:#312e81;
+      font-size:11px;
+    }
+    details.inline-help summary{cursor:pointer;font-weight:800}
     .btn-row{display:flex;gap:10px;flex-wrap:wrap}
     button{
-      appearance:none;border:0;border-radius:14px;padding:12px 16px;font:inherit;font-weight:700;
-      cursor:pointer;transition:transform .15s ease, box-shadow .15s ease, opacity .15s ease
+      appearance:none;
+      border:0;
+      cursor:pointer;
+      border-radius:16px;
+      padding:12px 16px;
+      font-weight:800;
+      letter-spacing:.01em;
+      transition:transform .16s ease, box-shadow .16s ease, opacity .16s ease, background .16s ease;
     }
     button:hover{transform:translateY(-1px)}
-    button:disabled{opacity:.55;cursor:not-allowed;transform:none}
-    .btn-dark{background:var(--accent);color:#fff;box-shadow:0 12px 24px rgba(15,23,42,.18)}
-    .btn-blue{background:var(--accent-2);color:#fff;box-shadow:0 12px 24px rgba(29,78,216,.18)}
-    .btn-light{background:#f8fafc;color:#0f172a;border:1px solid #cbd5e1}
-    .btn-warn{background:#fff7ed;color:#9a3412;border:1px solid #fdba74}
-    .status{padding:12px 14px;border-radius:14px;background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;font-size:12px;line-height:1.55;white-space:pre-line}
-    .status.success{background:#f0fdf4;border-color:#bbf7d0;color:var(--success)}
-    .status.error{background:#fef2f2;border-color:#fecaca;color:var(--danger)}
-    .status.warn{background:#fff7ed;border-color:#fed7aa;color:var(--warning)}
-    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-    .stat{background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;padding:12px}
-    .stat-value{font-size:22px;font-weight:800;line-height:1.1;margin-bottom:4px}
-    .stat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:700}
-    .editor-panel{padding:18px 20px;display:grid;gap:14px}
-    .section-title{margin:0;font-size:14px;font-weight:800;color:#0f172a;text-transform:uppercase;letter-spacing:.06em}
-    .match-row{display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px}
-    .editor-shell{border:1px solid #dbe3ee;border-radius:16px;overflow:auto;background:#fff}
-    .editor-table{width:100%;border-collapse:collapse;min-width:980px;font-size:12px}
-    .editor-table th,.editor-table td{border-bottom:1px solid #e5e7eb;padding:8px 9px;vertical-align:middle}
-    .editor-table th{background:#f8fafc;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.05em}
-    .editor-table input{padding:8px 9px;border-radius:10px;font-size:12px;width:100%}
-    .badge{display:inline-flex;align-items:center;padding:5px 10px;border-radius:999px;font-size:11px;font-weight:700}
-    .badge.info{background:#e0ecff;color:#1d4ed8}
-    .badge.ok{background:#dcfce7;color:#166534}
-    .badge.gray{background:#e5e7eb;color:#374151}
-    .preview-topbar{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:18px 20px;border-bottom:1px solid #e5e7eb}
-    .preview-meta{font-size:12px;color:var(--muted);line-height:1.55}
-    .preview-stage{padding:28px;background:linear-gradient(180deg, #e9edf4 0%, #eef2f7 100%);overflow:auto}
-    .paper{width:210mm;min-height:297mm;margin:0 auto;background:#fff;color:#111;box-shadow:0 24px 60px rgba(15,23,42,.15);padding:22mm 15mm 18mm;position:relative}
+    button:disabled{opacity:.6;cursor:not-allowed;transform:none}
+    .btn-primary{color:#fff;background:linear-gradient(135deg, var(--primary), var(--primary-2));box-shadow:0 14px 30px rgba(79,70,229,.28)}
+    .btn-dark{color:#fff;background:linear-gradient(135deg, #111827, #1f2937);box-shadow:0 14px 30px rgba(15,23,42,.2)}
+    .btn-light{color:#0f172a;background:#f8fafc;border:1px solid #dbe4f0}
+    .btn-warn{color:#9a3412;background:#fff7ed;border:1px solid #fdba74}
+
+    .status{
+      padding:14px 16px;
+      border-radius:18px;
+      border:1px solid #bfdbfe;
+      background:linear-gradient(180deg, #eff6ff, #f8fbff);
+      color:#1d4ed8;
+      font-size:12px;
+      line-height:1.65;
+      white-space:pre-line;
+    }
+    .status.success{background:linear-gradient(180deg,#f0fdf4,#f7fee7);border-color:#bbf7d0;color:var(--success)}
+    .status.error{background:linear-gradient(180deg,#fef2f2,#fff7f7);border-color:#fecaca;color:var(--danger)}
+    .status.warn{background:linear-gradient(180deg,#fff7ed,#fffbeb);border-color:#fed7aa;color:var(--warning)}
+
+    .stat{
+      padding:16px;
+      border-radius:20px;
+      background:linear-gradient(180deg, #fff, #f8fbff);
+      border:1px solid var(--line);
+      box-shadow:0 12px 28px rgba(15,23,42,.06);
+    }
+    .stat-value{font-size:24px;font-weight:800;line-height:1.1;margin-bottom:5px}
+    .stat-label{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+
+    .section{padding:22px;display:grid;gap:16px}
+    .section-top{display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap}
+    .section-title{margin:0;font-size:14px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:#0f172a}
+    .badge{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;font-size:12px;font-weight:800;border:1px solid transparent}
+    .badge.gray{background:#eef2f7;color:#475569;border-color:#dbe4f0}
+    .badge.ok{background:#dcfce7;color:#166534;border-color:#bbf7d0}
+    .empty-box{
+      padding:20px;
+      border:1px dashed #cbd5e1;
+      border-radius:20px;
+      background:linear-gradient(180deg, #f8fafc, #ffffff);
+      color:#475569;
+      font-size:13px;
+      line-height:1.7;
+    }
+
+    .editor-shell{border:1px solid #dbe4f0;border-radius:22px;overflow:auto;background:#fff;box-shadow:0 12px 30px rgba(15,23,42,.05)}
+    .editor-table{width:100%;min-width:980px;border-collapse:collapse;font-size:12px}
+    .editor-table th,.editor-table td{padding:10px 12px;border-bottom:1px solid #edf2f7;vertical-align:middle}
+    .editor-table th{position:sticky;top:0;background:#f8fbff;text-align:left;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#475569;z-index:1}
+    .editor-table tbody tr:hover{background:#fafbff}
+    .editor-table td .field{padding:2px;border-radius:14px}
+    .editor-table input{padding:10px 11px;border-radius:12px}
+
+    .preview-topbar{padding:22px 22px 18px;border-bottom:1px solid rgba(219,228,240,.8);display:flex;justify-content:space-between;align-items:flex-start;gap:18px;flex-wrap:wrap}
+    .preview-title{margin:0 0 4px;font-size:22px;font-weight:900;color:#0f172a}
+    .preview-meta{font-size:12px;line-height:1.65;color:var(--muted)}
+    .preview-stage{
+      padding:30px;
+      overflow:auto;
+      background:
+        radial-gradient(circle at top left, rgba(124,58,237,.08), transparent 25%),
+        radial-gradient(circle at bottom right, rgba(79,70,229,.08), transparent 26%),
+        linear-gradient(180deg, #eef3fb 0%, #f7faff 100%);
+    }
+    .paper{
+      width:210mm;
+      min-height:297mm;
+      margin:0 auto;
+      background:#fff;
+      color:#111;
+      box-shadow:0 30px 80px rgba(15,23,42,.18);
+      border-radius:10px;
+      padding:22mm 15mm 18mm;
+      position:relative;
+    }
+
     .report{width:100%;font-family:Arial, Helvetica, sans-serif;color:#111}
     .report-company{text-align:center;font-size:12px;font-weight:700;margin-bottom:8px}
     .report-title{text-align:center;font-size:20px;font-weight:800;margin:0 0 10px}
     .report-period{text-align:center;font-size:12px;font-weight:700;margin:0 0 4px}
     .report-range{text-align:center;font-size:9px;font-weight:700;margin:0 0 12px}
-    .report-meta-row{display:flex;justify-content:space-between;align-items:flex-end;font-size:11px;margin-bottom:14px}
+    .report-meta-row{display:flex;justify-content:space-between;align-items:flex-end;font-size:11px;margin-bottom:14px;gap:10px}
     .report-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:11px}
-    .report-table thead th{text-align:left;font-size:10px;padding:3px 3px 4px;font-weight:800;border-top:2px solid var(--line);border-bottom:2px solid var(--line);vertical-align:bottom}
+    .report-table thead th{text-align:left;font-size:10px;padding:3px 3px 4px;font-weight:800;border-top:2px solid #111;border-bottom:2px solid #111;vertical-align:bottom}
     .report-table tbody td{padding:3px 3px;vertical-align:top;border-bottom:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;height:23px}
     .report-table .col-code{width:11%}
     .report-table .col-name{width:13%}
@@ -95,128 +253,158 @@
     .report-table .col-out{width:9%}
     .report-table .col-ot{width:8.5%;text-align:center}
     .report-table .col-remarks{width:18%}
-    .report-footer-box{margin-top:4px;border-top:2px solid var(--line);border-bottom:2px solid var(--line);padding:5px 0;font-size:11px;display:flex;gap:12px;align-items:center}
+    .report-footer-box{margin-top:4px;border-top:2px solid #111;border-bottom:2px solid #111;padding:5px 0;font-size:11px;display:flex;gap:12px;align-items:center}
     .report-version{position:absolute;left:15mm;bottom:11mm;font-size:9px;color:#111}
-    .empty-box{padding:18px;border:1px dashed #cbd5e1;border-radius:16px;background:#f8fafc;color:#475569;font-size:13px;line-height:1.6}
     .hidden{display:none !important}
-    @media (max-width: 1180px){
-      .grid-4,.grid-3,.grid-2,.match-row,.stats{grid-template-columns:1fr}
+
+    @media (max-width: 1200px){
+      .grid-4,.grid-3,.grid-2,.stats{grid-template-columns:1fr}
+      .hero-badge{min-width:unset;width:100%}
     }
-    @media (max-width: 760px){
-      body{padding:12px}
-      .toolbar,.editor-panel,.preview-topbar{padding:14px}
+    @media (max-width: 820px){
+      body{padding:14px}
+      .hero,.toolbar,.section,.preview-topbar{padding:16px}
+      .brand{align-items:flex-start}
+      .brand-logo{width:58px;height:58px;border-radius:18px}
+      .brand-title{font-size:24px}
       .preview-stage{padding:12px}
       .paper{transform-origin:top center;width:210mm}
     }
+
     @page{size:A4 portrait;margin:10mm}
     @media print{
       body{background:#fff;padding:0}
-      .toolbar.panel,.editor-wrap{display:none !important}
-      .panel{box-shadow:none;border:none;border-radius:0;overflow:visible}
+      .hero,.toolbar-wrap,.editor-wrap{display:none !important}
+      .glass{box-shadow:none;border:none;border-radius:0;overflow:visible;background:#fff}
       .preview-topbar{display:none !important}
       .preview-stage{background:#fff;padding:0}
-      .paper{box-shadow:none;width:auto;min-height:auto;margin:0;padding:0}
+      .paper{box-shadow:none;width:auto;min-height:auto;margin:0;padding:0;border-radius:0}
       .report-version{position:fixed;left:15mm;bottom:8mm}
     }
   </style>
 </head>
 <body>
-  <div class="app">
-    <section class="panel toolbar">
-      <div class="toolbar-top">
+  <div class="shell">
+    <section class="hero">
+      <div class="hero-top">
         <div>
-          <h1 class="title">Attendance Worker Report</h1>
-          <p class="subtitle">
-            Aplikasi otomatis tersinkron dari Google Sheet saat dibuka. Cari berdasarkan <strong>ID / Nama</strong>,
-            preview otomatis muncul, dan data bisa diedit dulu sebelum dicetak.
-          </p>
-        </div>
-        <div class="note-inline">
-          Web App URL sudah dipasang sekali di dalam aplikasi.<br>
-          Data report tetap mengikuti format PDF contoh attendance worker.
-        </div>
-      </div>
-
-      <div class="grid-4">
-        <div>
-          <label for="webAppUrl">Apps Script Web App</label>
-          <input id="webAppUrl" type="text" value="https://script.google.com/macros/s/AKfycbzJgJDDDNMhLIgeIXJrkyv7BgDm9Mt1VKJuDYGogU4H7Mcie1kgWyeXjz9WHOk8tOjZ/exec" />
-          <details style="margin-top:6px;font-size:11px;">
-            <summary style="cursor:pointer;font-weight:700;color:var(--accent-2);outline:none;">Klik Bantuan jika gagal Sync</summary>
-            <div style="margin-top:8px;padding:10px;background:#fff;border:1px solid #cbd5e1;border-radius:8px;color:#334155;box-shadow:inset 0 2px 4px rgba(0,0,0,0.03);">
-              <div style="margin-bottom:4px;color:#b91c1c;font-weight:bold;">PENTING 1: Cek Setting Deployment</div>
-              Pastikan di menu <strong>Deploy > Manage Deployments (atau New Deployment)</strong>:<br>
-              - Execute as: <strong>Me</strong><br>
-              - Who has access: <strong>Anyone</strong>
+          <div class="brand">
+            <img class="brand-logo" src="./hoplun128.png" alt="Hop Lun Logo" />
+            <div>
+              <h1 class="brand-title">Attendance Worker Report</h1>
+              <p class="brand-subtitle">
+                Tampilan diperbarui lebih modern, favicon sudah memakai <strong>time.png</strong>,
+                logo header memakai <strong>hoplun128.png</strong>, dan proses sinkron dibuat lebih robust
+                supaya data dari Google Sheet lebih mudah terbaca walau struktur respons berubah.
+              </p>
             </div>
-          </details>
+          </div>
         </div>
-        <div>
-          <label for="sheetNameInput">Nama Sheet</label>
-          <input id="sheetNameInput" type="text" value="Attendance_Raw" placeholder="Contoh: Attendance_Raw" />
-        </div>
-        <div>
-          <label for="systemCodeInput">Kode Report</label>
-          <input id="systemCodeInput" type="text" value="HRIDIN01" />
-        </div>
-        <div>
-          <label for="versionInput">Versi Footer</label>
-          <input id="versionInput" type="text" value="1.25.02.28" />
+        <div class="hero-badge">
+          <strong>Catatan:</strong><br>
+          Pastikan <em>Apps Script Web App</em> di-deploy dengan<br>
+          <strong>Execute as: Me</strong> dan <strong>Who has access: Anyone</strong>.
         </div>
       </div>
-
-      <div class="grid-3">
-        <div>
-          <label for="searchInput">Cari ID / Nama</label>
-          <input id="searchInput" type="search" placeholder="Ketik Employee Code atau Employee Name" />
-          <span class="help">Ketik ID atau Nama. Preview akan otomatis menampilkan hasil yang cocok.</span>
-        </div>
-        <div>
-          <label for="employeeSelect">Hasil Pencarian</label>
-          <select id="employeeSelect">
-            <option value="">Pilih hasil</option>
-          </select>
-        </div>
-        <div>
-          <label for="periodSelect">Periode</label>
-          <select id="periodSelect">
-            <option value="">Periode otomatis</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="btn-row">
-        <button id="btnSync" class="btn-blue">Sync dari Google Sheet</button>
-        <button id="btnPrint" class="btn-dark">Print / Save PDF</button>
-        <button id="btnResetCurrent" class="btn-light">Reset Edit Karyawan Ini</button>
-        <button id="btnResetAll" class="btn-warn">Reset Semua Edit</button>
-      </div>
-
-      <div class="stats">
-        <div class="stat">
-          <div class="stat-value" id="statRows">0</div>
-          <div class="stat-label">Total Baris</div>
-        </div>
-        <div class="stat">
-          <div class="stat-value" id="statEmployees">0</div>
-          <div class="stat-label">Karyawan</div>
-        </div>
-        <div class="stat">
-          <div class="stat-value" id="statPeriods">0</div>
-          <div class="stat-label">Periode</div>
-        </div>
-        <div class="stat">
-          <div class="stat-value" id="statShown">0</div>
-          <div class="stat-label">Baris Preview</div>
-        </div>
-      </div>
-
-      <div id="statusBox" class="status">Memuat data secara otomatis...</div>
     </section>
 
-    <section class="panel editor-wrap">
-      <div class="editor-panel">
-        <div class="toolbar-top">
+    <section class="glass toolbar-wrap">
+      <div class="toolbar">
+        <div class="grid-4">
+          <div>
+            <label for="webAppUrl">Apps Script Web App</label>
+            <div class="field">
+              <input id="webAppUrl" type="text" value="https://script.google.com/macros/s/AKfycbzJgJDDDNMhLIgeIXJrkyv7BgDm9Mt1VKJuDYGogU4H7Mcie1kgWyeXjz9WHOk8tOjZ/exec" />
+            </div>
+            <details class="inline-help">
+              <summary>Bantuan saat sync gagal</summary>
+              <div style="margin-top:10px;line-height:1.75;">
+                1. Buka <strong>Deploy &gt; Manage deployments</strong>.<br>
+                2. Pastikan <strong>Execute as: Me</strong>.<br>
+                3. Pastikan <strong>Who has access: Anyone</strong>.<br>
+                4. Jika Apps Script mengembalikan HTML/login page, browser tidak akan bisa membaca data JSON.
+              </div>
+            </details>
+          </div>
+          <div>
+            <label for="sheetNameInput">Nama Sheet</label>
+            <div class="field">
+              <input id="sheetNameInput" type="text" value="Attendance_Raw" placeholder="Contoh: Attendance_Raw" />
+            </div>
+          </div>
+          <div>
+            <label for="systemCodeInput">Kode Report</label>
+            <div class="field">
+              <input id="systemCodeInput" type="text" value="HRIDIN01" />
+            </div>
+          </div>
+          <div>
+            <label for="versionInput">Versi Footer</label>
+            <div class="field">
+              <input id="versionInput" type="text" value="1.25.02.28" />
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-3">
+          <div>
+            <label for="searchInput">Cari ID / Nama</label>
+            <div class="field">
+              <input id="searchInput" type="search" placeholder="Ketik Employee Code atau Employee Name" />
+            </div>
+            <span class="help">Ketik ID atau nama. Hasil akan dipilih otomatis jika hanya ada satu data yang cocok.</span>
+          </div>
+          <div>
+            <label for="employeeSelect">Hasil Pencarian</label>
+            <div class="field">
+              <select id="employeeSelect">
+                <option value="">Pilih hasil</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label for="periodSelect">Periode</label>
+            <div class="field">
+              <select id="periodSelect">
+                <option value="">Periode otomatis</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button id="btnSync" class="btn-primary">Sync dari Google Sheet</button>
+          <button id="btnPrint" class="btn-dark">Print / Save PDF</button>
+          <button id="btnResetCurrent" class="btn-light">Reset Edit Karyawan Ini</button>
+          <button id="btnResetAll" class="btn-warn">Reset Semua Edit</button>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <div class="stat-value" id="statRows">0</div>
+            <div class="stat-label">Total Baris</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value" id="statEmployees">0</div>
+            <div class="stat-label">Karyawan</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value" id="statPeriods">0</div>
+            <div class="stat-label">Periode</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value" id="statShown">0</div>
+            <div class="stat-label">Baris Preview</div>
+          </div>
+        </div>
+
+        <div id="statusBox" class="status">Memuat data secara otomatis...</div>
+      </div>
+    </section>
+
+    <section class="glass editor-wrap">
+      <div class="section">
+        <div class="section-top">
           <h2 class="section-title">Editor Data Sebelum Cetak</h2>
           <div id="selectionInfo" class="badge gray">Belum ada karyawan terpilih</div>
         </div>
@@ -226,14 +414,14 @@
       </div>
     </section>
 
-    <section class="panel">
+    <section class="glass">
       <div class="preview-topbar">
         <div>
-          <div class="title" style="font-size:20px; margin:0 0 2px;">Preview Report</div>
+          <h2 class="preview-title">Preview Report</h2>
           <div class="preview-meta" id="previewMeta">Belum ada data.</div>
         </div>
-        <div class="note-inline">
-          Layout cetak dipisahkan dari menu, jadi perubahan data tidak mengubah format report.
+        <div class="hero-badge" style="color:#0f172a;background:linear-gradient(180deg,#f8fbff,#fff);border-color:#dbe4f0;box-shadow:none;">
+          Perubahan pada editor tidak mengubah format report cetak. Hanya isi data yang diperbarui.
         </div>
       </div>
       <div class="preview-stage">
@@ -251,21 +439,22 @@
       workingRows: [],
       selectedCode: '',
       selectedPeriod: '',
-      lastSyncInfo: ''
+      lastSyncInfo: '',
+      debugInfo: []
     };
 
     const aliases = {
-      code: ['Employee Code','employee code','employee_code','code', 'id', 'nik', 'employee_id', 'id karyawan', 'employee no', 'pin', 'emp code', 'emp. code'],
-      name: ['Employee Name','employee name','employee_name','name', 'nama', 'nama karyawan', 'employee', 'emp name', 'emp. name'],
-      department: ['Department','department', 'dept', 'departemen', 'bagian'],
-      clockDate: ['Clock Date','clock date','clock_date','date', 'tanggal', 'tanggal_absen', 'date record'],
-      clockIn: ['Clock In','clock in','clock_in', 'in', 'jam_masuk', 'masuk', 'time in'],
-      clockOut: ['Clock Out','clock out','clock_out', 'out', 'jam_keluar', 'keluar', 'time out'],
-      overtime: ['OT Authorized','Overtime','OT','ot authorized','overtime','ot', 'lembur', 'jam lembur'],
-      remarks: ['Remarks Description','Remarks','remarks description','remarks', 'keterangan', 'desc', 'keterangan/remarks'],
-      periodLabel: ['Period Label','period label','periodLabel', 'period', 'periode'],
-      sourceFile: ['Source File','source file','sourceFile', 'file'],
-      uniqueKey: ['Unique Key','unique key','uniqueKey', 'key']
+      code: ['Employee Code','employee code','employee_code','employeecode','code','id','nik','employee_id','employeeid','id karyawan','employee no','employeeno','pin','emp code','emp. code'],
+      name: ['Employee Name','employee name','employee_name','employeename','name','nama','nama karyawan','employee','emp name','emp. name'],
+      department: ['Department','department','dept','departemen','bagian','division'],
+      clockDate: ['Clock Date','clock date','clock_date','clockdate','date','tanggal','tanggal_absen','daterecord','date record'],
+      clockIn: ['Clock In','clock in','clock_in','clockin','in','jam_masuk','masuk','time in','timein','scan in'],
+      clockOut: ['Clock Out','clock out','clock_out','clockout','out','jam_keluar','keluar','time out','timeout','scan out'],
+      overtime: ['OT Authorized','Overtime','OT','ot authorized','overtime','ot','lembur','jam lembur','otauthorized'],
+      remarks: ['Remarks Description','Remarks','remarks description','remarks','keterangan','desc','keterangan/remarks','remark'],
+      periodLabel: ['Period Label','period label','periodLabel','periodlabel','period','periode'],
+      sourceFile: ['Source File','source file','sourceFile','sourcefile','file'],
+      uniqueKey: ['Unique Key','unique key','uniqueKey','uniquekey','key']
     };
 
     const el = {
@@ -293,7 +482,8 @@
     };
 
     function setStatus(message, type='info'){
-      el.statusBox.textContent = message;
+      const debugText = appState.debugInfo.length ? `\n\nDebug:\n- ${appState.debugInfo.join('\n- ')}` : '';
+      el.statusBox.textContent = String(message || '') + debugText;
       el.statusBox.className = 'status' + (type === 'info' ? '' : ' ' + type);
     }
 
@@ -307,6 +497,7 @@
     }
 
     function pad(num){ return String(num).padStart(2, '0'); }
+    function normalizeKey(value){ return String(value || '').trim().toLowerCase().replace(/[^a-z0-9]+/g, ''); }
 
     function parseToDate(value){
       if (!value && value !== 0) return null;
@@ -330,9 +521,11 @@
         }
       }
       if (typeof value === 'number') {
-        const base = new Date(Math.round((value - 25569) * 86400 * 1000));
-        if (!Number.isNaN(base.getTime())) {
-          return new Date(base.getUTCFullYear(), base.getUTCMonth(), base.getUTCDate());
+        if (value > 59 && value < 60000) {
+          const base = new Date(Math.round((value - 25569) * 86400 * 1000));
+          if (!Number.isNaN(base.getTime())) {
+            return new Date(base.getUTCFullYear(), base.getUTCMonth(), base.getUTCDate());
+          }
         }
       }
       return null;
@@ -358,19 +551,25 @@
       if (value === null || value === undefined) return '';
       if (typeof value === 'string') {
         const clean = value.trim();
-        if (!clean || clean.toLowerCase() === 'nan') return '';
+        if (!clean || clean.toLowerCase() === 'nan' || clean.toLowerCase() === 'null') return '';
         if (/^\d{1,2}:\d{2}(\+)?$/.test(clean)) {
           const plus = clean.endsWith('+') ? '+' : '';
           const [h, m] = clean.replace('+','').split(':').map(Number);
           return `${pad(h)}:${pad(m)}${plus}`;
         }
+        if (/^\d{1,2}\.\d+$/.test(clean)) {
+          return clean;
+        }
         return clean;
       }
       if (typeof value === 'number') {
-        const totalMinutes = Math.round(value * 24 * 60);
-        const h = Math.floor(totalMinutes / 60) % 24;
-        const m = totalMinutes % 60;
-        return `${pad(h)}:${pad(m)}`;
+        if (value >= 0 && value < 1) {
+          const totalMinutes = Math.round(value * 24 * 60);
+          const h = Math.floor(totalMinutes / 60) % 24;
+          const m = totalMinutes % 60;
+          return `${pad(h)}:${pad(m)}`;
+        }
+        return String(value);
       }
       return String(value);
     }
@@ -401,6 +600,32 @@
       ].join('|');
     }
 
+    function pickValue(obj, keys){
+      if (!obj || typeof obj !== 'object') return '';
+      const entries = Object.keys(obj);
+      const exactMap = new Map(entries.map(key => [String(key).trim(), obj[key]]));
+      for (const wanted of keys) {
+        if (exactMap.has(wanted)) return exactMap.get(wanted);
+      }
+
+      const normalizedEntries = entries.map(key => ({
+        original: key,
+        normalized: normalizeKey(key),
+        value: obj[key]
+      }));
+      const normalizedAlias = keys.map(normalizeKey);
+      for (const alias of normalizedAlias) {
+        const found = normalizedEntries.find(item => item.normalized === alias);
+        if (found) return found.value;
+      }
+
+      for (const alias of normalizedAlias) {
+        const found = normalizedEntries.find(item => item.normalized.includes(alias) || alias.includes(item.normalized));
+        if (found) return found.value;
+      }
+      return '';
+    }
+
     function normalizeRow(raw){
       const row = {
         code: pickValue(raw, aliases.code),
@@ -420,43 +645,19 @@
       return row;
     }
 
-    function pickValue(obj, keys){
-      if (!obj || typeof obj !== 'object') return '';
-      const entries = Object.keys(obj);
-      for (const wanted of keys) {
-        const found = entries.find(key => String(key).trim() === wanted);
-        if (found !== undefined) return obj[found];
-      }
-      const lowerMap = entries.reduce((acc, key) => {
-        acc[String(key).trim().toLowerCase()] = obj[key];
-        return acc;
-      }, {});
-      for (const wanted of keys) {
-        const val = lowerMap[String(wanted).trim().toLowerCase()];
-        if (val !== undefined) return val;
-      }
-      return '';
-    }
-
     function dedupeRows(rows){
       const map = new Map();
       rows.forEach(raw => {
         const row = normalizeRow(raw);
-        if (!row.code && !row.name) return; // Drop hanya bila ID dan Nama sama-sama kosong
+        if (!row.code && !row.name) return;
         if (!map.has(row.uniqueKey)) map.set(row.uniqueKey, row);
       });
       return Array.from(map.values()).sort((a,b) => {
-        if (a.code !== b.code) return a.code.localeCompare(b.code);
+        if (a.code !== b.code) return String(a.code).localeCompare(String(b.code));
         if (a.periodLabel !== b.periodLabel) return sortPeriod(a.periodLabel, b.periodLabel);
-        if (a.clockDate !== b.clockDate) return a.clockDate.localeCompare(b.clockDate);
-        return a.clockIn.localeCompare(b.clockIn);
+        if (a.clockDate !== b.clockDate) return String(a.clockDate).localeCompare(String(b.clockDate));
+        return String(a.clockIn).localeCompare(String(b.clockIn));
       });
-    }
-
-    function sortPeriod(a,b){
-      const pa = parsePeriod(a);
-      const pb = parsePeriod(b);
-      return pa - pb;
     }
 
     function parsePeriod(label){
@@ -464,6 +665,8 @@
       if (!match) return 0;
       return Number(match[2]) * 100 + Number(match[1]);
     }
+    function sortPeriod(a,b){ return parsePeriod(a) - parsePeriod(b); }
+    function sortPeriodDesc(a,b){ return sortPeriod(b,a); }
 
     function updateStats(){
       const rows = appState.workingRows;
@@ -475,64 +678,134 @@
       el.statShown.textContent = getSelectedRows().length.toLocaleString('id-ID');
     }
 
-    function parseApiPayload(payload){
-      if (!payload) return [];
-      if (Array.isArray(payload)) {
-        if (payload.length > 0 && Array.isArray(payload[0])) { // Jika sudah berbentuk 2D array
-          const headers = payload[0].map(String);
-          return payload.slice(1).map(row => {
-            const obj = {};
-            headers.forEach((head, idx) => obj[head] = row[idx]);
-            return obj;
-          });
-        }
-        return payload; // Jika array of objects
-      }
-      if (Array.isArray(payload.rows)) return parseApiPayload(payload.rows);
-      if (Array.isArray(payload.data)) return parseApiPayload(payload.data);
-      if (Array.isArray(payload.records)) return parseApiPayload(payload.records);
-      if (payload.headers && Array.isArray(payload.values)) {
-        return payload.values.map(row => {
+    function rowsFromGoogleTable(table){
+      if (!table || !Array.isArray(table.cols) || !Array.isArray(table.rows)) return [];
+      const headers = table.cols.map(col => String(col.label || col.id || '').trim());
+      return table.rows.map(item => {
+        const obj = {};
+        headers.forEach((head, index) => {
+          const cell = item && Array.isArray(item.c) ? item.c[index] : null;
+          obj[head || `col_${index}`] = cell && typeof cell === 'object' && 'v' in cell ? cell.v : '';
+        });
+        return obj;
+      });
+    }
+
+    function arrayRowsToObjects(arrayRows){
+      if (!Array.isArray(arrayRows) || !arrayRows.length) return [];
+      if (Array.isArray(arrayRows[0])) {
+        const headers = arrayRows[0].map((head, index) => String(head || `col_${index}`).trim());
+        return arrayRows.slice(1).map(row => {
           const obj = {};
-          payload.headers.forEach((head, idx) => obj[head] = row[idx]);
+          headers.forEach((head, idx) => { obj[head] = Array.isArray(row) ? row[idx] : ''; });
           return obj;
         });
       }
-      if (Array.isArray(payload.values) && payload.values.length > 0) {
-        const first = payload.values[0];
-        if (Array.isArray(first)) { // Jika 2D array
-          const headers = first.map(String);
-          return payload.values.slice(1).map(row => {
-            const obj = {};
-            headers.forEach((head, idx) => obj[head] = row[idx]);
-            return obj;
-          });
-        } else if (typeof first === 'object') { // Jika array of objects
-           return payload.values;
-        }
+      if (typeof arrayRows[0] === 'object' && arrayRows[0] !== null) {
+        return arrayRows;
       }
       return [];
     }
 
-    async function fetchJson(url){
-      const res = await fetch(url, { method:'GET' });
-      const text = await res.text();
-      
-      if (text.trim().startsWith('<') || text.toLowerCase().includes('<!doctype html>')) {
-        throw new Error('Web App meminta Login (Merespon dengan HTML). Pastikan saat deploy, Who has access di-set ke "Anyone" dan Execute as di-set ke "Me".');
+    function extractRowsDeep(payload, depth = 0){
+      if (depth > 5 || payload == null) return [];
+
+      if (Array.isArray(payload)) {
+        return arrayRowsToObjects(payload);
       }
-      
-      let data = null;
+
+      if (typeof payload !== 'object') return [];
+
+      if (payload.table && payload.table.cols && payload.table.rows) {
+        return rowsFromGoogleTable(payload.table);
+      }
+
+      const directKeys = ['rows','data','records','items','result','results','payload','values','list','output','sheetData','tableData'];
+      for (const key of directKeys) {
+        if (key in payload) {
+          const result = extractRowsDeep(payload[key], depth + 1);
+          if (result.length) return result;
+        }
+      }
+
+      if (Array.isArray(payload.headers) && Array.isArray(payload.values)) {
+        return payload.values.map(row => {
+          const obj = {};
+          payload.headers.forEach((head, idx) => { obj[head] = Array.isArray(row) ? row[idx] : row?.[idx]; });
+          return obj;
+        });
+      }
+
+      for (const value of Object.values(payload)) {
+        const result = extractRowsDeep(value, depth + 1);
+        if (result.length) return result;
+      }
+
+      return [];
+    }
+
+    function parseApiPayload(payload){
+      const rows = extractRowsDeep(payload);
+      return Array.isArray(rows) ? rows : [];
+    }
+
+    async function fetchText(url, options = {}){
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 18000);
       try {
-        data = JSON.parse(text);
-      } catch(error) {
-        throw new Error('Data yang dikembalikan bukan format JSON yang valid.');
+        const response = await fetch(url, {
+          method: options.method || 'GET',
+          cache: 'no-store',
+          redirect: 'follow',
+          signal: controller.signal,
+          headers: {
+            'Accept': 'application/json, text/plain, */*'
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status} ${response.statusText}`);
+        }
+        return await response.text();
+      } catch (error) {
+        if (error.name === 'AbortError') {
+          throw new Error('Request timeout. Response Apps Script terlalu lama.');
+        }
+        throw error;
+      } finally {
+        clearTimeout(timer);
       }
-      
-      // Menerima response format baru dari Google Script
+    }
+
+    function tryParseJson(text){
+      const clean = String(text || '').trim();
+      if (!clean) return null;
+
+      const matchGoogleWrapper = clean.match(/^[^(]+\((.*)\);?$/s);
+      const candidate = matchGoogleWrapper ? matchGoogleWrapper[1] : clean;
+
+      try {
+        return JSON.parse(candidate);
+      } catch (_error) {
+        return null;
+      }
+    }
+
+    async function fetchJson(url){
+      const text = await fetchText(url);
+      const clean = String(text || '').trim();
+
+      if (clean.startsWith('<') || clean.toLowerCase().includes('<!doctype html>') || clean.toLowerCase().includes('<html')) {
+        throw new Error('Web App merespons HTML/login page. Ubah deployment ke Execute as: Me dan Who has access: Anyone.');
+      }
+
+      const data = tryParseJson(clean);
+      if (!data) {
+        throw new Error('Respons server bukan JSON valid. Cek output doGet/doPost Apps Script.');
+      }
+
       if (data && data.ok === false && data.message) throw new Error(data.message);
-      if (data && data.error) throw new Error(data.error);
-      
+      if (data && data.error) throw new Error(typeof data.error === 'string' ? data.error : JSON.stringify(data.error));
       return data;
     }
 
@@ -542,8 +815,8 @@
         const script = document.createElement('script');
         const timer = setTimeout(() => {
           cleanup();
-          reject(new Error('Timeout JSONP. Pastikan URL Apps Script benar.'));
-        }, 15000);
+          reject(new Error('Timeout JSONP. URL Apps Script tidak merespons callback.'));
+        }, 18000);
 
         function cleanup(){
           clearTimeout(timer);
@@ -553,7 +826,6 @@
 
         window[callbackName] = (data) => {
           cleanup();
-          // Menerima response format baru dari Google Script untuk jsonp fallback
           if (data && data.ok === false && data.message) reject(new Error(data.message));
           else if (data && data.error) reject(new Error(data.error));
           else resolve(data);
@@ -561,7 +833,7 @@
 
         script.onerror = () => {
           cleanup();
-          reject(new Error('Gagal memuat script (Kemungkinan diblokir browser atau URL salah).'));
+          reject(new Error('Gagal memuat JSONP script. Kemungkinan callback tidak didukung di Apps Script.'));
         };
 
         const joiner = url.includes('?') ? '&' : '?';
@@ -570,78 +842,110 @@
       });
     }
 
-    async function syncFromGSheet(){
-      const endpoint = el.webAppUrl.value.trim();
-      if(!endpoint) return;
-
-      const sheetName = el.sheetNameInput.value.trim() || 'Attendance_Raw';
-      const queries = [
-        `${endpoint}?action=read&sheetName=${encodeURIComponent(sheetName)}`,
-        `${endpoint}?mode=read&sheetName=${encodeURIComponent(sheetName)}`,
-        `${endpoint}?sheetName=${encodeURIComponent(sheetName)}`,
-        `${endpoint}`
+    function buildCandidateUrls(endpoint, sheetName){
+      const paramsList = [
+        { action: 'read', sheetName },
+        { mode: 'read', sheetName },
+        { action: 'getData', sheetName },
+        { sheetName },
+        { sheet: sheetName },
+        { nameSheet: sheetName },
+        {}
       ];
 
-      setStatus('Sinkronisasi otomatis berjalan, mengambil data dari Google Sheet...', 'info');
+      return paramsList.map(params => {
+        const url = new URL(endpoint, window.location.href);
+        Object.entries(params).forEach(([key, value]) => {
+          if (value !== undefined && value !== null && String(value).trim() !== '') {
+            url.searchParams.set(key, value);
+          }
+        });
+        return url.toString();
+      });
+    }
+
+    async function syncFromGSheet(){
+      const endpoint = el.webAppUrl.value.trim();
+      if (!endpoint) {
+        appState.debugInfo = ['Web App URL masih kosong'];
+        setStatus('Isi URL Apps Script terlebih dahulu.', 'warn');
+        return;
+      }
+
+      const sheetName = el.sheetNameInput.value.trim() || 'Attendance_Raw';
+      const queries = buildCandidateUrls(endpoint, sheetName);
+      appState.debugInfo = [];
+      setStatus('Sinkronisasi berjalan. Mencoba membaca data Google Sheet...', 'info');
       el.btnSync.disabled = true;
 
       try {
         let rows = [];
-        let firstErrorMsg = '';
+        let rawPayload = null;
         let successFetch = false;
         let serverMessage = '';
+        const errors = [];
 
-        // Coba Fetch standar
         for (const url of queries) {
           try {
-            const payload = await fetchJson(url);
+            rawPayload = await fetchJson(url);
+            rows = parseApiPayload(rawPayload);
             successFetch = true;
-            if (payload && payload.message) serverMessage = payload.message;
-            rows = parseApiPayload(payload);
-            break; 
+            serverMessage = rawPayload?.message || rawPayload?.info || '';
+            appState.debugInfo.push(`GET berhasil: ${url}`);
+            break;
           } catch (error) {
-            if (!firstErrorMsg) firstErrorMsg = error.message;
+            errors.push(`GET gagal (${url}): ${error.message}`);
           }
         }
 
-        // Jika standar gagal, coba JSONP
-        if (!successFetch && !firstErrorMsg.includes('Execute as') && !firstErrorMsg.includes('Login')) {
+        if (!successFetch) {
           for (const url of queries) {
             try {
-              const payload = await jsonp(url);
+              rawPayload = await jsonp(url);
+              rows = parseApiPayload(rawPayload);
               successFetch = true;
-              if (payload && payload.message) serverMessage = payload.message;
-              rows = parseApiPayload(payload);
+              serverMessage = rawPayload?.message || rawPayload?.info || '';
+              appState.debugInfo.push(`JSONP berhasil: ${url}`);
               break;
             } catch (error) {
-              if (!firstErrorMsg) firstErrorMsg = error.message;
+              errors.push(`JSONP gagal (${url}): ${error.message}`);
             }
           }
         }
 
         if (!successFetch) {
-          throw new Error(firstErrorMsg || 'Gagal menghubungi server Apps Script. Cek URL Web App.');
+          appState.debugInfo = errors.slice(0, 4);
+          throw new Error('Tidak bisa mengambil data dari Apps Script.');
+        }
+
+        if (rawPayload && typeof rawPayload === 'object') {
+          const topKeys = Object.keys(rawPayload).slice(0, 10).join(', ') || '(tanpa key)';
+          appState.debugInfo.push(`Key response: ${topKeys}`);
+        }
+
+        if (rows.length) {
+          const sampleKeys = Object.keys(rows[0] || {}).slice(0, 12).join(', ');
+          appState.debugInfo.push(`Kolom terdeteksi: ${sampleKeys || '(tidak ada)'}`);
+        } else {
+          appState.debugInfo.push('Response diterima, tetapi parser tidak menemukan array data yang bisa dibaca.');
         }
 
         const normalized = dedupeRows(rows);
-        appState.sourceRows = JSON.parse(JSON.stringify(normalized));
-        appState.workingRows = JSON.parse(JSON.stringify(normalized));
+        appState.sourceRows = structuredClone(normalized);
+        appState.workingRows = structuredClone(normalized);
         appState.lastSyncInfo = `Sheet: ${sheetName} | Auto-Synced`;
-        
+
         applySearch(true);
         updateStats();
 
-        // Validasi dan menampilkan pesan yang jelas
         if (normalized.length === 0) {
-          let warnMsg = `Sinkron berhasil terhubung, tapi tidak ada data yang valid untuk ditampilkan.`;
-          if (serverMessage) warnMsg += `\nInfo dari Server: "${serverMessage}"`;
-          else warnMsg += `\nPastikan baris data (selain header) sudah terisi di Sheet.`;
-          
+          let warnMsg = 'Sinkron berhasil terhubung, tetapi tidak ada data valid yang berhasil dipetakan.';
+          if (serverMessage) warnMsg += `\nInfo server: "${serverMessage}"`;
+          warnMsg += '\nPastikan header sheet mengandung kolom Employee Code, Employee Name, Clock Date, Clock In, Clock Out, OT, atau Remarks.';
           setStatus(warnMsg, 'warn');
         } else {
           setStatus(`Sinkron berhasil. ${normalized.length.toLocaleString('id-ID')} baris dimuat dari sheet "${sheetName}".`, 'success');
         }
-
       } catch (error) {
         console.error(error);
         setStatus(`Sinkron gagal: ${error.message}`, 'error');
@@ -653,32 +957,34 @@
     function getEmployeeMatches(term){
       const employees = [...new Map(appState.workingRows.map(row => [row.code, row])).values()];
       const clean = String(term || '').trim().toLowerCase();
-      if (!clean) {
-        return employees.sort((a,b) => a.code.localeCompare(b.code));
-      }
+      if (!clean) return employees.sort((a,b) => String(a.code).localeCompare(String(b.code)));
       return employees.filter(emp =>
         String(emp.code).toLowerCase().includes(clean) ||
         String(emp.name).toLowerCase().includes(clean)
-      ).sort((a,b) => a.code.localeCompare(b.code));
+      ).sort((a,b) => String(a.code).localeCompare(String(b.code)));
     }
 
     function fillEmployeeSelect(matches){
       const current = appState.selectedCode;
       el.employeeSelect.innerHTML = '<option value="">Pilih hasil</option>' +
         matches.map(emp => `<option value="${escapeHtml(emp.code)}">${escapeHtml(emp.name)} (${escapeHtml(emp.code)})</option>`).join('');
+
       if (matches.some(m => m.code === current)) {
         el.employeeSelect.value = current;
-      } else if (matches.length) {
+      } else if (matches.length === 1) {
+        appState.selectedCode = matches[0].code;
+        el.employeeSelect.value = matches[0].code;
+      } else if (!current && matches.length) {
         appState.selectedCode = matches[0].code;
         el.employeeSelect.value = matches[0].code;
       } else {
-        appState.selectedCode = '';
+        appState.selectedCode = el.employeeSelect.value.trim();
       }
     }
 
     function fillPeriodSelect(){
       const code = appState.selectedCode;
-      const rows = appState.workingRows.filter(r => r.code === code);
+      const rows = appState.workingRows.filter(r => !code || r.code === code);
       const periods = [...new Set(rows.map(r => r.periodLabel).filter(Boolean))].sort(sortPeriodDesc);
       el.periodSelect.innerHTML = '<option value="">Periode otomatis</option>' +
         periods.map(period => `<option value="${escapeHtml(period)}">${escapeHtml(period)}</option>`).join('');
@@ -696,7 +1002,14 @@
       }
     }
 
-    function sortPeriodDesc(a,b){ return sortPeriod(b,a); }
+    function getSelectedRows(){
+      let rows = appState.workingRows;
+      if (appState.selectedCode) rows = rows.filter(r => r.code === appState.selectedCode);
+      const availablePeriods = [...new Set(rows.map(r => r.periodLabel).filter(Boolean))].sort(sortPeriodDesc);
+      const targetPeriod = appState.selectedPeriod || availablePeriods[0] || '';
+      if (targetPeriod) rows = rows.filter(r => r.periodLabel === targetPeriod);
+      return rows.sort((a,b) => String(a.clockDate).localeCompare(String(b.clockDate)));
+    }
 
     function applySearch(autoPreview = false){
       const matches = getEmployeeMatches(el.searchInput.value);
@@ -710,21 +1023,12 @@
       }
     }
 
-    function getSelectedRows(){
-      let rows = appState.workingRows;
-      if (appState.selectedCode) rows = rows.filter(r => r.code === appState.selectedCode);
-      const availablePeriods = [...new Set(rows.map(r => r.periodLabel).filter(Boolean))].sort(sortPeriodDesc);
-      let targetPeriod = appState.selectedPeriod || availablePeriods[0] || '';
-      if (targetPeriod) rows = rows.filter(r => r.periodLabel === targetPeriod);
-      return rows.sort((a,b) => a.clockDate.localeCompare(b.clockDate));
-    }
-
     function renderEditor(){
       const rows = getSelectedRows();
       if (!rows.length) {
         el.selectionInfo.className = 'badge gray';
         el.selectionInfo.textContent = 'Belum ada karyawan terpilih';
-        el.editorRoot.innerHTML = 'Data tidak ditemukan. Pastikan sudah di-sync dan cari ID/Nama.';
+        el.editorRoot.innerHTML = '<div class="empty-box">Data tidak ditemukan. Pastikan sudah di-sync lalu cari ID/Nama yang sesuai.</div>';
         return;
       }
 
@@ -732,33 +1036,33 @@
       el.selectionInfo.className = 'badge ok';
       el.selectionInfo.textContent = `${first.name} (${first.code}) · ${first.periodLabel}`;
 
-      const header = `
+      el.editorRoot.innerHTML = `
         <div class="editor-shell">
           <table class="editor-table">
             <thead>
               <tr>
-                <th style="width:110px;">Tanggal</th>
-                <th style="width:130px;">Clock In</th>
-                <th style="width:130px;">Clock Out</th>
-                <th style="width:110px;">Overtime</th>
+                <th style="width:120px;">Tanggal</th>
+                <th style="width:140px;">Clock In</th>
+                <th style="width:140px;">Clock Out</th>
+                <th style="width:120px;">Overtime</th>
                 <th>Remarks</th>
               </tr>
             </thead>
             <tbody>
-              ${rows.map((row, idx) => `
+              ${rows.map(row => `
                 <tr>
                   <td>${escapeHtml(formatDateDDMMYYYY(row.clockDate))}</td>
-                  <td><input data-field="clockIn" data-key="${escapeHtml(row.uniqueKey)}" value="${escapeHtml(row.clockIn)}" placeholder="HH:MM" /></td>
-                  <td><input data-field="clockOut" data-key="${escapeHtml(row.uniqueKey)}" value="${escapeHtml(row.clockOut)}" placeholder="HH:MM" /></td>
-                  <td><input data-field="overtime" data-key="${escapeHtml(row.uniqueKey)}" value="${escapeHtml(row.overtime)}" placeholder="0.0" /></td>
-                  <td><input data-field="remarks" data-key="${escapeHtml(row.uniqueKey)}" value="${escapeHtml(row.remarks)}" placeholder="Remarks" /></td>
+                  <td><div class="field"><input data-field="clockIn" data-key="${escapeHtml(row.uniqueKey)}" value="${escapeHtml(row.clockIn)}" placeholder="HH:MM" /></div></td>
+                  <td><div class="field"><input data-field="clockOut" data-key="${escapeHtml(row.uniqueKey)}" value="${escapeHtml(row.clockOut)}" placeholder="HH:MM" /></div></td>
+                  <td><div class="field"><input data-field="overtime" data-key="${escapeHtml(row.uniqueKey)}" value="${escapeHtml(row.overtime)}" placeholder="0.0" /></div></td>
+                  <td><div class="field"><input data-field="remarks" data-key="${escapeHtml(row.uniqueKey)}" value="${escapeHtml(row.remarks)}" placeholder="Remarks" /></div></td>
                 </tr>
               `).join('')}
             </tbody>
           </table>
         </div>
       `;
-      el.editorRoot.innerHTML = header;
+
       el.editorRoot.querySelectorAll('input[data-field]').forEach(input => {
         input.addEventListener('input', handleEditInput);
       });
@@ -861,7 +1165,7 @@
       appState.workingRows = appState.workingRows.map(row => {
         if (!keys.has(row.uniqueKey)) return row;
         const original = appState.sourceRows.find(src => src.uniqueKey === row.uniqueKey);
-        return original ? JSON.parse(JSON.stringify(original)) : row;
+        return original ? structuredClone(original) : row;
       });
       renderAll();
       setStatus('Edit untuk karyawan/periode aktif sudah dikembalikan ke data asli sinkron.', 'success');
@@ -869,7 +1173,7 @@
 
     function resetAll(){
       if (!appState.sourceRows.length) return;
-      appState.workingRows = JSON.parse(JSON.stringify(appState.sourceRows));
+      appState.workingRows = structuredClone(appState.sourceRows);
       renderAll();
       setStatus('Semua edit lokal sudah di-reset ke hasil sinkron terakhir.', 'success');
     }
@@ -898,15 +1202,13 @@
 
     renderAll();
 
-    // Auto Sync saat pertama kali aplikasi dibuka
     window.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => {
-        if(el.webAppUrl.value.trim() !== "") {
+        if (el.webAppUrl.value.trim()) {
           syncFromGSheet();
         }
-      }, 500); // jeda sedikit agar UI termuat sepenuhnya
+      }, 350);
     });
-
   </script>
 </body>
 </html>
