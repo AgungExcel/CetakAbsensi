@@ -109,11 +109,27 @@
 
     /* Isi Laporan */
     .report { width: 100%; font-family: Arial, Helvetica, sans-serif; color: #111; }
-    .report-company { text-align: center; font-size: 12px; font-weight: 700; margin-bottom: 8px; }
-    .report-title { text-align: center; font-size: 20px; font-weight: 800; margin: 0 0 10px; }
-    .report-period { text-align: center; font-size: 12px; font-weight: 700; margin: 0 0 4px; }
-    .report-range { text-align: center; font-size: 9px; font-weight: 700; margin: 0 0 12px; }
-    .report-meta-row { display: flex; justify-content: space-between; align-items: flex-end; font-size: 11px; margin-bottom: 14px; }
+    .report-header {
+      --company-font-size: 12px;
+      --title-font-size: 18px;
+      --meta-font-size: 11px;
+      --period-font-size: 12px;
+      --range-font-size: 8px;
+      --company-gap: 2px;
+      --title-gap: 6px;
+      --meta-gap: 4px;
+      --period-gap: 2px;
+      --range-bottom-gap: 10px;
+    }
+    .report-company { text-align: center; font-size: var(--company-font-size); font-weight: 700; margin-bottom: var(--company-gap); line-height: 1.05; }
+    .report-title { text-align: center; font-size: var(--title-font-size); font-weight: 800; margin: 0 0 var(--title-gap); line-height: 1.05; }
+    .report-period { text-align: center; font-size: var(--period-font-size); font-weight: 700; margin: 0 0 var(--period-gap); line-height: 1.1; }
+    .report-range { text-align: center; font-size: var(--range-font-size); font-weight: 700; margin: 0 0 var(--range-bottom-gap); line-height: 1.05; }
+    .report-meta-row { display: flex; justify-content: space-between; align-items: flex-end; font-size: var(--meta-font-size); margin-bottom: var(--meta-gap); line-height: 1.05; }
+    .layout-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .layout-actions { display:flex; gap:8px; margin-top:8px; }
+    .btn-xs { padding:8px 10px; font-size:12px; }
+    .layout-help { margin-top:6px; font-size:11px; color:#475569; line-height:1.4; }
     
     .report-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 11px; }
     .report-table thead th { text-align: left; font-size: 10px; padding: 3px 3px 4px; font-weight: 800; border-top: 2px solid var(--line); border-bottom: 2px solid var(--line); vertical-align: bottom; }
@@ -217,6 +233,61 @@
           <label>Versi Footer</label>
           <input id="versionInput" type="text" value="1.25.02.28" />
         </div>
+
+        <div style="height:1px;background:#e2e8f0;margin:4px 0;"></div>
+
+        <details open style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:12px; padding:12px;">
+          <summary style="cursor:pointer;font-weight:800;color:#1d4ed8;outline:none;font-size:12px;display:flex;align-items:center;gap:6px;">
+            🔧 Atur Header Report
+          </summary>
+          <div class="layout-grid" style="margin-top:10px;">
+            <div class="control-group">
+              <label style="color:#1d4ed8;">Font Company</label>
+              <input id="companyFontInput" type="number" min="8" max="24" step="1" value="12" />
+            </div>
+            <div class="control-group">
+              <label style="color:#1d4ed8;">Font Title</label>
+              <input id="titleFontInput" type="number" min="10" max="30" step="1" value="18" />
+            </div>
+            <div class="control-group">
+              <label style="color:#1d4ed8;">Font Meta Kiri/Kanan</label>
+              <input id="metaFontInput" type="number" min="8" max="18" step="1" value="11" />
+            </div>
+            <div class="control-group">
+              <label style="color:#1d4ed8;">Font Period</label>
+              <input id="periodFontInput" type="number" min="8" max="18" step="1" value="12" />
+            </div>
+            <div class="control-group">
+              <label style="color:#1d4ed8;">Font Range</label>
+              <input id="rangeFontInput" type="number" min="6" max="16" step="1" value="8" />
+            </div>
+            <div class="control-group">
+              <label style="color:#1d4ed8;">Jarak Company → Title</label>
+              <input id="companyGapInput" type="number" min="0" max="20" step="1" value="2" />
+            </div>
+            <div class="control-group">
+              <label style="color:#1d4ed8;">Jarak Title → Meta</label>
+              <input id="titleGapInput" type="number" min="0" max="20" step="1" value="6" />
+            </div>
+            <div class="control-group">
+              <label style="color:#1d4ed8;">Jarak Meta → Period</label>
+              <input id="metaGapInput" type="number" min="0" max="20" step="1" value="4" />
+            </div>
+            <div class="control-group">
+              <label style="color:#1d4ed8;">Jarak Period → Range</label>
+              <input id="periodGapInput" type="number" min="0" max="20" step="1" value="2" />
+            </div>
+            <div class="control-group">
+              <label style="color:#1d4ed8;">Jarak Range → Tabel</label>
+              <input id="rangeBottomGapInput" type="number" min="0" max="24" step="1" value="10" />
+            </div>
+          </div>
+          <div class="layout-actions">
+            <button id="btnApplyHeaderPreset" type="button" class="btn-light btn-xs">🖼️ Sesuaikan dengan gambar</button>
+            <button id="btnResetHeaderLayout" type="button" class="btn-light btn-xs">↺ Reset Header</button>
+          </div>
+          <div class="layout-help">Nilai bisa diubah sendiri. Perubahan langsung terlihat di preview dan disimpan di browser.</div>
+        </details>
 
         <div style="height:1px;background:#e2e8f0;margin:4px 0;"></div>
 
@@ -324,7 +395,8 @@
       employeeMetaMap: new Map(),
       employeeOptions: [],
       sheetPeriod: { start: '', end: '' },
-      sheetCache: new Map()
+      sheetCache: new Map(),
+      headerLayout: null
     };
 
     const aliases = {
@@ -366,7 +438,19 @@
       statTotalRows: document.getElementById('statTotalRows'),
       statReadyRows: document.getElementById('statReadyRows'),
       statSkippedRows: document.getElementById('statSkippedRows'),
-      statDuplicateRows: document.getElementById('statDuplicateRows')
+      statDuplicateRows: document.getElementById('statDuplicateRows'),
+      companyFontInput: document.getElementById('companyFontInput'),
+      titleFontInput: document.getElementById('titleFontInput'),
+      metaFontInput: document.getElementById('metaFontInput'),
+      periodFontInput: document.getElementById('periodFontInput'),
+      rangeFontInput: document.getElementById('rangeFontInput'),
+      companyGapInput: document.getElementById('companyGapInput'),
+      titleGapInput: document.getElementById('titleGapInput'),
+      metaGapInput: document.getElementById('metaGapInput'),
+      periodGapInput: document.getElementById('periodGapInput'),
+      rangeBottomGapInput: document.getElementById('rangeBottomGapInput'),
+      btnApplyHeaderPreset: document.getElementById('btnApplyHeaderPreset'),
+      btnResetHeaderLayout: document.getElementById('btnResetHeaderLayout')
     };
 
     // Toast Logic
@@ -391,6 +475,121 @@
 
     async function yieldToUI(){
       await new Promise(resolve => requestAnimationFrame(() => resolve()));
+    }
+
+    const HEADER_LAYOUT_DEFAULT = {
+      companyFont: 12,
+      titleFont: 18,
+      metaFont: 11,
+      periodFont: 12,
+      rangeFont: 8,
+      companyGap: 2,
+      titleGap: 6,
+      metaGap: 4,
+      periodGap: 2,
+      rangeBottomGap: 10
+    };
+
+    const HEADER_LAYOUT_IMAGE = {
+      companyFont: 12,
+      titleFont: 17,
+      metaFont: 11,
+      periodFont: 12,
+      rangeFont: 7,
+      companyGap: 1,
+      titleGap: 4,
+      metaGap: 3,
+      periodGap: 1,
+      rangeBottomGap: 8
+    };
+
+    function clampNumber(value, min, max, fallback) {
+      const num = Number(value);
+      if (Number.isNaN(num)) return fallback;
+      return Math.max(min, Math.min(max, num));
+    }
+
+    function normalizeHeaderLayout(layout) {
+      const base = Object.assign({}, HEADER_LAYOUT_DEFAULT, layout || {});
+      return {
+        companyFont: clampNumber(base.companyFont, 8, 24, HEADER_LAYOUT_DEFAULT.companyFont),
+        titleFont: clampNumber(base.titleFont, 10, 30, HEADER_LAYOUT_DEFAULT.titleFont),
+        metaFont: clampNumber(base.metaFont, 8, 18, HEADER_LAYOUT_DEFAULT.metaFont),
+        periodFont: clampNumber(base.periodFont, 8, 18, HEADER_LAYOUT_DEFAULT.periodFont),
+        rangeFont: clampNumber(base.rangeFont, 6, 16, HEADER_LAYOUT_DEFAULT.rangeFont),
+        companyGap: clampNumber(base.companyGap, 0, 20, HEADER_LAYOUT_DEFAULT.companyGap),
+        titleGap: clampNumber(base.titleGap, 0, 20, HEADER_LAYOUT_DEFAULT.titleGap),
+        metaGap: clampNumber(base.metaGap, 0, 20, HEADER_LAYOUT_DEFAULT.metaGap),
+        periodGap: clampNumber(base.periodGap, 0, 20, HEADER_LAYOUT_DEFAULT.periodGap),
+        rangeBottomGap: clampNumber(base.rangeBottomGap, 0, 24, HEADER_LAYOUT_DEFAULT.rangeBottomGap)
+      };
+    }
+
+    function loadHeaderLayout() {
+      try {
+        const raw = localStorage.getItem('attendanceHeaderLayout');
+        if (!raw) return normalizeHeaderLayout(HEADER_LAYOUT_IMAGE);
+        return normalizeHeaderLayout(JSON.parse(raw));
+      } catch (_error) {
+        return normalizeHeaderLayout(HEADER_LAYOUT_IMAGE);
+      }
+    }
+
+    function saveHeaderLayout(layout) {
+      try {
+        localStorage.setItem('attendanceHeaderLayout', JSON.stringify(layout));
+      } catch (_error) {}
+    }
+
+    function applyHeaderInputs(layout) {
+      el.companyFontInput.value = layout.companyFont;
+      el.titleFontInput.value = layout.titleFont;
+      el.metaFontInput.value = layout.metaFont;
+      el.periodFontInput.value = layout.periodFont;
+      el.rangeFontInput.value = layout.rangeFont;
+      el.companyGapInput.value = layout.companyGap;
+      el.titleGapInput.value = layout.titleGap;
+      el.metaGapInput.value = layout.metaGap;
+      el.periodGapInput.value = layout.periodGap;
+      el.rangeBottomGapInput.value = layout.rangeBottomGap;
+    }
+
+    function getHeaderLayoutFromInputs() {
+      return normalizeHeaderLayout({
+        companyFont: el.companyFontInput.value,
+        titleFont: el.titleFontInput.value,
+        metaFont: el.metaFontInput.value,
+        periodFont: el.periodFontInput.value,
+        rangeFont: el.rangeFontInput.value,
+        companyGap: el.companyGapInput.value,
+        titleGap: el.titleGapInput.value,
+        metaGap: el.metaGapInput.value,
+        periodGap: el.periodGapInput.value,
+        rangeBottomGap: el.rangeBottomGapInput.value
+      });
+    }
+
+    function setHeaderLayout(layout, shouldRender = true) {
+      appState.headerLayout = normalizeHeaderLayout(layout);
+      applyHeaderInputs(appState.headerLayout);
+      saveHeaderLayout(appState.headerLayout);
+      if (shouldRender) renderReport();
+    }
+
+    function buildHeaderStyleVars(layout) {
+      const cfg = normalizeHeaderLayout(layout);
+      return [
+        `--company-font-size:${cfg.companyFont}px`,
+        `--title-font-size:${cfg.titleFont}px`,
+        `--meta-font-size:${cfg.metaFont}px`,
+        `--period-font-size:${cfg.periodFont}px`,
+        `--range-font-size:${cfg.rangeFont}px`,
+        `--company-gap:${cfg.companyGap}px`,
+        `--title-gap:${cfg.titleGap}px`,
+        `--meta-gap:${cfg.metaGap}px`,
+        `--period-gap:${cfg.periodGap}px`,
+        `--range-bottom-gap:${cfg.rangeBottomGap}px`
+      ].join(';');
     }
 
     function resetUploadProgress() {
@@ -1134,11 +1333,14 @@ async function uploadExcelToGSheet() {
       el.reportVersion.textContent = `Version: ${version}`;
       
       if (!rows.length) {
+        const headerStyle = buildHeaderStyleVars(appState.headerLayout);
         el.reportRoot.innerHTML = `
-          <div class="report-company">Hop Lun</div>
-          <div class="report-title">Report Attendance Worker</div>
-          <p class="report-period" style="margin-top:40px;color:#94a3b8;">Tidak ada data.</p>
-          <p class="report-range" style="color:#94a3b8;">Cari dan pilih ID Karyawan di panel kiri terlebih dahulu.</p>
+          <div class="report-header" style="${headerStyle}">
+            <div class="report-company">Hop Lun</div>
+            <div class="report-title">Report Attendance Worker</div>
+            <p class="report-period" style="margin-top:20px;color:#94a3b8;">Tidak ada data.</p>
+            <p class="report-range" style="color:#94a3b8;">Cari dan pilih ID Karyawan di panel kiri terlebih dahulu.</p>
+          </div>
         `;
         return;
       }
@@ -1148,6 +1350,7 @@ async function uploadExcelToGSheet() {
       const start = employeeMeta.start ? formatDateDDMMYYYY(employeeMeta.start) : '';
       const end = employeeMeta.end ? formatDateDDMMYYYY(employeeMeta.end) : '';
       const generatedDate = formatGeneratedDate(new Date());
+      const headerStyle = buildHeaderStyleVars(appState.headerLayout);
 
       // Render Langsung Input Box di dalam TD untuk Edit Cepat
       const body = rows.map(row => `
@@ -1164,14 +1367,16 @@ async function uploadExcelToGSheet() {
       `).join('');
 
       el.reportRoot.innerHTML = `
-        <div class="report-company">Hop Lun</div>
-        <div class="report-title">Report Attendance Worker</div>
-        <div class="report-meta-row">
-          <div>${escapeHtml(generatedDate)}</div>
-          <div>${escapeHtml(systemCode)} - Page 1 of 1</div>
+        <div class="report-header" style="${headerStyle}">
+          <div class="report-company">Hop Lun</div>
+          <div class="report-title">Report Attendance Worker</div>
+          <div class="report-meta-row">
+            <div>${escapeHtml(generatedDate)}</div>
+            <div>${escapeHtml(systemCode)} - Page 1 of 1</div>
+          </div>
+          <p class="report-period">Period: ${escapeHtml(start)} to ${escapeHtml(end)}. All Records</p>
+          <p class="report-range">Range: ((Employee Code='${escapeHtml(first.code)}'))</p>
         </div>
-        <p class="report-period">Period: ${escapeHtml(start)} to ${escapeHtml(end)}. All Records</p>
-        <p class="report-range">Range: ((Employee Code='${escapeHtml(first.code)}'))</p>
         <table class="report-table">
           <thead>
             <tr>
@@ -1279,8 +1484,37 @@ async function uploadExcelToGSheet() {
     el.systemCodeInput.addEventListener('input', renderReport);
     el.versionInput.addEventListener('input', renderReport);
 
+    [
+      el.companyFontInput,
+      el.titleFontInput,
+      el.metaFontInput,
+      el.periodFontInput,
+      el.rangeFontInput,
+      el.companyGapInput,
+      el.titleGapInput,
+      el.metaGapInput,
+      el.periodGapInput,
+      el.rangeBottomGapInput
+    ].forEach(input => {
+      input.addEventListener('input', () => {
+        setHeaderLayout(getHeaderLayoutFromInputs());
+      });
+    });
+
+    el.btnApplyHeaderPreset.addEventListener('click', () => {
+      setHeaderLayout(HEADER_LAYOUT_IMAGE);
+      showToast('Header disesuaikan lebih rapat seperti contoh gambar.', 'success');
+    });
+
+    el.btnResetHeaderLayout.addEventListener('click', () => {
+      setHeaderLayout(HEADER_LAYOUT_DEFAULT);
+      showToast('Header dikembalikan ke default.', 'success');
+    });
+
     window.addEventListener('DOMContentLoaded', () => {
+      setHeaderLayout(loadHeaderLayout(), false);
       resetUploadProgress();
+      renderReport();
       setTimeout(() => { loadAppAndSheets(); }, 300); 
     });
 
