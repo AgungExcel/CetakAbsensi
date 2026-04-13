@@ -270,159 +270,7 @@
       color: #64748b;
       line-height: 1.3;
     }
-    .bulk-panel {
-      background:#f8fafc;
-      border:1px solid #cbd5e1;
-      border-radius:14px;
-      padding:12px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      overflow:visible;
-    }
-    .bulk-inline {
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-    }
-    .bulk-hint {
-      font-size:11px;
-      color:#64748b;
-      line-height:1.45;
-      margin-top:2px;
-    }
-    .bulk-entry-grid {
-      display:grid;
-      grid-template-columns:minmax(96px,110px) minmax(0,1fr);
-      gap:10px;
-      align-items:end;
-    }
-    .bulk-field {
-      min-width:0;
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-    }
-    .bulk-field-label {
-      font-size:10px;
-      font-weight:800;
-      color:#475569;
-      text-transform:uppercase;
-      letter-spacing:.04em;
-      line-height:1.2;
-    }
-    .bulk-entry-grid select,
-    .bulk-entry-grid input {
-      width:100%;
-      min-width:0;
-      height:40px;
-      padding:10px 12px;
-      font-size:13px;
-      border-radius:12px;
-    }
-    .bulk-entry-grid .search-box-wrap {
-      min-width:0;
-    }
-    .bulk-add-row {
-      display:flex;
-      justify-content:flex-end;
-      margin-top:2px;
-    }
-    .bulk-add-row button {
-      min-width:116px;
-      height:40px;
-      padding:0 16px;
-    }
-    .bulk-entry-list {
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      min-height:72px;
-      padding:10px;
-      border:1px dashed #cbd5e1;
-      border-radius:12px;
-      background:#fff;
-    }
-    .bulk-chip-empty {
-      font-size:11px;
-      color:#94a3b8;
-      align-self:center;
-      padding:10px 0;
-      text-align:center;
-      line-height:1.45;
-    }
-    .bulk-entry-row {
-      display:grid;
-      grid-template-columns:1fr auto;
-      grid-template-areas:
-        'meta remove'
-        'employee remove';
-      gap:8px 10px;
-      align-items:start;
-      padding:10px 12px;
-      border:1px solid #e2e8f0;
-      border-radius:14px;
-      background:#f8fafc;
-    }
-    .bulk-entry-meta {
-      grid-area:meta;
-      display:flex;
-      flex-wrap:wrap;
-      align-items:center;
-      gap:8px;
-      min-width:0;
-    }
-    .bulk-entry-index {
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      min-width:34px;
-      height:24px;
-      padding:0 8px;
-      border-radius:999px;
-      background:#dbeafe;
-      color:#1d4ed8;
-      font-size:11px;
-      font-weight:800;
-      line-height:1;
-    }
-    .bulk-entry-period {
-      font-size:13px;
-      font-weight:800;
-      color:#0f172a;
-      line-height:1.2;
-      word-break:break-word;
-    }
-    .bulk-entry-employee {
-      grid-area:employee;
-      min-width:0;
-      font-size:12px;
-      color:#334155;
-      line-height:1.4;
-      word-break:break-word;
-    }
-    .bulk-entry-employee strong {
-      color:#0f172a;
-    }
-    .bulk-entry-remove {
-      grid-area:remove;
-      width:30px;
-      height:30px;
-      min-width:30px;
-      padding:0;
-      align-self:center;
-      border-radius:999px;
-      background:#fee2e2;
-      color:#b91c1c;
-      box-shadow:none;
-      font-size:14px;
-    }
-    .bulk-entry-remove:hover {
-      background:#fecaca;
-      transform:none;
-    }
-
-
+    
     /* Toast Notification */
     .toast {
       position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px);
@@ -441,196 +289,6 @@
     }
     .upload-progress-card.hidden { display: none !important; }
 
-
-    .search-box-wrap { position: relative; }
-    .search-suggest {
-      position: absolute;
-      top: calc(100% + 6px);
-      left: 0;
-      right: 0;
-      background: #fff;
-      border: 1px solid #cbd5e1;
-      border-radius: 12px;
-      box-shadow: 0 12px 28px rgba(15,23,42,.12);
-      max-height: 240px;
-      overflow-y: auto;
-      z-index: 50;
-    }
-    .search-suggest.hidden { display: none !important; }
-    .search-suggest-item {
-      padding: 10px 12px;
-      cursor: pointer;
-      border-bottom: 1px solid #e2e8f0;
-    }
-    .search-suggest-item:last-child { border-bottom: none; }
-    .search-suggest-item:hover,
-    .search-suggest-item.active {
-      background: #eff6ff;
-    }
-    .search-suggest-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: #0f172a;
-      line-height: 1.2;
-    }
-    .search-suggest-sub {
-      margin-top: 2px;
-      font-size: 11px;
-      color: #64748b;
-      line-height: 1.3;
-    }
-    .bulk-panel {
-      background:#f8fafc;
-      border:1px solid #cbd5e1;
-      border-radius:14px;
-      padding:12px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      overflow:visible;
-    }
-    .bulk-inline {
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-    }
-    .bulk-hint {
-      font-size:11px;
-      color:#64748b;
-      line-height:1.45;
-      margin-top:2px;
-    }
-    .bulk-entry-grid {
-      display:grid;
-      grid-template-columns:minmax(96px,110px) minmax(0,1fr);
-      gap:10px;
-      align-items:end;
-    }
-    .bulk-field {
-      min-width:0;
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-    }
-    .bulk-field-label {
-      font-size:10px;
-      font-weight:800;
-      color:#475569;
-      text-transform:uppercase;
-      letter-spacing:.04em;
-      line-height:1.2;
-    }
-    .bulk-entry-grid select,
-    .bulk-entry-grid input {
-      width:100%;
-      min-width:0;
-      height:40px;
-      padding:10px 12px;
-      font-size:13px;
-      border-radius:12px;
-    }
-    .bulk-entry-grid .search-box-wrap {
-      min-width:0;
-    }
-    .bulk-add-row {
-      display:flex;
-      justify-content:flex-end;
-      margin-top:2px;
-    }
-    .bulk-add-row button {
-      min-width:116px;
-      height:40px;
-      padding:0 16px;
-    }
-    .bulk-entry-list {
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      min-height:72px;
-      padding:10px;
-      border:1px dashed #cbd5e1;
-      border-radius:12px;
-      background:#fff;
-    }
-    .bulk-chip-empty {
-      font-size:11px;
-      color:#94a3b8;
-      align-self:center;
-      padding:10px 0;
-      text-align:center;
-      line-height:1.45;
-    }
-    .bulk-entry-row {
-      display:grid;
-      grid-template-columns:1fr auto;
-      grid-template-areas:
-        'meta remove'
-        'employee remove';
-      gap:8px 10px;
-      align-items:start;
-      padding:10px 12px;
-      border:1px solid #e2e8f0;
-      border-radius:14px;
-      background:#f8fafc;
-    }
-    .bulk-entry-meta {
-      grid-area:meta;
-      display:flex;
-      flex-wrap:wrap;
-      align-items:center;
-      gap:8px;
-      min-width:0;
-    }
-    .bulk-entry-index {
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      min-width:34px;
-      height:24px;
-      padding:0 8px;
-      border-radius:999px;
-      background:#dbeafe;
-      color:#1d4ed8;
-      font-size:11px;
-      font-weight:800;
-      line-height:1;
-    }
-    .bulk-entry-period {
-      font-size:13px;
-      font-weight:800;
-      color:#0f172a;
-      line-height:1.2;
-      word-break:break-word;
-    }
-    .bulk-entry-employee {
-      grid-area:employee;
-      min-width:0;
-      font-size:12px;
-      color:#334155;
-      line-height:1.4;
-      word-break:break-word;
-    }
-    .bulk-entry-employee strong {
-      color:#0f172a;
-    }
-    .bulk-entry-remove {
-      grid-area:remove;
-      width:30px;
-      height:30px;
-      min-width:30px;
-      padding:0;
-      align-self:center;
-      border-radius:999px;
-      background:#fee2e2;
-      color:#b91c1c;
-      box-shadow:none;
-      font-size:14px;
-    }
-    .bulk-entry-remove:hover {
-      background:#fecaca;
-      transform:none;
-    }
-
     .upload-progress-head { display:flex; justify-content:space-between; align-items:center; gap:8px; }
     .upload-progress-title { font-size: 12px; font-weight: 800; color: #166534; }
     .upload-progress-percent { font-size: 12px; font-weight: 800; color: #166534; }
@@ -643,68 +301,23 @@
     .upload-stat-label { font-size:10px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:.04em; }
     .upload-stat-value { font-size:13px; font-weight:800; color:#0f172a; margin-top:2px; }
 
-
-    .search-box-wrap { position: relative; }
-    .search-suggest {
-      position: absolute;
-      top: calc(100% + 8px);
-      left: 0;
-      right: 0;
-      background: rgba(255,255,255,.98);
-      backdrop-filter: blur(10px);
-      border: 1px solid #dbe4ef;
-      border-radius: 14px;
-      box-shadow: 0 18px 36px rgba(15,23,42,.16);
-      max-height: 280px;
-      overflow-y: auto;
-      z-index: 80;
-      opacity: 1;
-      transform: translateY(0);
-      transition: opacity .16s ease, transform .16s ease, box-shadow .16s ease;
-    }
-    .search-suggest.hidden {
-      display: none !important;
-    }
-    .search-suggest-item {
-      padding: 10px 12px;
-      cursor: pointer;
-      border-bottom: 1px solid #eef2f7;
-      transition: background .14s ease, transform .14s ease;
-    }
-    .search-suggest-item:last-child { border-bottom: none; }
-    .search-suggest-item:hover,
-    .search-suggest-item.active {
-      background: #eef6ff;
-    }
-    .search-suggest-item.active {
-      box-shadow: inset 3px 0 0 #2563eb;
-    }
-    .search-suggest-row {
+    .bulk-panel {
+      background:#f8fafc;
+      border:1px solid #cbd5e1;
+      border-radius:14px;
+      padding:12px;
       display:flex;
-      align-items:center;
-      gap:8px;
-      flex-wrap:wrap;
+      flex-direction:column;
+      gap:10px;
+      overflow:visible;
     }
-    .search-suggest-code {
-      font-size:12px;
-      font-weight:800;
-      color:#1d4ed8;
-      letter-spacing:.02em;
-    }
-    .search-suggest-name {
-      font-size:13px;
-      font-weight:700;
-      color:#0f172a;
-      line-height:1.25;
-      flex:1;
-      min-width:0;
-    }
-    .search-suggest-sub {
-      margin-top:4px;
-      font-size:11px;
-      color:#64748b;
-      line-height:1.35;
-    }
+    .bulk-inline { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .bulk-hint { font-size:11px; color:#64748b; line-height:1.45; margin-top:2px; }
+    .bulk-entry-grid { display:grid; grid-template-columns:minmax(96px,110px) minmax(0,1fr); gap:10px; align-items:end; }
+    .bulk-field { min-width:0; display:flex; flex-direction:column; gap:6px; }
+    .bulk-field-label { font-size:10px; font-weight:800; color:#475569; text-transform:uppercase; letter-spacing:.04em; line-height:1.2; }
+    .bulk-entry-grid select, .bulk-entry-grid input { width:100%; min-width:0; height:40px; padding:10px 12px; font-size:13px; border-radius:12px; }
+    
     .search-suggest-mark {
       background: linear-gradient(180deg, #fde68a 0%, #fcd34d 100%);
       color:#111827;
@@ -714,108 +327,12 @@
       font-weight:800;
     }
 
-    .bulk-panel {
-      background:#f8fafc;
-      border:1px solid #cbd5e1;
-      border-radius:12px;
-      padding:12px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
-    .bulk-inline {
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-    }
-    .bulk-entry-grid {
-      display:grid;
-      grid-template-columns: 1fr 1.3fr auto;
-      gap:10px;
-      align-items:start;
-    }
-    .bulk-hint {
-      font-size:11px;
-      color:#64748b;
-      line-height:1.45;
-      margin-top:2px;
-    }
-    .bulk-entry-list {
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-      min-height:56px;
-      padding:10px;
-      border:1px dashed #cbd5e1;
-      border-radius:12px;
-      background:#fff;
-    }
-    .bulk-chip-empty {
-      font-size:11px;
-      color:#94a3b8;
-      align-self:center;
-      padding:6px 0;
-    }
-    .bulk-entry-row {
-      display:grid;
-      grid-template-columns: 100px 100px minmax(0,1fr) 32px;
-      gap:8px;
-      align-items:center;
-      padding:8px 10px;
-      border:1px solid #e2e8f0;
-      border-radius:12px;
-      background:#f8fafc;
-    }
-    .bulk-entry-index,
-    .bulk-entry-period {
-      font-size:12px;
-      font-weight:800;
-      color:#0f172a;
-    }
-    .bulk-entry-employee {
-      min-width:0;
-      font-size:12px;
-      color:#334155;
-      line-height:1.35;
-    }
-    .bulk-entry-employee strong {
-      color:#0f172a;
-    }
-    .bulk-entry-remove {
-      width:30px;
-      height:30px;
-      min-width:30px;
-      padding:0;
-      border-radius:999px;
-      background:#fee2e2;
-      color:#b91c1c;
-      box-shadow:none;
-      font-size:14px;
-    }
-    .bulk-entry-remove:hover {
-      background:#fecaca;
-      transform:none;
-    }
-
-
     /* Responsif Layar Kecil */
     @media (max-width: 900px) {
       .app { flex-direction: column; overflow-y: auto; }
       .sidebar { width: 100%; min-width: 100%; border-right: none; border-bottom: 1px solid #e2e8f0; height: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.05); padding: 16px; }
       .main-stage { padding: 16px; overflow-y: visible; }
       .paper { transform-origin: top center; width: 210mm; }
-      .bulk-entry-grid {
-        grid-template-columns:1fr;
-      }
-      .bulk-add-row {
-        justify-content:stretch;
-      }
-      .bulk-add-row button {
-        width:100%;
-      }
-      .bulk-inline {
-        grid-template-columns:1fr;
-      }
     }
     
     /* Aturan Print */
@@ -830,181 +347,26 @@
     }
   
     /* Bulk print panel final compact layout */
-    .bulk-panel {
-      overflow: visible;
-    }
-    .bulk-entry-grid {
-      display:grid !important;
-      grid-template-columns: 92px minmax(0, 1fr) 42px !important;
-      gap:8px !important;
-      align-items:end !important;
-    }
-    .bulk-field {
-      min-width:0;
-      display:flex;
-      flex-direction:column;
-      gap:4px;
-    }
-    .bulk-field-label {
-      font-size:11px;
-      font-weight:800;
-      color:#334155;
-      text-transform:uppercase;
-      letter-spacing:.05em;
-      line-height:1.1;
-    }
-    #bulkEntryPeriod,
-    #bulkEmployeeInput {
-      width:100%;
-      min-width:0;
-      height:38px;
-      padding:8px 10px;
-      font-size:12px;
-      line-height:1.2;
-      border-radius:12px;
-    }
-    #bulkEmployeeInput::placeholder {
-      font-size:11px;
-    }
-    .bulk-icon-btn {
-      width:42px;
-      min-width:42px;
-      height:38px;
-      padding:0;
-      font-size:22px;
-      line-height:1;
-    }
-    .bulk-toolbar {
-      display:flex;
-      justify-content:flex-end;
-      margin-top:-2px;
-    }
-    .bulk-clear-btn {
-      width:36px;
-      min-width:36px;
-      height:32px;
-      padding:0;
-      border-radius:10px;
-      font-size:15px;
-      line-height:1;
-    }
-    .bulk-search-wrap .search-suggest {
-      left:0;
-      right:auto;
-      width:min(340px, calc(100vw - 40px));
-      max-width:none;
-      border-radius:12px;
-    }
-    .bulk-search-wrap .search-suggest-item {
-      padding:8px 10px;
-    }
-    .bulk-search-wrap .search-suggest-row {
-      display:grid;
-      grid-template-columns: 82px minmax(0, 1fr);
-      gap:8px;
-      align-items:start;
-      flex-wrap:nowrap;
-    }
-    .bulk-search-wrap .search-suggest-code {
-      font-size:11px;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-    .bulk-search-wrap .search-suggest-name {
-      font-size:12px;
-      line-height:1.3;
-      overflow-wrap:anywhere;
-    }
-    .bulk-entry-list {
-      min-height:62px;
-      padding:0;
-      background:#fff;
-      overflow:hidden;
-    }
-    .bulk-list-table {
-      display:flex;
-      flex-direction:column;
-      width:100%;
-    }
-    .bulk-list-head,
-    .bulk-list-row {
-      display:grid;
-      grid-template-columns: 28px 88px minmax(0, 1fr) 24px;
-      gap:8px;
-      align-items:start;
-      padding:8px 10px;
-    }
-    .bulk-list-head {
-      background:#eef2f7;
-      border-bottom:1px solid #dbe5ef;
-      font-size:10px;
-      font-weight:800;
-      color:#475569;
-      text-transform:uppercase;
-      letter-spacing:.05em;
-    }
-    .bulk-list-row {
-      background:#fff;
-      border-bottom:1px solid #e2e8f0;
-      font-size:11px;
-    }
-    .bulk-list-row:last-child {
-      border-bottom:none;
-    }
-    .bulk-list-no,
-    .bulk-list-period {
-      font-weight:700;
-      color:#0f172a;
-      line-height:1.25;
-      word-break:break-word;
-    }
-    .bulk-list-employee {
-      min-width:0;
-      line-height:1.25;
-      word-break:break-word;
-    }
-    .bulk-list-code {
-      font-weight:700;
-      color:#0f172a;
-    }
-    .bulk-list-name {
-      margin-top:2px;
-      color:#475569;
-    }
-    .bulk-list-remove {
-      width:24px;
-      height:24px;
-      min-width:24px;
-      padding:0;
-      border-radius:999px;
-      background:#fee2e2;
-      color:#b91c1c;
-      box-shadow:none;
-      font-size:13px;
-      line-height:1;
-      align-self:center;
-      justify-self:end;
-    }
-    .bulk-list-remove:hover {
-      background:#fecaca;
-      transform:none;
-    }
-    @media (max-width: 900px) {
-      .bulk-entry-grid {
-        grid-template-columns: 88px minmax(0, 1fr) 38px !important;
-      }
-      .bulk-search-wrap .search-suggest {
-        width:min(320px, calc(100vw - 36px));
-      }
-      .bulk-list-head,
-      .bulk-list-row {
-        grid-template-columns: 26px 84px minmax(0, 1fr) 22px;
-        gap:6px;
-        padding:8px;
-      }
-    }
-
+    .bulk-entry-grid { display:grid !important; grid-template-columns: 92px minmax(0, 1fr) 42px !important; gap:8px !important; align-items:end !important; }
+    .bulk-field { gap:4px; }
+    .bulk-field-label { font-size:11px; letter-spacing:.05em; line-height:1.1; }
+    #bulkEntryPeriod, #bulkEmployeeInput { width:100%; height:38px; padding:8px 10px; font-size:12px; line-height:1.2; border-radius:12px; }
+    .bulk-icon-btn { width:42px; min-width:42px; height:38px; padding:0; font-size:22px; line-height:1; }
+    .bulk-toolbar { display:flex; justify-content:flex-end; margin-top:-2px; }
+    .bulk-clear-btn { width:36px; min-width:36px; height:32px; padding:0; border-radius:10px; font-size:15px; line-height:1; }
+    .bulk-search-wrap .search-suggest { left:0; right:auto; width:min(340px, calc(100vw - 40px)); max-width:none; border-radius:12px; }
+    .bulk-entry-list { min-height:62px; padding:0; background:#fff; overflow:hidden; border:1px dashed #cbd5e1; border-radius:12px;}
+    .bulk-list-table { display:flex; flex-direction:column; width:100%; }
+    .bulk-list-head, .bulk-list-row { display:grid; grid-template-columns: 28px 88px minmax(0, 1fr) 24px; gap:8px; align-items:start; padding:8px 10px; }
+    .bulk-list-head { background:#eef2f7; border-bottom:1px solid #dbe5ef; font-size:10px; font-weight:800; color:#475569; text-transform:uppercase; letter-spacing:.05em; }
+    .bulk-list-row { background:#fff; border-bottom:1px solid #e2e8f0; font-size:11px; }
+    .bulk-list-row:last-child { border-bottom:none; }
+    .bulk-list-no, .bulk-list-period { font-weight:700; color:#0f172a; line-height:1.25; word-break:break-word; }
+    .bulk-list-employee { min-width:0; line-height:1.25; word-break:break-word; }
+    .bulk-list-code { font-weight:700; color:#0f172a; }
+    .bulk-list-name { margin-top:2px; color:#475569; }
+    .bulk-list-remove { width:24px; height:24px; min-width:24px; padding:0; border-radius:999px; background:#fee2e2; color:#b91c1c; box-shadow:none; font-size:13px; line-height:1; align-self:center; justify-self:end; }
+    .bulk-chip-empty { font-size:11px; color:#94a3b8; align-self:center; padding:10px 0; text-align:center; line-height:1.45; }
 </style>
 </head>
 <body>
@@ -1099,12 +461,14 @@
             <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" style="border-color:#bbf7d0; padding:6px 10px; font-size:11px;" />
           </div>
           <div class="control-group">
-            <label style="color:#15803d;">2. Nama Sheet Tujuan</label>
+            <label style="color:#15803d;">2. Nama Target Database</label>
             <input type="text" id="uploadSheetName" placeholder="Msl: AttBIPO-12-2025" style="border-color:#bbf7d0;" />
-            <div style="margin-top:6px;font-size:11px;color:#166534;line-height:1.45;">Jika nama sheet belum ada di Google Sheet, aplikasi akan meminta server membuat sheet baru otomatis.</div>
+            <div style="margin-top:6px;font-size:11px;color:#991b1b;line-height:1.45;background:#fee2e2;padding:6px 8px;border-radius:6px;border:1px solid #fca5a5;">
+              <strong>⚠️ PENTING:</strong> Wajib upload lewat menu ini agar data diubah jadi JSON. JANGAN upload manual file .xlsx langsung ke folder Drive!
+            </div>
           </div>
           <button id="btnUploadExcel" class="btn-green" style="margin-top:4px;">
-            ⬆️ Upload ke Google Sheet
+            ⬆️ Upload ke Database Drive
           </button>
           <div id="uploadProgressCard" class="upload-progress-card hidden">
             <div class="upload-progress-head">
@@ -1115,7 +479,7 @@
               <div id="uploadProgressBar" class="progress-fill"></div>
             </div>
             <div id="uploadProgressStage" class="upload-progress-stage">Menunggu file dipilih</div>
-            <div id="uploadProgressDetail" class="upload-progress-detail">Aplikasi akan menampilkan status baca file, parsing, validasi, dan kirim ke Google Sheet.</div>
+            <div id="uploadProgressDetail" class="upload-progress-detail">Aplikasi akan menampilkan status baca file, parsing, validasi, dan kirim.</div>
             <div class="upload-stats">
               <div class="upload-stat">
                 <div class="upload-stat-label">Total Baris Excel</div>
@@ -1135,9 +499,6 @@
               </div>
             </div>
           </div>
-          <div style="margin-top:8px;font-size:11px;color:#166534;line-height:1.45;">
-            Jika browser memblokir request biasa, aplikasi akan otomatis mencoba mode kirim yang lebih kompatibel.
-          </div>
         </details>
       </div>
 
@@ -1146,13 +507,13 @@
         <select id="dbYearSelect">
           <option value="">Memuat daftar tahun...</option>
         </select>
-        <div style="font-size:11px;color:#64748b;line-height:1.45;">Struktur disiapkan untuk 1 file Google Sheet per tahun, lalu 1 sheet per bulan/periode.</div>
+        <div style="font-size:11px;color:#64748b;line-height:1.45;">Otomatis membuat folder per tahun di Google Drive Anda.</div>
       </div>
 
       <div class="control-group">
         <label>Pilih Periode</label>
         <select id="sheetSelect" disabled>
-          <option value="">Memuat daftar sheet...</option>
+          <option value="">Memuat daftar file...</option>
         </select>
       </div>
       
@@ -1224,303 +585,149 @@
   <div id="toast" class="toast">Notifikasi</div>
 
   <script>
-    // URL Web App (Sesuai milik Anda yang sudah memiliki fungsi doPost untuk upload)
-    // 1 Web App dipakai bersama. Backend akan memilih spreadsheet berdasarkan tahun.
-    const DATABASE_CONFIG = {
-      "2025": {
-        label: "Attendance BIPO 2025",
-        webAppUrl: "https://script.google.com/macros/s/AKfycbydwcka1DrUbJKXgTBrfBo6UuE1E4feRkZu_mB2K5O9Wu0wtxI_L2REBzNZFqL6QcHV/exec"
-      },
-      "2026": {
-        label: "Attendance BIPO 2026",
-        webAppUrl: "https://script.google.com/macros/s/AKfycbydwcka1DrUbJKXgTBrfBo6UuE1E4feRkZu_mB2K5O9Wu0wtxI_L2REBzNZFqL6QcHV/exec"
-      }
-    };
+    // =========================================================================
+    // KONFIGURASI DATABASE TERPUSAT (GOOGLE DRIVE + APPS SCRIPT)
+    // =========================================================================
+    // Masukkan 1 URL Deployment Web App Apps Script Anda di sini. 
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwHG4lHhwXp18aMKJr-Bftyeh7hBG2G6-FYpVSnHlUrpmh044_fi9LySaBrfUiIGHiQdQ/exec";
+    const AVAILABLE_YEARS = ["2024", "2025", "2026", "2027", "2028"];
 
     const appState = {
-      sheetNames: [],
-      sourceRows: [],
-      workingRows: [],
-      selectedCode: '',
-      selectedSheet: '',
-      selectedYear: '',
-      rowMapByKey: new Map(),
-      employeeRowsMap: new Map(),
-      employeeMetaMap: new Map(),
-      employeeOptions: [],
-      sheetPeriod: { start: '', end: '' },
-      sheetCache: new Map(),
-      headerLayout: null,
-      searchSuggestIndex: -1,
-      searchDebounceTimer: null,
-      bulkEntries: [],
-      bulkSuggestIndex: -1,
-      bulkEmployeeSearchCode: ''
+      sheetNames: [], sourceRows: [], workingRows: [], selectedCode: '',
+      selectedSheet: '', selectedYear: '', rowMapByKey: new Map(),
+      employeeRowsMap: new Map(), employeeMetaMap: new Map(),
+      employeeOptions: [], sheetPeriod: { start: '', end: '' },
+      sheetCache: new Map(), headerLayout: null, searchSuggestIndex: -1,
+      searchDebounceTimer: null, bulkEntries: [], bulkSuggestIndex: -1, bulkEmployeeSearchCode: ''
     };
 
     const aliases = {
-      code: ['Employee Code','employee code','employee_code','code', 'id', 'nik', 'employee_id', 'id karyawan', 'employee no', 'pin', 'emp code', 'emp. code'],
-      name: ['Employee Name','employee name','employee_name','name', 'nama', 'nama karyawan', 'employee', 'emp name', 'emp. name'],
-      department: ['Department','department', 'dept', 'departemen', 'bagian'],
-      clockDate: ['Clock Date','clock date','clock_date','date', 'tanggal', 'tanggal_absen', 'date record'],
-      clockIn: ['Clock In','clock in','clock_in', 'in', 'jam_masuk', 'masuk', 'time in'],
-      clockOut: ['Clock Out','clock out','clock_out', 'out', 'jam_keluar', 'keluar', 'time out'],
+      code: ['Employee Code','employee code','employee_code','code', 'id', 'nik', 'employee_id', 'id karyawan', 'employee no', 'pin', 'emp code', 'emp. code', 'no id', 'id no'],
+      name: ['Employee Name','employee name','employee_name','name', 'nama', 'nama karyawan', 'employee', 'emp name', 'emp. name', 'nama lengkap'],
+      department: ['Department','department', 'dept', 'departemen', 'bagian', 'divisi'],
+      clockDate: ['Clock Date','clock date','clock_date','date', 'tanggal', 'tanggal_absen', 'date record', 'tgl'],
+      clockIn: ['Clock In','clock in','clock_in', 'in', 'jam_masuk', 'masuk', 'time in', 'scan masuk'],
+      clockOut: ['Clock Out','clock out','clock_out', 'out', 'jam_keluar', 'keluar', 'time out', 'scan keluar'],
       overtime: ['OT Authorized','Overtime','OT','ot authorized','overtime','ot', 'lembur', 'jam lembur'],
       remarks: ['Remarks Description','Remarks','remarks description','remarks', 'keterangan', 'desc', 'keterangan/remarks'],
       uniqueKey: ['Unique Key','unique key','uniqueKey', 'key']
     };
 
     const el = {
-      dbYearSelect: document.getElementById('dbYearSelect'),
-      sheetSelect: document.getElementById('sheetSelect'),
-      searchInput: document.getElementById('searchInput'),
-      searchSuggest: document.getElementById('searchSuggest'),
-      employeeSelect: document.getElementById('employeeSelect'),
-      bulkEntryPeriod: document.getElementById('bulkEntryPeriod'),
-      bulkEmployeeInput: document.getElementById('bulkEmployeeInput'),
-      bulkEmployeeSuggest: document.getElementById('bulkEmployeeSuggest'),
-      bulkEntryList: document.getElementById('bulkEntryList'),
-      btnBulkAddEntry: document.getElementById('btnBulkAddEntry'),
-      btnBulkClearEntries: document.getElementById('btnBulkClearEntries'),
-      btnBulkPdf: document.getElementById('btnBulkPdf'),
-      btnBulkUseCurrentEmployee: document.getElementById('btnBulkUseCurrentEmployee'),
-      systemCodeInput: document.getElementById('systemCodeInput'),
-      versionInput: document.getElementById('versionInput'),
-      btnSync: document.getElementById('btnSync'),
-      btnPrint: document.getElementById('btnPrint'),
-      btnResetCurrent: document.getElementById('btnResetCurrent'),
-      btnSettings: document.getElementById('btnSettings'),
-      settingsPanel: document.getElementById('settingsPanel'),
-      reportRoot: document.getElementById('reportRoot'),
-      reportVersion: document.getElementById('reportVersion'),
-      paperTarget: document.getElementById('paperTarget'),
-      // Upload Elements
-      excelFileInput: document.getElementById('excelFileInput'),
-      uploadSheetName: document.getElementById('uploadSheetName'),
-      btnUploadExcel: document.getElementById('btnUploadExcel'),
-      uploadProgressCard: document.getElementById('uploadProgressCard'),
-      uploadProgressTitle: document.getElementById('uploadProgressTitle'),
-      uploadProgressPercent: document.getElementById('uploadProgressPercent'),
-      uploadProgressBar: document.getElementById('uploadProgressBar'),
-      uploadProgressStage: document.getElementById('uploadProgressStage'),
-      uploadProgressDetail: document.getElementById('uploadProgressDetail'),
-      statTotalRows: document.getElementById('statTotalRows'),
-      statReadyRows: document.getElementById('statReadyRows'),
-      statSkippedRows: document.getElementById('statSkippedRows'),
-      statDuplicateRows: document.getElementById('statDuplicateRows'),
-      companyFontInput: document.getElementById('companyFontInput'),
-      titleFontInput: document.getElementById('titleFontInput'),
-      metaFontInput: document.getElementById('metaFontInput'),
-      periodFontInput: document.getElementById('periodFontInput'),
-      rangeFontInput: document.getElementById('rangeFontInput'),
-      companyGapInput: document.getElementById('companyGapInput'),
-      titleGapInput: document.getElementById('titleGapInput'),
-      metaGapInput: document.getElementById('metaGapInput'),
-      periodGapInput: document.getElementById('periodGapInput'),
-      rangeBottomGapInput: document.getElementById('rangeBottomGapInput'),
-      btnApplyHeaderPreset: document.getElementById('btnApplyHeaderPreset'),
+      dbYearSelect: document.getElementById('dbYearSelect'), sheetSelect: document.getElementById('sheetSelect'),
+      searchInput: document.getElementById('searchInput'), searchSuggest: document.getElementById('searchSuggest'),
+      employeeSelect: document.getElementById('employeeSelect'), bulkEntryPeriod: document.getElementById('bulkEntryPeriod'),
+      bulkEmployeeInput: document.getElementById('bulkEmployeeInput'), bulkEmployeeSuggest: document.getElementById('bulkEmployeeSuggest'),
+      bulkEntryList: document.getElementById('bulkEntryList'), btnBulkAddEntry: document.getElementById('btnBulkAddEntry'),
+      btnBulkClearEntries: document.getElementById('btnBulkClearEntries'), btnBulkPdf: document.getElementById('btnBulkPdf'),
+      systemCodeInput: document.getElementById('systemCodeInput'), versionInput: document.getElementById('versionInput'),
+      btnSync: document.getElementById('btnSync'), btnPrint: document.getElementById('btnPrint'),
+      btnResetCurrent: document.getElementById('btnResetCurrent'), btnSettings: document.getElementById('btnSettings'),
+      settingsPanel: document.getElementById('settingsPanel'), reportRoot: document.getElementById('reportRoot'),
+      reportVersion: document.getElementById('reportVersion'), paperTarget: document.getElementById('paperTarget'),
+      excelFileInput: document.getElementById('excelFileInput'), uploadSheetName: document.getElementById('uploadSheetName'),
+      btnUploadExcel: document.getElementById('btnUploadExcel'), uploadProgressCard: document.getElementById('uploadProgressCard'),
+      uploadProgressTitle: document.getElementById('uploadProgressTitle'), uploadProgressPercent: document.getElementById('uploadProgressPercent'),
+      uploadProgressBar: document.getElementById('uploadProgressBar'), uploadProgressStage: document.getElementById('uploadProgressStage'),
+      uploadProgressDetail: document.getElementById('uploadProgressDetail'), statTotalRows: document.getElementById('statTotalRows'),
+      statReadyRows: document.getElementById('statReadyRows'), statSkippedRows: document.getElementById('statSkippedRows'),
+      statDuplicateRows: document.getElementById('statDuplicateRows'), companyFontInput: document.getElementById('companyFontInput'),
+      titleFontInput: document.getElementById('titleFontInput'), metaFontInput: document.getElementById('metaFontInput'),
+      periodFontInput: document.getElementById('periodFontInput'), rangeFontInput: document.getElementById('rangeFontInput'),
+      companyGapInput: document.getElementById('companyGapInput'), titleGapInput: document.getElementById('titleGapInput'),
+      metaGapInput: document.getElementById('metaGapInput'), periodGapInput: document.getElementById('periodGapInput'),
+      rangeBottomGapInput: document.getElementById('rangeBottomGapInput'), btnApplyHeaderPreset: document.getElementById('btnApplyHeaderPreset'),
       btnResetHeaderLayout: document.getElementById('btnResetHeaderLayout')
     };
 
-    // Toast Logic
     let toastTimeout;
     function showToast(msg, type = 'info') {
       const toast = document.getElementById('toast');
       toast.textContent = msg;
       toast.className = `toast show ${type}`;
       clearTimeout(toastTimeout);
-      toastTimeout = setTimeout(() => {
-        toast.classList.remove('show');
-      }, 4000);
+      toastTimeout = setTimeout(() => { toast.classList.remove('show'); }, 4000);
     }
 
-    function formatNumber(num){
-      return Number(num || 0).toLocaleString('id-ID');
-    }
+    function formatNumber(num){ return Number(num || 0).toLocaleString('id-ID'); }
+    function sleep(ms){ return new Promise(resolve => setTimeout(resolve, ms)); }
+    async function yieldToUI(){ await new Promise(resolve => requestAnimationFrame(() => resolve())); }
 
-    function sleep(ms){
-      return new Promise(resolve => setTimeout(resolve, ms));
-    }
-
-    async function yieldToUI(){
-      await new Promise(resolve => requestAnimationFrame(() => resolve()));
-    }
-
-    const HEADER_LAYOUT_DEFAULT = {
-      companyFont: 12,
-      titleFont: 14.4,
-      metaFont: 9.6,
-      periodFont: 9.6,
-      rangeFont: 7.2,
-      companyGap: 1,
-      titleGap: 7,
-      metaGap: 5,
-      periodGap: 0,
-      rangeBottomGap: 6
-    };
-
-    const HEADER_LAYOUT_IMAGE = {
-      companyFont: 12,
-      titleFont: 14.4,
-      metaFont: 9.6,
-      periodFont: 9.6,
-      rangeFont: 7.2,
-      companyGap: 1,
-      titleGap: 7,
-      metaGap: 5,
-      periodGap: 0,
-      rangeBottomGap: 6
-    };
+    const HEADER_LAYOUT_DEFAULT = { companyFont: 12, titleFont: 14.4, metaFont: 9.6, periodFont: 9.6, rangeFont: 7.2, companyGap: 1, titleGap: 7, metaGap: 5, periodGap: 0, rangeBottomGap: 6 };
+    const HEADER_LAYOUT_IMAGE = { companyFont: 12, titleFont: 14.4, metaFont: 9.6, periodFont: 9.6, rangeFont: 7.2, companyGap: 1, titleGap: 7, metaGap: 5, periodGap: 0, rangeBottomGap: 6 };
 
     function clampNumber(value, min, max, fallback) {
-      const num = Number(value);
-      if (Number.isNaN(num)) return fallback;
-      return Math.max(min, Math.min(max, num));
+      const num = Number(value); return Number.isNaN(num) ? fallback : Math.max(min, Math.min(max, num));
     }
-
     function normalizeHeaderLayout(layout) {
       const base = Object.assign({}, HEADER_LAYOUT_DEFAULT, layout || {});
       return {
-        companyFont: clampNumber(base.companyFont, 8, 24, HEADER_LAYOUT_DEFAULT.companyFont),
-        titleFont: clampNumber(base.titleFont, 10, 30, HEADER_LAYOUT_DEFAULT.titleFont),
-        metaFont: clampNumber(base.metaFont, 8, 18, HEADER_LAYOUT_DEFAULT.metaFont),
-        periodFont: clampNumber(base.periodFont, 8, 18, HEADER_LAYOUT_DEFAULT.periodFont),
-        rangeFont: clampNumber(base.rangeFont, 6, 16, HEADER_LAYOUT_DEFAULT.rangeFont),
-        companyGap: clampNumber(base.companyGap, 0, 20, HEADER_LAYOUT_DEFAULT.companyGap),
-        titleGap: clampNumber(base.titleGap, 0, 20, HEADER_LAYOUT_DEFAULT.titleGap),
-        metaGap: clampNumber(base.metaGap, 0, 20, HEADER_LAYOUT_DEFAULT.metaGap),
-        periodGap: clampNumber(base.periodGap, 0, 20, HEADER_LAYOUT_DEFAULT.periodGap),
-        rangeBottomGap: clampNumber(base.rangeBottomGap, 0, 24, HEADER_LAYOUT_DEFAULT.rangeBottomGap)
+        companyFont: clampNumber(base.companyFont, 8, 24, HEADER_LAYOUT_DEFAULT.companyFont), titleFont: clampNumber(base.titleFont, 10, 30, HEADER_LAYOUT_DEFAULT.titleFont),
+        metaFont: clampNumber(base.metaFont, 8, 18, HEADER_LAYOUT_DEFAULT.metaFont), periodFont: clampNumber(base.periodFont, 8, 18, HEADER_LAYOUT_DEFAULT.periodFont),
+        rangeFont: clampNumber(base.rangeFont, 6, 16, HEADER_LAYOUT_DEFAULT.rangeFont), companyGap: clampNumber(base.companyGap, 0, 20, HEADER_LAYOUT_DEFAULT.companyGap),
+        titleGap: clampNumber(base.titleGap, 0, 20, HEADER_LAYOUT_DEFAULT.titleGap), metaGap: clampNumber(base.metaGap, 0, 20, HEADER_LAYOUT_DEFAULT.metaGap),
+        periodGap: clampNumber(base.periodGap, 0, 20, HEADER_LAYOUT_DEFAULT.periodGap), rangeBottomGap: clampNumber(base.rangeBottomGap, 0, 24, HEADER_LAYOUT_DEFAULT.rangeBottomGap)
       };
     }
-
     function loadHeaderLayout() {
-      try {
-        const raw = localStorage.getItem('attendanceHeaderLayout');
-        if (!raw) return normalizeHeaderLayout(HEADER_LAYOUT_IMAGE);
-        return normalizeHeaderLayout(JSON.parse(raw));
-      } catch (_error) {
-        return normalizeHeaderLayout(HEADER_LAYOUT_IMAGE);
-      }
+      try { const raw = localStorage.getItem('attendanceHeaderLayout'); return raw ? normalizeHeaderLayout(JSON.parse(raw)) : normalizeHeaderLayout(HEADER_LAYOUT_IMAGE); } 
+      catch (_error) { return normalizeHeaderLayout(HEADER_LAYOUT_IMAGE); }
     }
-
-    function saveHeaderLayout(layout) {
-      try {
-        localStorage.setItem('attendanceHeaderLayout', JSON.stringify(layout));
-      } catch (_error) {}
-    }
+    function saveHeaderLayout(layout) { try { localStorage.setItem('attendanceHeaderLayout', JSON.stringify(layout)); } catch (_error) {} }
 
     function applyHeaderInputs(layout) {
-      el.companyFontInput.value = layout.companyFont;
-      el.titleFontInput.value = layout.titleFont;
-      el.metaFontInput.value = layout.metaFont;
-      el.periodFontInput.value = layout.periodFont;
-      el.rangeFontInput.value = layout.rangeFont;
-      el.companyGapInput.value = layout.companyGap;
-      el.titleGapInput.value = layout.titleGap;
-      el.metaGapInput.value = layout.metaGap;
-      el.periodGapInput.value = layout.periodGap;
-      el.rangeBottomGapInput.value = layout.rangeBottomGap;
+      el.companyFontInput.value = layout.companyFont; el.titleFontInput.value = layout.titleFont; el.metaFontInput.value = layout.metaFont;
+      el.periodFontInput.value = layout.periodFont; el.rangeFontInput.value = layout.rangeFont; el.companyGapInput.value = layout.companyGap;
+      el.titleGapInput.value = layout.titleGap; el.metaGapInput.value = layout.metaGap; el.periodGapInput.value = layout.periodGap; el.rangeBottomGapInput.value = layout.rangeBottomGap;
     }
-
     function getHeaderLayoutFromInputs() {
       return normalizeHeaderLayout({
-        companyFont: el.companyFontInput.value,
-        titleFont: el.titleFontInput.value,
-        metaFont: el.metaFontInput.value,
-        periodFont: el.periodFontInput.value,
-        rangeFont: el.rangeFontInput.value,
-        companyGap: el.companyGapInput.value,
-        titleGap: el.titleGapInput.value,
-        metaGap: el.metaGapInput.value,
-        periodGap: el.periodGapInput.value,
-        rangeBottomGap: el.rangeBottomGapInput.value
+        companyFont: el.companyFontInput.value, titleFont: el.titleFontInput.value, metaFont: el.metaFontInput.value, periodFont: el.periodFontInput.value,
+        rangeFont: el.rangeFontInput.value, companyGap: el.companyGapInput.value, titleGap: el.titleGapInput.value, metaGap: el.metaGapInput.value,
+        periodGap: el.periodGapInput.value, rangeBottomGap: el.rangeBottomGapInput.value
       });
     }
-
     function setHeaderLayout(layout, shouldRender = true) {
       appState.headerLayout = normalizeHeaderLayout(layout);
-      applyHeaderInputs(appState.headerLayout);
-      saveHeaderLayout(appState.headerLayout);
+      applyHeaderInputs(appState.headerLayout); saveHeaderLayout(appState.headerLayout);
       if (shouldRender) renderReport();
     }
-
     function buildHeaderStyleVars(layout) {
       const cfg = normalizeHeaderLayout(layout);
-      return [
-        `--company-font-size:${cfg.companyFont}px`,
-        `--title-font-size:${cfg.titleFont}px`,
-        `--meta-font-size:${cfg.metaFont}px`,
-        `--period-font-size:${cfg.periodFont}px`,
-        `--range-font-size:${cfg.rangeFont}px`,
-        `--company-gap:${cfg.companyGap}px`,
-        `--title-gap:${cfg.titleGap}px`,
-        `--meta-gap:${cfg.metaGap}px`,
-        `--period-gap:${cfg.periodGap}px`,
-        `--range-bottom-gap:${cfg.rangeBottomGap}px`
-      ].join(';');
+      return `--company-font-size:${cfg.companyFont}px;--title-font-size:${cfg.titleFont}px;--meta-font-size:${cfg.metaFont}px;--period-font-size:${cfg.periodFont}px;--range-font-size:${cfg.rangeFont}px;--company-gap:${cfg.companyGap}px;--title-gap:${cfg.titleGap}px;--meta-gap:${cfg.metaGap}px;--period-gap:${cfg.periodGap}px;--range-bottom-gap:${cfg.rangeBottomGap}px`;
     }
 
     function resetUploadProgress() {
-      el.uploadProgressCard.classList.add('hidden');
-      el.uploadProgressBar.style.width = '0%';
-      el.uploadProgressPercent.textContent = '0%';
-      el.uploadProgressStage.textContent = 'Menunggu file dipilih';
-      el.uploadProgressDetail.textContent = 'Aplikasi akan menampilkan status baca file, parsing, validasi, dan kirim ke Google Sheet.';
-      el.statTotalRows.textContent = '0';
-      el.statReadyRows.textContent = '0';
-      el.statSkippedRows.textContent = '0';
-      el.statDuplicateRows.textContent = '0';
+      el.uploadProgressCard.classList.add('hidden'); el.uploadProgressBar.style.width = '0%'; el.uploadProgressPercent.textContent = '0%';
+      el.uploadProgressStage.textContent = 'Menunggu file dipilih'; el.uploadProgressDetail.textContent = 'Aplikasi akan menampilkan status baca file, parsing, validasi, dan kirim.';
+      el.statTotalRows.textContent = '0'; el.statReadyRows.textContent = '0'; el.statSkippedRows.textContent = '0'; el.statDuplicateRows.textContent = '0';
     }
-
-    function setUploadBusy(isBusy, buttonLabel = '⬆️ Upload ke Google Sheet') {
-      el.btnUploadExcel.disabled = isBusy;
-      el.excelFileInput.disabled = isBusy;
-      el.uploadSheetName.disabled = isBusy;
-      el.btnUploadExcel.innerHTML = buttonLabel;
+    function setUploadBusy(isBusy, buttonLabel = '⬆️ Upload ke Database Drive') {
+      el.btnUploadExcel.disabled = isBusy; el.excelFileInput.disabled = isBusy; el.uploadSheetName.disabled = isBusy; el.btnUploadExcel.innerHTML = buttonLabel;
     }
-
     function setUploadProgress(percent, stage, detail = '', stats = {}) {
       const safePercent = Math.max(0, Math.min(100, Math.round(percent)));
-      el.uploadProgressCard.classList.remove('hidden');
-      el.uploadProgressBar.style.width = `${safePercent}%`;
-      el.uploadProgressPercent.textContent = `${safePercent}%`;
-      if (stage) el.uploadProgressStage.textContent = stage;
-      if (detail !== undefined) el.uploadProgressDetail.textContent = detail;
+      el.uploadProgressCard.classList.remove('hidden'); el.uploadProgressBar.style.width = `${safePercent}%`; el.uploadProgressPercent.textContent = `${safePercent}%`;
+      if (stage) el.uploadProgressStage.textContent = stage; if (detail !== undefined) el.uploadProgressDetail.textContent = detail;
       if (stats.total !== undefined) el.statTotalRows.textContent = formatNumber(stats.total);
       if (stats.ready !== undefined) el.statReadyRows.textContent = formatNumber(stats.ready);
       if (stats.skipped !== undefined) el.statSkippedRows.textContent = formatNumber(stats.skipped);
       if (stats.duplicates !== undefined) el.statDuplicateRows.textContent = formatNumber(stats.duplicates);
     }
-
-    function buildUploadStats(totalRows, readyRows, skippedRows, duplicateRows) {
-      return { total: totalRows, ready: readyRows, skipped: skippedRows, duplicates: duplicateRows };
-    }
+    function buildUploadStats(totalRows, readyRows, skippedRows, duplicateRows) { return { total: totalRows, ready: readyRows, skipped: skippedRows, duplicates: duplicateRows }; }
 
     function parseJsonFromText(text) {
       const raw = String(text || '').trim();
-
       if (!raw) return { ok: true };
-
       const lowerRaw = raw.toLowerCase();
       if (lowerRaw.startsWith('<!doctype html') || lowerRaw.startsWith('<html') || lowerRaw.includes('<body')) {
         throw new Error('Server mengembalikan HTML, bukan JSON. Cek deployment Google Apps Script dan izin akses Web App.');
       }
-
       let candidate = raw;
-      const firstBrace = raw.indexOf('{');
-      const lastBrace = raw.lastIndexOf('}');
-      if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
-        candidate = raw.slice(firstBrace, lastBrace + 1);
-      }
-
+      const firstBrace = raw.indexOf('{'); const lastBrace = raw.lastIndexOf('}');
+      if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) candidate = raw.slice(firstBrace, lastBrace + 1);
       let data = null;
-      try {
-        data = JSON.parse(candidate);
-      } catch (error) {
-        throw new Error('Respons server bukan JSON yang valid.');
-      }
-
+      try { data = JSON.parse(candidate); } catch (error) { throw new Error('Respons server bukan JSON yang valid.'); }
       if (data && data.ok === false && data.message) throw new Error(data.message);
       if (data && data.error) throw new Error(data.error);
       return data;
@@ -1528,10 +735,14 @@
 
     async function postPayloadWithFetch(payload, contentType = 'text/plain;charset=utf-8', useNoCors = false) {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 90000);
+      const timeoutId = setTimeout(() => controller.abort(), 90000); 
 
       try {
-        const response = await fetch(getActiveWebAppUrl(), {
+        let url = WEB_APP_URL;
+        const actionParam = payload.action || payload.mode || 'upload';
+        url += (url.includes('?') ? '&' : '?') + 'action=' + encodeURIComponent(actionParam);
+
+        const response = await fetch(url, {
           method: 'POST',
           headers: { 'Content-Type': contentType },
           body: JSON.stringify(payload),
@@ -1540,25 +751,17 @@
           mode: useNoCors ? 'no-cors' : 'cors'
         });
 
-        if (useNoCors) {
-          return { ok: true, opaque: true, message: 'Request upload berhasil dikirim dalam mode kompatibel browser.' };
-        }
+        if (useNoCors) return { ok: true, opaque: true, message: 'Request upload berhasil dikirim dalam mode kompatibel browser.' };
 
         const responseText = await response.text();
-
         if (!response.ok) {
           const shortMessage = String(responseText || '').trim().slice(0, 160);
           throw new Error(shortMessage ? `HTTP ${response.status}: ${shortMessage}` : `HTTP ${response.status}: Upload gagal.`);
         }
-
         return parseJsonFromText(responseText);
       } catch (error) {
-        if (error && error.name === 'AbortError') {
-          throw new Error('Upload timeout.');
-        }
-        if (error instanceof TypeError || /Failed to fetch/i.test(String(error && error.message || ''))) {
-          throw new Error('BLOCKED_REQUEST');
-        }
+        if (error && error.name === 'AbortError') throw new Error('Upload timeout. Server butuh waktu terlalu lama.');
+        if (error instanceof TypeError || /Failed to fetch/i.test(String(error && error.message || ''))) throw new Error('BLOCKED_REQUEST');
         throw error;
       } finally {
         clearTimeout(timeoutId);
@@ -1570,9 +773,7 @@
         await sleep(1200);
         try {
           await loadAppAndSheets();
-          if (appState.sheetNames.includes(targetSheet)) {
-            return true;
-          }
+          if (appState.sheetNames.includes(targetSheet)) return true;
         } catch (_error) {}
       }
       return false;
@@ -1584,138 +785,119 @@
 
       return new Promise(async (resolve, reject) => {
         let simulatedBytes = Math.max(Math.round(totalBytes * 0.08), 1024);
-        if (typeof onProgress === 'function') {
-          onProgress(Math.min(simulatedBytes, totalBytes), totalBytes);
-        }
+        if (typeof onProgress === 'function') onProgress(Math.min(simulatedBytes, totalBytes), totalBytes);
 
         const ticker = setInterval(() => {
-          simulatedBytes = Math.min(
-            simulatedBytes + Math.max(Math.round(totalBytes * 0.07), 2048),
-            Math.max(Math.round(totalBytes * 0.9), simulatedBytes)
-          );
-          if (typeof onProgress === 'function') {
-            onProgress(Math.min(simulatedBytes, totalBytes), totalBytes);
-          }
+          simulatedBytes = Math.min(simulatedBytes + Math.max(Math.round(totalBytes * 0.07), 2048), Math.max(Math.round(totalBytes * 0.9), simulatedBytes));
+          if (typeof onProgress === 'function') onProgress(Math.min(simulatedBytes, totalBytes), totalBytes);
         }, 220);
 
         try {
           let result = null;
-
-          try {
-            result = await postPayloadWithFetch(payload, 'text/plain;charset=utf-8');
-          } catch (firstError) {
-            if (String(firstError.message || '') === 'BLOCKED_REQUEST') {
-              result = await postPayloadWithFetch(payload, 'text/plain;charset=utf-8', true);
-            } else {
-              try {
-                result = await postPayloadWithFetch(payload, 'application/json;charset=utf-8');
-              } catch (secondError) {
-                if (String(secondError.message || '') === 'BLOCKED_REQUEST') {
-                  result = await postPayloadWithFetch(payload, 'text/plain;charset=utf-8', true);
-                } else {
-                  throw secondError;
-                }
+          try { result = await postPayloadWithFetch(payload, 'text/plain;charset=utf-8'); } 
+          catch (firstError) {
+            if (String(firstError.message || '') === 'BLOCKED_REQUEST') result = await postPayloadWithFetch(payload, 'text/plain;charset=utf-8', true);
+            else {
+              try { result = await postPayloadWithFetch(payload, 'application/json;charset=utf-8'); } 
+              catch (secondError) {
+                if (String(secondError.message || '') === 'BLOCKED_REQUEST') result = await postPayloadWithFetch(payload, 'text/plain;charset=utf-8', true);
+                else throw secondError;
               }
             }
           }
-
           clearInterval(ticker);
-          if (typeof onProgress === 'function') {
-            onProgress(totalBytes, totalBytes);
-          }
+          if (typeof onProgress === 'function') onProgress(totalBytes, totalBytes);
           resolve(result);
         } catch (error) {
           clearInterval(ticker);
-          reject(error.message === 'BLOCKED_REQUEST'
-            ? new Error('Koneksi upload gagal karena browser memblokir request ke Apps Script.')
-            : error
-          );
+          reject(error.message === 'BLOCKED_REQUEST' ? new Error('Koneksi upload gagal karena browser memblokir request ke Apps Script.') : error);
         }
       });
     }
 
-
-    function getAvailableYears(){
-      return Object.keys(DATABASE_CONFIG).sort();
+    function parseApiPayload(payload){
+      if (!payload) return [];
+      if (Array.isArray(payload)) {
+        if (payload.length > 0 && Array.isArray(payload[0])) {
+          const headers = payload[0].map(String);
+          return payload.slice(1).map(row => { const obj = {}; headers.forEach((head, idx) => obj[head] = row[idx]); return obj; });
+        }
+        return payload; 
+      }
+      if (Array.isArray(payload.rows)) return parseApiPayload(payload.rows);
+      if (Array.isArray(payload.data)) return parseApiPayload(payload.data);
+      if (Array.isArray(payload.records)) return parseApiPayload(payload.records);
+      if (payload.headers && Array.isArray(payload.values)) {
+        return payload.values.map(row => { const obj = {}; payload.headers.forEach((head, idx) => obj[head] = row[idx]); return obj; });
+      }
+      if (Array.isArray(payload.values) && payload.values.length > 0) {
+        const first = payload.values[0];
+        if (Array.isArray(first)) {
+          const headers = first.map(String); return payload.values.slice(1).map(row => { const obj = {}; headers.forEach((head, idx) => obj[head] = row[idx]); return obj; });
+        } else if (typeof first === 'object') { return payload.values; }
+      }
+      return [];
     }
 
-    function getActiveDatabaseConfig(){
-      const years = getAvailableYears();
-      const selected = String(appState.selectedYear || '').trim();
-      if (selected && DATABASE_CONFIG[selected]) return DATABASE_CONFIG[selected];
-      const fallback = years[0] || '';
-      if (fallback) {
-        appState.selectedYear = fallback;
-        return DATABASE_CONFIG[fallback];
-      }
-      return null;
+    async function fetchJson(url){
+      const res = await fetch(url, { method:'GET' }); const text = await res.text();
+      if (text.trim().startsWith('<') || text.toLowerCase().includes('<!doctype html>')) throw new Error('Script error: Mengembalikan format HTML.');
+      let data = null; try { data = JSON.parse(text); } catch(error) { throw new Error('Data bukan format JSON.'); }
+      if (data && data.ok === false && data.message) throw new Error(data.message);
+      if (data && data.error) throw new Error(data.error);
+      return data;
     }
 
-    function getActiveWebAppUrl(){
-      const config = getActiveDatabaseConfig();
-      if (!config || !config.webAppUrl) {
-        throw new Error('Konfigurasi database tahun belum diisi.');
-      }
-      return config.webAppUrl;
+    function jsonp(url){
+      return new Promise((resolve, reject) => {
+        const callbackName = '__gsheetSync_' + Math.random().toString(36).slice(2);
+        const script = document.createElement('script');
+        const timer = setTimeout(() => { cleanup(); reject(new Error('Timeout koneksi.')); }, 15000);
+        function cleanup(){ clearTimeout(timer); if (script.parentNode) script.parentNode.removeChild(script); try { delete window[callbackName]; } catch (_e) { window[callbackName] = undefined; } }
+        window[callbackName] = (data) => { cleanup(); if (data && data.ok === false && data.message) reject(new Error(data.message)); else if (data && data.error) reject(new Error(data.error)); else resolve(data); };
+        script.onerror = () => { cleanup(); reject(new Error('Gagal koneksi JSONP.')); };
+        const joiner = url.includes('?') ? '&' : '?'; script.src = url + joiner + 'callback=' + callbackName; document.body.appendChild(script);
+      });
     }
 
     function fillDatabaseYearOptions(){
-      const years = getAvailableYears();
       if (!el.dbYearSelect) return;
-
-      if (!years.length) {
-        el.dbYearSelect.innerHTML = '<option value="">Belum ada konfigurasi</option>';
-        el.dbYearSelect.disabled = true;
-        return;
-      }
-
-      if (!appState.selectedYear || !DATABASE_CONFIG[appState.selectedYear]) {
-        appState.selectedYear = years[0];
-      }
-
-      el.dbYearSelect.innerHTML = years.map(year => {
-        const label = DATABASE_CONFIG[year]?.label ? `${year} - ${DATABASE_CONFIG[year].label}` : year;
-        return `<option value="${escapeHtml(year)}">${escapeHtml(label)}</option>`;
+      if (!appState.selectedYear) appState.selectedYear = new Date().getFullYear().toString();
+      el.dbYearSelect.innerHTML = AVAILABLE_YEARS.map(year => {
+        return `<option value="${escapeHtml(year)}">Database ${escapeHtml(year)}</option>`;
       }).join('');
-      el.dbYearSelect.disabled = false;
-      el.dbYearSelect.value = appState.selectedYear;
+      el.dbYearSelect.disabled = false; el.dbYearSelect.value = appState.selectedYear;
     }
 
     function clearYearScopedState(){
-      appState.sheetNames = [];
-      appState.sourceRows = [];
-      appState.workingRows = [];
-      appState.selectedCode = '';
-      appState.selectedSheet = '';
-      appState.rowMapByKey = new Map();
-      appState.employeeRowsMap = new Map();
-      appState.employeeMetaMap = new Map();
-      appState.employeeOptions = [];
-      appState.sheetPeriod = { start: '', end: '' };
-      appState.sheetCache = new Map();
-      appState.bulkEntries = [];
-      appState.bulkEmployeeSearchCode = '';
+      appState.sheetNames = []; appState.sourceRows = []; appState.workingRows = []; appState.selectedCode = ''; appState.selectedSheet = '';
+      appState.rowMapByKey = new Map(); appState.employeeRowsMap = new Map(); appState.employeeMetaMap = new Map(); appState.employeeOptions = [];
+      appState.sheetPeriod = { start: '', end: '' }; appState.sheetCache = new Map(); appState.bulkEntries = []; appState.bulkEmployeeSearchCode = '';
     }
 
-    function guessYearFromText(value){
-      const match = String(value || '').match(/(20\d{2})/);
-      return match ? match[1] : '';
-    }
-
-    function escapeHtml(value){
-      return String(value ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-    }
-
+    function guessYearFromText(value){ const match = String(value || '').match(/(20\d{2})/); return match ? match[1] : ''; }
+    function escapeHtml(value){ return String(value ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
     function pad(num){ return String(num).padStart(2, '0'); }
 
     function parseToDate(value){
       if (!value && value !== 0) return null;
       if (value instanceof Date && !Number.isNaN(value.getTime())) return new Date(value.getFullYear(), value.getMonth(), value.getDate());
       if (typeof value === 'string') {
-        const clean = value.trim();
+        let clean = value.trim().split(' ')[0]; // Ambil bagian tanggal saja jika string mengandung jam
         if (!clean) return null;
-        if (/^\d{4}-\d{2}-\d{2}$/.test(clean)) { const [y,m,d] = clean.split('-').map(Number); return new Date(y, m - 1, d); }
-        if (/^\d{2}-\d{2}-\d{4}$/.test(clean)) { const [d,m,y] = clean.split('-').map(Number); return new Date(y, m - 1, d); }
+        
+        const dmyMatch = clean.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{2,4})$/);
+        if (dmyMatch) {
+            let yy = Number(dmyMatch[3]);
+            if (yy < 100) yy += (yy < 50 ? 2000 : 1900); // Konversi 2 digit tahun ke 4 digit
+            return new Date(yy, Number(dmyMatch[2]) - 1, Number(dmyMatch[1]));
+        }
+        
+        const ymdMatch = clean.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})$/);
+        if (ymdMatch) {
+            return new Date(Number(ymdMatch[1]), Number(ymdMatch[2]) - 1, Number(ymdMatch[3]));
+        }
+        
         const parsed = new Date(clean);
         if (!Number.isNaN(parsed.getTime())) return new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate());
       }
@@ -1730,80 +912,61 @@
       if (!(dateObj instanceof Date) || Number.isNaN(dateObj.getTime())) return '';
       return `${dateObj.getFullYear()}-${pad(dateObj.getMonth()+1)}-${pad(dateObj.getDate())}`;
     }
-
     function formatDateDDMMYYYY(value){
-      const d = parseToDate(value);
-      if (!d) return '';
-      return `${pad(d.getDate())}-${pad(d.getMonth()+1)}-${d.getFullYear()}`;
+      const d = parseToDate(value); if (!d) return ''; return `${pad(d.getDate())}-${pad(d.getMonth()+1)}-${d.getFullYear()}`;
     }
-
     function formatGeneratedDate(date = new Date()){
       const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
       return `${pad(date.getDate())}-${pad(date.getMonth()+1)}-${date.getFullYear()} (${days[date.getDay()]})`;
     }
-
     function formatTimeValue(value){
       if (value === null || value === undefined) return '';
       if (typeof value === 'string') {
-        const clean = value.trim();
+        const clean = value.trim(); 
         if (!clean || clean.toLowerCase() === 'nan' || /^0(?:\.0+)?$/.test(clean)) return '';
-        if (/^\d{1,2}:\d{2}(\+)?$/.test(clean)) {
-          const plus = clean.endsWith('+') ? '+' : '';
-          const [h, m] = clean.replace('+','').split(':').map(Number);
-          return `${pad(h)}:${pad(m)}${plus}`;
+        
+        let timePart = clean;
+        if (clean.includes(' ')) {
+            const parts = clean.split(' ');
+            timePart = parts[parts.length - 1]; // Ambil elemen terakhir (jamnya)
         }
-        return clean;
+        const tm = timePart.match(/^(\d{1,2}):(\d{2})/);
+        if (tm) return `${pad(tm[1])}:${pad(tm[2])}`;
+        return timePart; // fallback
       }
       if (typeof value === 'number') {
-        const totalMinutes = Math.round(value * 24 * 60);
-        const h = Math.floor(totalMinutes / 60) % 24;
-        const m = totalMinutes % 60;
-        return `${pad(h)}:${pad(m)}`;
+        const totalMinutes = Math.round(value * 24 * 60); const h = Math.floor(totalMinutes / 60) % 24; const m = totalMinutes % 60; return `${pad(h)}:${pad(m)}`;
       }
       return String(value);
     }
 
-    function buildUniqueKey(row){
-      return [row.code || row.name || '', row.clockDate || '', row.clockIn || '', row.clockOut || '', row.overtime || '', row.remarks || ''].join('|');
+    function buildUniqueKey(row){ return [row.code || row.name || '', row.clockDate || '', row.clockIn || '', row.clockOut || '', row.overtime || '', row.remarks || ''].join('|'); }
+
+    function pickValue(obj, keys){
+      if (!obj || typeof obj !== 'object') return '';
+      const entries = Object.keys(obj);
+      for (const wanted of keys) { const found = entries.find(key => String(key).trim() === wanted); if (found !== undefined) return obj[found]; }
+      const lowerMap = entries.reduce((acc, key) => { acc[String(key).trim().toLowerCase()] = obj[key]; return acc; }, {});
+      for (const wanted of keys) { const val = lowerMap[String(wanted).trim().toLowerCase()]; if (val !== undefined) return val; }
+      return '';
     }
 
     function normalizeRow(raw, targetSheetName = null){
       const row = {
-        code: pickValue(raw, aliases.code),
-        name: pickValue(raw, aliases.name),
-        department: pickValue(raw, aliases.department),
-        clockDate: formatDateISO(parseToDate(pickValue(raw, aliases.clockDate))),
-        clockIn: formatTimeValue(pickValue(raw, aliases.clockIn)),
-        clockOut: formatTimeValue(pickValue(raw, aliases.clockOut)),
-        overtime: String(pickValue(raw, aliases.overtime) || '0.0').trim() || '0.0',
-        remarks: String(pickValue(raw, aliases.remarks) || '').trim(),
-        uniqueKey: String(pickValue(raw, aliases.uniqueKey) || '').trim(),
+        code: pickValue(raw, aliases.code), name: pickValue(raw, aliases.name), department: pickValue(raw, aliases.department),
+        clockDate: formatDateISO(parseToDate(pickValue(raw, aliases.clockDate))), clockIn: formatTimeValue(pickValue(raw, aliases.clockIn)),
+        clockOut: formatTimeValue(pickValue(raw, aliases.clockOut)), overtime: String(pickValue(raw, aliases.overtime) || '0.0').trim() || '0.0',
+        remarks: String(pickValue(raw, aliases.remarks) || '').trim(), uniqueKey: String(pickValue(raw, aliases.uniqueKey) || '').trim(),
         periodLabel: targetSheetName || appState.selectedSheet
       };
       if (!row.uniqueKey) row.uniqueKey = buildUniqueKey(row);
       return row;
     }
 
-    function pickValue(obj, keys){
-      if (!obj || typeof obj !== 'object') return '';
-      const entries = Object.keys(obj);
-      for (const wanted of keys) {
-        const found = entries.find(key => String(key).trim() === wanted);
-        if (found !== undefined) return obj[found];
-      }
-      const lowerMap = entries.reduce((acc, key) => { acc[String(key).trim().toLowerCase()] = obj[key]; return acc; }, {});
-      for (const wanted of keys) {
-        const val = lowerMap[String(wanted).trim().toLowerCase()];
-        if (val !== undefined) return val;
-      }
-      return '';
-    }
-
     function dedupeRows(rows){
       const map = new Map();
       rows.forEach(raw => {
-        const row = normalizeRow(raw);
-        if (!row.code && !row.name) return;
+        const row = normalizeRow(raw); if (!row.code && !row.name) return;
         if (!map.has(row.uniqueKey)) map.set(row.uniqueKey, row);
       });
       return Array.from(map.values()).sort((a,b) => {
@@ -1813,69 +976,38 @@
       });
     }
 
-    function cloneRows(rows){
-      return rows.map(row => ({ ...row }));
-    }
+    function cloneRows(rows){ return rows.map(row => ({ ...row })); }
 
     function buildFastIndexes(rows){
-      const rowMapByKey = new Map();
-      const employeeRowsMap = new Map();
-      const employeeMetaMap = new Map();
-      const employeeIdentityMap = new Map();
-      let sheetStart = '';
-      let sheetEnd = '';
+      const rowMapByKey = new Map(); const employeeRowsMap = new Map(); const employeeMetaMap = new Map();
+      const employeeIdentityMap = new Map(); let sheetStart = ''; let sheetEnd = '';
 
       for (const row of rows) {
         rowMapByKey.set(row.uniqueKey, row);
-
         if (row.clockDate) {
           if (!sheetStart || row.clockDate < sheetStart) sheetStart = row.clockDate;
           if (!sheetEnd || row.clockDate > sheetEnd) sheetEnd = row.clockDate;
         }
-
         if (!row.code) continue;
-
         if (!employeeRowsMap.has(row.code)) {
-          employeeRowsMap.set(row.code, []);
-          employeeMetaMap.set(row.code, { start: '', end: '', count: 0 });
-          employeeIdentityMap.set(row.code, { code: row.code, name: row.name || '' });
+          employeeRowsMap.set(row.code, []); employeeMetaMap.set(row.code, { start: '', end: '', count: 0 }); employeeIdentityMap.set(row.code, { code: row.code, name: row.name || '' });
         }
-
         employeeRowsMap.get(row.code).push(row);
-        const meta = employeeMetaMap.get(row.code);
-        meta.count += 1;
-
+        const meta = employeeMetaMap.get(row.code); meta.count += 1;
         if (row.clockDate) {
           if (!meta.start || row.clockDate < meta.start) meta.start = row.clockDate;
           if (!meta.end || row.clockDate > meta.end) meta.end = row.clockDate;
         }
       }
-
-      const employeeOptions = Array.from(employeeIdentityMap.values())
-        .sort((a,b) => a.code.localeCompare(b.code));
-
-      return {
-        rowMapByKey,
-        employeeRowsMap,
-        employeeMetaMap,
-        employeeOptions,
-        sheetPeriod: { start: sheetStart, end: sheetEnd }
-      };
+      const employeeOptions = Array.from(employeeIdentityMap.values()).sort((a,b) => a.code.localeCompare(b.code));
+      return { rowMapByKey, employeeRowsMap, employeeMetaMap, employeeOptions, sheetPeriod: { start: sheetStart, end: sheetEnd } };
     }
 
     function applyIndexedState(rows, useAsSource = false){
       const indexes = buildFastIndexes(rows);
-      appState.workingRows = rows;
-      appState.rowMapByKey = indexes.rowMapByKey;
-      appState.employeeRowsMap = indexes.employeeRowsMap;
-      appState.employeeMetaMap = indexes.employeeMetaMap;
-      appState.employeeOptions = indexes.employeeOptions;
-      appState.sheetPeriod = indexes.sheetPeriod;
-
-      if (useAsSource) {
-        appState.sourceRows = cloneRows(rows);
-      }
-
+      appState.workingRows = rows; appState.rowMapByKey = indexes.rowMapByKey; appState.employeeRowsMap = indexes.employeeRowsMap;
+      appState.employeeMetaMap = indexes.employeeMetaMap; appState.employeeOptions = indexes.employeeOptions; appState.sheetPeriod = indexes.sheetPeriod;
+      if (useAsSource) appState.sourceRows = cloneRows(rows);
       updateBulkEmployeeOptions();
     }
 
@@ -1883,15 +1015,8 @@
       if (!el.bulkEntryPeriod) return;
       const available = appState.sheetNames || [];
       const currentValue = available.includes(el.bulkEntryPeriod.value) ? el.bulkEntryPeriod.value : '';
-      el.bulkEntryPeriod.innerHTML = available.map(name =>
-        `<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`
-      ).join('');
-      if (currentValue) {
-        el.bulkEntryPeriod.value = currentValue;
-      } else if (available[0]) {
-        el.bulkEntryPeriod.value = available[0];
-      }
-
+      el.bulkEntryPeriod.innerHTML = available.map(name => `<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`).join('');
+      if (currentValue) el.bulkEntryPeriod.value = currentValue; else if (available[0]) el.bulkEntryPeriod.value = available[0];
       const availableSet = new Set(available);
       appState.bulkEntries = (appState.bulkEntries || []).filter(entry => availableSet.has(entry.period));
       renderBulkEntryList();
@@ -1900,97 +1025,56 @@
     function updateBulkEmployeeOptions(){
       if (appState.bulkEmployeeSearchCode) {
         const employee = (appState.employeeOptions || []).find(emp => emp.code === appState.bulkEmployeeSearchCode);
-        if (employee && el.bulkEmployeeInput) {
-          el.bulkEmployeeInput.value = `${employee.code} - ${employee.name}`;
-        }
+        if (employee && el.bulkEmployeeInput) el.bulkEmployeeInput.value = `${employee.code} - ${employee.name}`;
       }
     }
 
     function hideSearchSuggestions(){
       appState.searchSuggestIndex = -1;
-      if (el.searchSuggest) {
-        el.searchSuggest.classList.add('hidden');
-        el.searchSuggest.innerHTML = '';
-      }
+      if (el.searchSuggest) { el.searchSuggest.classList.add('hidden'); el.searchSuggest.innerHTML = ''; }
     }
-
+    
     function hideBulkEmployeeSuggestions(){
       appState.bulkSuggestIndex = -1;
-      if (el.bulkEmployeeSuggest) {
-        el.bulkEmployeeSuggest.classList.add('hidden');
-        el.bulkEmployeeSuggest.innerHTML = '';
-      }
-    }
-
-    function escapeRegExp(value){
-      return String(value || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      if (el.bulkEmployeeSuggest) { el.bulkEmployeeSuggest.classList.add('hidden'); el.bulkEmployeeSuggest.innerHTML = ''; }
     }
 
     function buildHighlightRanges(textValue, term){
-      const source = String(textValue || '');
-      const lowerText = source.toLowerCase();
-      const tokens = String(term || '')
-        .trim()
-        .toLowerCase()
-        .split(/\s+/)
-        .filter(Boolean);
-
+      const source = String(textValue || ''); const lowerText = source.toLowerCase();
+      const tokens = String(term || '').trim().toLowerCase().split(/\s+/).filter(Boolean);
       const ranges = [];
-
       tokens.forEach(token => {
         let fromIndex = 0;
         while (token && fromIndex < lowerText.length) {
-          const foundAt = lowerText.indexOf(token, fromIndex);
-          if (foundAt === -1) break;
-          ranges.push([foundAt, foundAt + token.length]);
-          fromIndex = foundAt + token.length;
+          const foundAt = lowerText.indexOf(token, fromIndex); if (foundAt === -1) break;
+          ranges.push([foundAt, foundAt + token.length]); fromIndex = foundAt + token.length;
         }
       });
-
       if (!ranges.length) {
-        const compact = String(term || '').replace(/\s+/g, '').toLowerCase();
-        let pointer = 0;
+        const compact = String(term || '').replace(/\s+/g, '').toLowerCase(); let pointer = 0;
         Array.from(compact).forEach(char => {
           const foundAt = lowerText.indexOf(char, pointer);
-          if (foundAt !== -1) {
-            ranges.push([foundAt, foundAt + 1]);
-            pointer = foundAt + 1;
-          }
+          if (foundAt !== -1) { ranges.push([foundAt, foundAt + 1]); pointer = foundAt + 1; }
         });
       }
-
       if (!ranges.length) return [];
-
       ranges.sort((a,b) => a[0] - b[0]);
       const merged = [ranges[0]];
-
       for (let i = 1; i < ranges.length; i++) {
-        const current = ranges[i];
-        const prev = merged[merged.length - 1];
-        if (current[0] <= prev[1]) {
-          prev[1] = Math.max(prev[1], current[1]);
-        } else {
-          merged.push(current);
-        }
+        const current = ranges[i]; const prev = merged[merged.length - 1];
+        if (current[0] <= prev[1]) prev[1] = Math.max(prev[1], current[1]); else merged.push(current);
       }
-
       return merged;
     }
 
     function highlightSearchMatch(textValue, term){
-      const safeText = String(textValue || '');
-      const ranges = buildHighlightRanges(safeText, term);
+      const safeText = String(textValue || ''); const ranges = buildHighlightRanges(safeText, term);
       if (!ranges.length) return escapeHtml(safeText);
-
-      let cursor = 0;
-      let html = '';
-
+      let cursor = 0; let html = '';
       ranges.forEach(([start, end]) => {
         if (cursor < start) html += escapeHtml(safeText.slice(cursor, start));
-        html += `<span class="search-suggest-mark">${escapeHtml(safeText.slice(start, end))}</span>`;
-        cursor = end;
+        html += `<span class="search-suggest-mark">${escapeHtml(safeText.slice(start, end))}</span>`; cursor = end;
       });
-
       if (cursor < safeText.length) html += escapeHtml(safeText.slice(cursor));
       return html;
     }
@@ -1998,24 +1082,15 @@
     function renderSearchSuggestions(matches, term = ''){
       if (!el.searchSuggest) return;
       const keyword = String(term || '').trim();
-
-      if (!keyword) {
-        hideSearchSuggestions();
-        return;
-      }
-
+      if (!keyword) { hideSearchSuggestions(); return; }
       const topMatches = matches.slice(0, 8);
       if (!topMatches.length) {
         el.searchSuggest.innerHTML = '<div class="search-suggest-item"><div class="search-suggest-row"><div class="search-suggest-name">Tidak ada hasil</div></div><div class="search-suggest-sub">Coba kata kunci lain.</div></div>';
-        el.searchSuggest.classList.remove('hidden');
-        return;
+        el.searchSuggest.classList.remove('hidden'); return;
       }
-
       el.searchSuggest.innerHTML = topMatches.map((emp, idx) => {
         const meta = appState.employeeMetaMap.get(emp.code) || { count: 0, start: '', end: '' };
-        const periodInfo = meta.start && meta.end
-          ? ` • ${formatDateDDMMYYYY(meta.start)} s/d ${formatDateDDMMYYYY(meta.end)}`
-          : '';
+        const periodInfo = meta.start && meta.end ? ` • ${formatDateDDMMYYYY(meta.start)} s/d ${formatDateDDMMYYYY(meta.end)}` : '';
         return `
           <div class="search-suggest-item${idx === appState.searchSuggestIndex ? ' active' : ''}" data-code="${escapeHtml(emp.code)}">
             <div class="search-suggest-row">
@@ -2032,19 +1107,12 @@
     function renderBulkEmployeeSuggestions(term = ''){
       if (!el.bulkEmployeeSuggest) return;
       const keyword = String(term || '').trim();
-
-      if (!keyword) {
-        hideBulkEmployeeSuggestions();
-        return;
-      }
-
+      if (!keyword) { hideBulkEmployeeSuggestions(); return; }
       const matches = getEmployeeMatches(keyword).slice(0, 8);
       if (!matches.length) {
         el.bulkEmployeeSuggest.innerHTML = '<div class="search-suggest-item"><div class="search-suggest-row"><div class="search-suggest-name">Tidak ada hasil</div></div><div class="search-suggest-sub">Ketik No ID atau Nama lain.</div></div>';
-        el.bulkEmployeeSuggest.classList.remove('hidden');
-        return;
+        el.bulkEmployeeSuggest.classList.remove('hidden'); return;
       }
-
       el.bulkEmployeeSuggest.innerHTML = matches.map((emp, idx) => `
         <div class="search-suggest-item${idx === appState.bulkSuggestIndex ? ' active' : ''}" data-bulk-code="${escapeHtml(emp.code)}">
           <div class="search-suggest-row">
@@ -2060,74 +1128,45 @@
       if (!code) return;
       const employee = (appState.employeeOptions || []).find(emp => emp.code === code);
       appState.selectedCode = code;
-      if (updateInput && employee) {
-        el.searchInput.value = `${employee.code} - ${employee.name}`;
-      }
+      if (updateInput && employee) el.searchInput.value = `${employee.code} - ${employee.name}`;
       el.employeeSelect.value = code;
-      hideSearchSuggestions();
-      renderReport();
+      hideSearchSuggestions(); renderReport();
     }
 
     function selectBulkEmployeeByCode(code){
       if (!code) return;
       const employee = (appState.employeeOptions || []).find(emp => emp.code === code);
       appState.bulkEmployeeSearchCode = code;
-      if (employee && el.bulkEmployeeInput) {
-        el.bulkEmployeeInput.value = `${employee.code} - ${employee.name}`;
-      }
+      if (employee && el.bulkEmployeeInput) el.bulkEmployeeInput.value = `${employee.code} - ${employee.name}`;
       hideBulkEmployeeSuggestions();
     }
 
     function resolveBulkEmployeeInput(){
-      const raw = String(el.bulkEmployeeInput?.value || '').trim();
-      if (!raw) return null;
-
+      const raw = String(el.bulkEmployeeInput?.value || '').trim(); if (!raw) return null;
       if (appState.bulkEmployeeSearchCode) {
         const employee = (appState.employeeOptions || []).find(emp => emp.code === appState.bulkEmployeeSearchCode);
         if (employee) return { code: employee.code, name: employee.name };
       }
-
       const employee = (appState.employeeOptions || []).find(emp => {
         const label = `${emp.code} - ${emp.name}`;
-        return normalizeSearchValue(emp.code) === normalizeSearchValue(raw)
-          || normalizeSearchValue(label) === normalizeSearchValue(raw)
-          || normalizeSearchValue(emp.name) === normalizeSearchValue(raw);
+        return normalizeSearchValue(emp.code) === normalizeSearchValue(raw) || normalizeSearchValue(label) === normalizeSearchValue(raw) || normalizeSearchValue(emp.name) === normalizeSearchValue(raw);
       });
-
-      if (employee) {
-        return { code: employee.code, name: employee.name };
-      }
-
-      const parts = raw.split(' - ');
-      return {
-        code: String(parts[0] || '').trim(),
-        name: String(parts.slice(1).join(' - ') || '').trim()
-      };
+      if (employee) return { code: employee.code, name: employee.name };
+      const parts = raw.split(' - '); return { code: String(parts[0] || '').trim(), name: String(parts.slice(1).join(' - ') || '').trim() };
     }
 
     function renderBulkEntryList(){
       if (!el.bulkEntryList) return;
-
-      if (!appState.bulkEntries.length) {
-        el.bulkEntryList.innerHTML = '<div class="bulk-chip-empty">Belum ada item dalam list cetak.</div>';
-        return;
-      }
-
+      if (!appState.bulkEntries.length) { el.bulkEntryList.innerHTML = '<div class="bulk-chip-empty">Belum ada item dalam list cetak.</div>'; return; }
       el.bulkEntryList.innerHTML = `
         <div class="bulk-list-table">
-          <div class="bulk-list-head">
-            <div>No</div>
-            <div>Periode</div>
-            <div>ID / Nama</div>
-            <div></div>
-          </div>
+          <div class="bulk-list-head"><div>No</div><div>Periode</div><div>ID / Nama</div><div></div></div>
           ${appState.bulkEntries.map((entry, idx) => `
             <div class="bulk-list-row" data-entry-id="${escapeHtml(entry.id)}">
               <div class="bulk-list-no">${idx + 1}</div>
               <div class="bulk-list-period">${escapeHtml(entry.period)}</div>
               <div class="bulk-list-employee">
-                <div class="bulk-list-code">${escapeHtml(entry.code)}</div>
-                <div class="bulk-list-name">${escapeHtml(entry.name || '')}</div>
+                <div class="bulk-list-code">${escapeHtml(entry.code)}</div><div class="bulk-list-name">${escapeHtml(entry.name || '')}</div>
               </div>
               <button type="button" class="bulk-list-remove" data-remove-bulk-entry="${escapeHtml(entry.id)}" title="Hapus item">×</button>
             </div>
@@ -2136,130 +1175,60 @@
       `;
     }
 
-        function addBulkEntry(){
-      const period = String(el.bulkEntryPeriod?.value || '').trim();
-      const employee = resolveBulkEmployeeInput();
-
-      if (!period) {
-        showToast('Pilih dulu 1 periode.', 'warn');
-        return;
-      }
-      if (!employee || !employee.code) {
-        showToast('Ketik lalu pilih No ID / Nama yang akan dicetak.', 'warn');
-        return;
-      }
-
+    function addBulkEntry(){
+      const period = String(el.bulkEntryPeriod?.value || '').trim(); const employee = resolveBulkEmployeeInput();
+      if (!period) return showToast('Pilih dulu 1 periode.', 'warn');
+      if (!employee || !employee.code) return showToast('Ketik lalu pilih No ID / Nama yang akan dicetak.', 'warn');
       const duplicate = appState.bulkEntries.some(entry => entry.period === period && entry.code === employee.code);
-      if (duplicate) {
-        showToast('Pasangan periode dan karyawan itu sudah ada di list.', 'warn');
-        return;
-      }
+      if (duplicate) return showToast('Pasangan periode dan karyawan itu sudah ada di list.', 'warn');
 
-      appState.bulkEntries.push({
-        id: `entry_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
-        period,
-        code: employee.code,
-        name: employee.name || ''
-      });
-
-      el.bulkEmployeeInput.value = '';
-      appState.bulkEmployeeSearchCode = '';
-      hideBulkEmployeeSuggestions();
-      renderBulkEntryList();
-      showToast(`Masuk ke list: ${employee.code} • ${period}`, 'success');
+      appState.bulkEntries.push({ id: `entry_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`, period, code: employee.code, name: employee.name || '' });
+      el.bulkEmployeeInput.value = ''; appState.bulkEmployeeSearchCode = ''; hideBulkEmployeeSuggestions();
+      renderBulkEntryList(); showToast(`Masuk ke list: ${employee.code} • ${period}`, 'success');
     }
 
-    function removeBulkEntry(id){
-      appState.bulkEntries = appState.bulkEntries.filter(entry => entry.id !== id);
-      renderBulkEntryList();
-    }
+    function removeBulkEntry(id){ appState.bulkEntries = appState.bulkEntries.filter(entry => entry.id !== id); renderBulkEntryList(); }
+    function clearBulkEntries(){ appState.bulkEntries = []; renderBulkEntryList(); }
 
-    function clearBulkEntries(){
-      appState.bulkEntries = [];
-      renderBulkEntryList();
-    }
-
-    function sanitizeFileName(value){
-      return String(value || '')
-        .replace(/[\\/:*?"<>|]+/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
-    }
-
-    function buildUniqueRowKey(row){
-      return String(row.uniqueKey || buildUniqueKey(row));
-    }
-
-    function chunkRows(rows, size = 25){
-      const chunks = [];
-      for (let i = 0; i < rows.length; i += size) {
-        chunks.push(rows.slice(i, i + size));
-      }
-      return chunks;
-    }
+    function sanitizeFileName(value){ return String(value || '').replace(/[\\/:*?"<>|]+/g, ' ').replace(/\s+/g, ' ').trim(); }
+    function buildUniqueRowKey(row){ return String(row.uniqueKey || buildUniqueKey(row)); }
+    function chunkRows(rows, size = 25){ const chunks = []; for (let i = 0; i < rows.length; i += size) { chunks.push(rows.slice(i, i + size)); } return chunks; }
 
     async function exportElementToPdfBlob(element, filename){
       return await html2pdf().set({
-        margin: [5, 5, 5, 5],
-        filename,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, logging: false },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        margin: [5, 5, 5, 5], filename, image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, logging: false }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
       }).from(element).toPdf().outputPdf('blob');
     }
 
     function downloadBlob(blob, filename){
-      const url = URL.createObjectURL(blob);
-      const anchor = document.createElement('a');
-      anchor.href = url;
-      anchor.download = filename;
-      document.body.appendChild(anchor);
-      anchor.click();
-      setTimeout(() => {
-        URL.revokeObjectURL(url);
-        document.body.removeChild(anchor);
-      }, 400);
+      const url = URL.createObjectURL(blob); const anchor = document.createElement('a');
+      anchor.href = url; anchor.download = filename; document.body.appendChild(anchor); anchor.click();
+      setTimeout(() => { URL.revokeObjectURL(url); document.body.removeChild(anchor); }, 400);
     }
 
     async function getRowsForSheet(sheetName, forceRefresh = false){
-      if (!forceRefresh && appState.sheetCache.has(sheetName)) {
-        return cloneRows(appState.sheetCache.get(sheetName));
-      }
-
-      const baseUrl = getActiveWebAppUrl();
-      const url = `${baseUrl}?action=read&year=${encodeURIComponent(appState.selectedYear || '')}&sheetName=${encodeURIComponent(sheetName)}`;
+      if (!forceRefresh && appState.sheetCache.has(sheetName)) return cloneRows(appState.sheetCache.get(sheetName));
+      const url = `${WEB_APP_URL}?action=read&year=${encodeURIComponent(appState.selectedYear || '')}&sheetName=${encodeURIComponent(sheetName)}`;
       let payload = null;
-
-      try {
-        payload = await fetchJson(url);
-      } catch (_error) {
-        payload = await jsonp(url);
-      }
-
+      try { payload = await fetchJson(url); } catch (_error) { payload = await jsonp(url); }
       const rows = dedupeRows(parseApiPayload(payload));
-      appState.sheetCache.set(sheetName, cloneRows(rows));
-      return cloneRows(rows);
+      appState.sheetCache.set(sheetName, cloneRows(rows)); return cloneRows(rows);
     }
 
     function buildReportPageHtml(rows, employeeCode, systemCode, version, pageNumber, totalPages){
       if (!rows.length) return '';
-      const first = rows[0];
       const dates = rows.map(r => parseToDate(r.clockDate)).filter(Boolean).sort((a,b) => a - b);
       const start = dates.length ? formatDateDDMMYYYY(dates[0]) : '';
       const end = dates.length ? formatDateDDMMYYYY(dates[dates.length - 1]) : '';
-      const generatedDate = formatGeneratedDate(new Date());
-      const headerStyle = buildHeaderStyleVars(appState.headerLayout);
+      const generatedDate = formatGeneratedDate(new Date()); const headerStyle = buildHeaderStyleVars(appState.headerLayout);
 
       const body = rows.map(row => `
         <tr>
-          <td class="col-code">${escapeHtml(row.code)}</td>
-          <td class="col-name">${escapeHtml(row.name)}</td>
-          <td class="col-dept">${escapeHtml(row.department)}</td>
-          <td class="col-date">${escapeHtml(formatDateDDMMYYYY(row.clockDate))}</td>
-          <td class="col-in">${escapeHtml(row.clockIn || '')}</td>
-          <td class="col-out">${escapeHtml(row.clockOut || '')}</td>
-          <td class="col-ot">${escapeHtml(row.overtime || '0.0')}</td>
-          <td class="col-remarks">${escapeHtml(row.remarks || '')}</td>
+          <td class="col-code">${escapeHtml(row.code)}</td><td class="col-name">${escapeHtml(row.name)}</td>
+          <td class="col-dept">${escapeHtml(row.department)}</td><td class="col-date">${escapeHtml(formatDateDDMMYYYY(row.clockDate))}</td>
+          <td class="col-in">${escapeHtml(row.clockIn || '')}</td><td class="col-out">${escapeHtml(row.clockOut || '')}</td>
+          <td class="col-ot">${escapeHtml(row.overtime || '0.0')}</td><td class="col-remarks">${escapeHtml(row.remarks || '')}</td>
         </tr>
       `).join('');
 
@@ -2267,8 +1236,7 @@
         <div class="paper bulk-paper">
           <div class="report" style="padding: 0;">
             <div class="report-header" style="${headerStyle}">
-              <div class="report-company">Hop Lun</div>
-              <div class="report-title">Report Attendance Worker</div>
+              <div class="report-company">Hop Lun</div><div class="report-title">Report Attendance Worker</div>
               <div class="report-meta-band">
                 <div class="report-meta-left">${escapeHtml(generatedDate)}</div>
                 <div class="report-period">Period: ${escapeHtml(start)} to ${escapeHtml(end)}. All Records</div>
@@ -2277,24 +1245,10 @@
               <div class="report-range">Range: ((Employee Code='${escapeHtml(employeeCode)}'))</div>
             </div>
             <table class="report-table">
-              <thead>
-                <tr>
-                  <th class="col-code">Employee<br>Code</th>
-                  <th class="col-name">Employee<br>Name</th>
-                  <th class="col-dept">Department</th>
-                  <th class="col-date">Clock Date</th>
-                  <th class="col-in">Clock In</th>
-                  <th class="col-out">Clock Out</th>
-                  <th class="col-ot">Overtime</th>
-                  <th class="col-remarks">Remarks</th>
-                </tr>
-              </thead>
+              <thead><tr><th class="col-code">Employee<br>Code</th><th class="col-name">Employee<br>Name</th><th class="col-dept">Department</th><th class="col-date">Clock Date</th><th class="col-in">Clock In</th><th class="col-out">Clock Out</th><th class="col-ot">Overtime</th><th class="col-remarks">Remarks</th></tr></thead>
               <tbody>${body}</tbody>
             </table>
-            <div class="report-footer-box">
-              <strong>Record Count</strong>
-              <span>${rows.length}</span>
-            </div>
+            <div class="report-footer-box"><strong>Record Count</strong><span>${rows.length}</span></div>
             <div class="report-version">Version: ${escapeHtml(version)}</div>
           </div>
         </div>
@@ -2306,45 +1260,32 @@
       const systemCode = el.systemCodeInput.value.trim() || 'HRIDIN01';
       const version = el.versionInput.value.trim() || '1.25.02.28';
 
-      if (!entries.length) {
-        showToast('Masukkan dulu item ke list cetak banyak.', 'warn');
-        return;
-      }
-      if (typeof JSZip === 'undefined') {
-        showToast('Library ZIP belum termuat. Coba refresh halaman.', 'error');
-        return;
-      }
-
+      if (!entries.length) return showToast('Masukkan dulu item ke list cetak banyak.', 'warn');
+      if (typeof JSZip === 'undefined') return showToast('Library ZIP belum termuat. Coba refresh halaman.', 'error');
       showToast('Menyiapkan file cetak banyak...', 'info');
 
       const groupedByEmployee = new Map();
       entries.forEach(entry => {
-        if (!groupedByEmployee.has(entry.code)) {
-          groupedByEmployee.set(entry.code, { code: entry.code, name: entry.name || '', periods: [] });
-        }
+        if (!groupedByEmployee.has(entry.code)) groupedByEmployee.set(entry.code, { code: entry.code, name: entry.name || '', periods: [] });
         const bucket = groupedByEmployee.get(entry.code);
         if (entry.name && !bucket.name) bucket.name = entry.name;
         if (!bucket.periods.includes(entry.period)) bucket.periods.push(entry.period);
       });
 
-      const zip = new JSZip();
-      let fileCount = 0;
+      const zip = new JSZip(); let fileCount = 0;
       const groups = Array.from(groupedByEmployee.values()).sort((a,b) => a.code.localeCompare(b.code));
 
       for (let index = 0; index < groups.length; index++) {
         const group = groups[index];
         showToast(`Membuat PDF ${index + 1}/${groups.length}: ${group.code}`, 'info');
 
-        const collectedRows = [];
-        const rowKeySet = new Set();
-
+        const collectedRows = []; const rowKeySet = new Set();
         for (const period of group.periods) {
           const rows = await getRowsForSheet(period, false);
           rows.filter(row => String(row.code || '') === group.code).forEach(row => {
             const key = buildUniqueRowKey(row);
             if (rowKeySet.has(key)) return;
-            rowKeySet.add(key);
-            collectedRows.push({ ...row });
+            rowKeySet.add(key); collectedRows.push({ ...row });
           });
         }
 
@@ -2358,227 +1299,102 @@
 
         const pageChunks = chunkRows(collectedRows, 25);
         const container = document.createElement('div');
-        container.style.padding = '0';
-        container.style.background = '#fff';
-        container.innerHTML = pageChunks.map((chunk, pageIdx) =>
-          buildReportPageHtml(chunk, group.code, systemCode, version, pageIdx + 1, pageChunks.length)
-        ).join('<div style="page-break-after:always;"></div>');
-
+        container.style.padding = '0'; container.style.background = '#fff';
+        container.innerHTML = pageChunks.map((chunk, pageIdx) => buildReportPageHtml(chunk, group.code, systemCode, version, pageIdx + 1, pageChunks.length)).join('<div style="page-break-after:always;"></div>');
         document.body.appendChild(container);
 
         try {
           const safeName = sanitizeFileName(`${group.code}_${group.name || 'Tanpa Nama'}`) || group.code;
           const pdfBlob = await exportElementToPdfBlob(container, `${safeName}.pdf`);
-          zip.file(`${safeName}.pdf`, pdfBlob);
-          fileCount += 1;
-        } finally {
-          document.body.removeChild(container);
-        }
-
+          zip.file(`${safeName}.pdf`, pdfBlob); fileCount += 1;
+        } finally { document.body.removeChild(container); }
         await yieldToUI();
       }
 
-      if (!fileCount) {
-        showToast('Tidak ada data yang cocok untuk list cetak tersebut.', 'warn');
-        return;
-      }
-
+      if (!fileCount) return showToast('Tidak ada data yang cocok untuk list cetak tersebut.', 'warn');
       const zipBlob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE' });
       const zipName = `Cetak_Banyak_${formatGeneratedDate(new Date()).replace(/[^0-9A-Za-z_-]+/g, '_')}.zip`;
       downloadBlob(zipBlob, zipName);
       showToast(`${fileCount} file PDF berhasil dibuat dalam ZIP.`, 'success');
     }
 
-    function parseApiPayload(payload){
-      if (!payload) return [];
-      if (Array.isArray(payload)) {
-        if (payload.length > 0 && Array.isArray(payload[0])) {
-          const headers = payload[0].map(String);
-          return payload.slice(1).map(row => {
-            const obj = {};
-            headers.forEach((head, idx) => obj[head] = row[idx]);
-            return obj;
-          });
-        }
-        return payload; 
-      }
-      if (Array.isArray(payload.rows)) return parseApiPayload(payload.rows);
-      if (Array.isArray(payload.data)) return parseApiPayload(payload.data);
-      if (Array.isArray(payload.records)) return parseApiPayload(payload.records);
-      if (payload.headers && Array.isArray(payload.values)) {
-        return payload.values.map(row => {
-          const obj = {};
-          payload.headers.forEach((head, idx) => obj[head] = row[idx]);
-          return obj;
-        });
-      }
-      if (Array.isArray(payload.values) && payload.values.length > 0) {
-        const first = payload.values[0];
-        if (Array.isArray(first)) {
-          const headers = first.map(String);
-          return payload.values.slice(1).map(row => {
-            const obj = {};
-            headers.forEach((head, idx) => obj[head] = row[idx]);
-            return obj;
-          });
-        } else if (typeof first === 'object') {
-           return payload.values;
-        }
-      }
-      return [];
-    }
-
-    async function fetchJson(url){
-      const res = await fetch(url, { method:'GET' });
-      const text = await res.text();
-      if (text.trim().startsWith('<') || text.toLowerCase().includes('<!doctype html>')) {
-        throw new Error('Script error: Mengembalikan format HTML.');
-      }
-      let data = null;
-      try { data = JSON.parse(text); } catch(error) { throw new Error('Data bukan format JSON.'); }
-      if (data && data.ok === false && data.message) throw new Error(data.message);
-      if (data && data.error) throw new Error(data.error);
-      return data;
-    }
-
-    function jsonp(url){
-      return new Promise((resolve, reject) => {
-        const callbackName = '__gsheetSync_' + Math.random().toString(36).slice(2);
-        const script = document.createElement('script');
-        const timer = setTimeout(() => { cleanup(); reject(new Error('Timeout koneksi.')); }, 15000);
-        function cleanup(){ clearTimeout(timer); if (script.parentNode) script.parentNode.removeChild(script); try { delete window[callbackName]; } catch (_e) { window[callbackName] = undefined; } }
-        window[callbackName] = (data) => {
-          cleanup();
-          if (data && data.ok === false && data.message) reject(new Error(data.message));
-          else if (data && data.error) reject(new Error(data.error));
-          else resolve(data);
-        };
-        script.onerror = () => { cleanup(); reject(new Error('Gagal koneksi JSONP.')); };
-        const joiner = url.includes('?') ? '&' : '?';
-        script.src = url + joiner + 'callback=' + callbackName;
-        document.body.appendChild(script);
-      });
-    }
-
     async function loadAppAndSheets() {
-      showToast(`Memuat nama Sheet tahun ${appState.selectedYear || '-'}...`, 'info');
+      showToast(`Memuat Database Drive tahun ${appState.selectedYear || '-'}...`, 'info');
       el.sheetSelect.disabled = true;
-
-      const baseUrl = getActiveWebAppUrl();
-      const url = `${baseUrl}?action=getSheets&year=${encodeURIComponent(appState.selectedYear || '')}`;
+      const url = `${WEB_APP_URL}?action=getSheets&year=${encodeURIComponent(appState.selectedYear || '')}`;
       let sheetsFound = [];
-
+      let isNetworkSuccess = false; // Penanda apakah berhasil connect ke Google
+      
       try {
-        let payload = null;
+        let payload = null; 
         try { payload = await fetchJson(url); } catch (e) { payload = await jsonp(url); }
-        if (payload && payload.sheets && Array.isArray(payload.sheets)) {
-          sheetsFound = payload.sheets;
+        
+        // Cek jika server Google berhasil merespons
+        if (payload && payload.ok !== false) {
+           isNetworkSuccess = true;
+           if (payload.sheets && Array.isArray(payload.sheets)) sheetsFound = payload.sheets;
         }
-      } catch (error) { console.warn('Gagal load sheet:', error); }
+      } catch (error) { console.warn('Gagal memuat list:', error); }
 
       if (sheetsFound.length > 0) {
         appState.sheetNames = sheetsFound;
         el.sheetSelect.innerHTML = sheetsFound.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
-        el.sheetSelect.disabled = false;
-        updateBulkPeriodOptions();
-        
-        // Coba pertahankan pilihan sheet sebelumnya jika ada
-        if (appState.selectedSheet && sheetsFound.includes(appState.selectedSheet)) {
-          el.sheetSelect.value = appState.selectedSheet;
-        } else {
-          el.sheetSelect.value = sheetsFound[0];
-          appState.selectedSheet = sheetsFound[0];
-        }
-        
+        el.sheetSelect.disabled = false; updateBulkPeriodOptions();
+        if (appState.selectedSheet && sheetsFound.includes(appState.selectedSheet)) el.sheetSelect.value = appState.selectedSheet;
+        else { el.sheetSelect.value = sheetsFound[0]; appState.selectedSheet = sheetsFound[0]; }
         syncFromGSheet(false);
+      } else if (isNetworkSuccess) { 
+        // Berhasil connect ke Google, tapi foldernya memang masih kosong
+        showToast('Folder Database Drive masih kosong. Silakan Upload Excel pertama Anda.', 'warn'); 
+        el.sheetSelect.innerHTML = `<option value="">Belum ada file</option>`;
       } else {
-        showToast('Gagal memuat nama Sheet. Cek koneksi.', 'error');
+        // Gagal connect ke Google Apps Script sama sekali
+        showToast('Gagal terhubung! Pastikan URL Web App benar & akses diset "Anyone".', 'error'); 
+        el.sheetSelect.innerHTML = `<option value="">Koneksi Error</option>`;
       }
     }
 
     async function syncFromGSheet(forceRefresh = false){
-      const sheetName = el.sheetSelect.value.trim();
-      if(!sheetName) return;
-
+      const sheetName = el.sheetSelect.value.trim(); if(!sheetName) return;
       appState.selectedSheet = sheetName;
-
       if (!forceRefresh && appState.sheetCache.has(sheetName)) {
-        const cachedRows = cloneRows(appState.sheetCache.get(sheetName));
-        applyIndexedState(cachedRows, false);
-        applySearch(true);
-        showToast(`Sheet ${sheetName} dibuka dari cache lokal.`, 'success');
-        return;
+        applyIndexedState(cloneRows(appState.sheetCache.get(sheetName)), false); applySearch(true);
+        showToast(`Data ${sheetName} dibuka dari cache lokal.`, 'success'); return;
       }
-
-      const baseUrl = getActiveWebAppUrl();
-      const url = `${baseUrl}?action=read&year=${encodeURIComponent(appState.selectedYear || '')}&sheetName=${encodeURIComponent(sheetName)}`;
-
-      showToast(`Mengambil data ${sheetName} dari database ${appState.selectedYear || '-'}...`, 'info');
-      el.btnSync.disabled = true;
-      el.sheetSelect.disabled = true;
+      const url = `${WEB_APP_URL}?action=read&year=${encodeURIComponent(appState.selectedYear || '')}&sheetName=${encodeURIComponent(sheetName)}`;
+      showToast(`Mengambil data ${sheetName} dari Drive ${appState.selectedYear || '-'}...`, 'info');
+      el.btnSync.disabled = true; el.sheetSelect.disabled = true;
 
       try {
         let payload = null;
-
-        try {
-          payload = await fetchJson(url);
-        } catch (_error) {
-          payload = await jsonp(url);
+        try { payload = await fetchJson(url); } catch (_error) { payload = await jsonp(url); }
+        const rows = parseApiPayload(payload); const normalized = dedupeRows(rows);
+        appState.sheetCache.set(sheetName, cloneRows(normalized)); applyIndexedState(cloneRows(normalized), true); applySearch(true);
+        if (normalized.length === 0) showToast(`File "${sheetName}" kosong.`, 'warn');
+        else {
+          const periodText = appState.sheetPeriod.start && appState.sheetPeriod.end ? ` | Periode ${formatDateDDMMYYYY(appState.sheetPeriod.start)} s/d ${formatDateDDMMYYYY(appState.sheetPeriod.end)}` : '';
+          showToast(`Berhasil! ${normalized.length.toLocaleString('id-ID')} baris diunduh dari Drive.`, 'success');
         }
-
-        const rows = parseApiPayload(payload);
-        const normalized = dedupeRows(rows);
-
-        appState.sheetCache.set(sheetName, cloneRows(normalized));
-        applyIndexedState(cloneRows(normalized), true);
-        applySearch(true);
-
-        if (normalized.length === 0) {
-          showToast(`Sheet "${sheetName}" kosong.`, 'warn');
-        } else {
-          const periodText = appState.sheetPeriod.start && appState.sheetPeriod.end
-            ? ` | Periode ${formatDateDDMMYYYY(appState.sheetPeriod.start)} s/d ${formatDateDDMMYYYY(appState.sheetPeriod.end)}`
-            : '';
-          showToast(`Sinkron selesai! ${normalized.length.toLocaleString('id-ID')} baris diambil${periodText}.`, 'success');
-        }
-
-      } catch (error) {
-        showToast(`Sinkron gagal: ${error.message}`, 'error');
-      } finally {
-        el.btnSync.disabled = false;
-        el.sheetSelect.disabled = false;
-      }
+      } catch (error) { showToast(`Gagal mengunduh: ${error.message}`, 'error'); } 
+      finally { el.btnSync.disabled = false; el.sheetSelect.disabled = false; }
     }
-
-    // --- FITUR UPLOAD EXCEL KE GSHEET ---
 
     function makeSafeSheetName(name){
-      const cleaned = String(name || '')
-        .replace(/[\\\/\?\*\[\]:]/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
-      return cleaned.slice(0, 95) || `Upload-${new Date().getFullYear()}`;
+      return String(name || '').replace(/[\\\/\?\*\[\]:]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 95) || `Upload-${new Date().getFullYear()}`;
     }
 
-    // Auto-fill nama sheet berdasarkan nama file
     el.excelFileInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-
+      const file = e.target.files[0]; if (!file) return;
       const guessedYear = guessYearFromText(file.name);
-      if (guessedYear && DATABASE_CONFIG[guessedYear]) {
-        appState.selectedYear = guessedYear;
-        fillDatabaseYearOptions();
-      }
-
-      if(file && !el.uploadSheetName.value.trim()) {
-        const nameWithoutExt = file.name.replace(/\.[^/.]+$/, "");
-        el.uploadSheetName.value = makeSafeSheetName(nameWithoutExt);
+      if (guessedYear && AVAILABLE_YEARS.includes(guessedYear)) { appState.selectedYear = guessedYear; fillDatabaseYearOptions(); }
+      
+      // SELALU otomatis isi nama target berdasarkan nama file terbaru tanpa harus menghapus manual
+      if(file) {
+        const nameWithoutExt = file.name.replace(/\.[^/.]+$/, ""); el.uploadSheetName.value = makeSafeSheetName(nameWithoutExt);
       }
     });
 
-
-async function uploadExcelToGSheet() {
+    async function uploadExcelToGSheet() {
       const file = el.excelFileInput.files[0];
       const targetSheet = el.uploadSheetName.value.trim();
       const targetSheetExists = appState.sheetNames.includes(targetSheet);
@@ -2586,274 +1402,255 @@ async function uploadExcelToGSheet() {
       if (!file) return showToast('Pilih file Excel terlebih dahulu!', 'warn');
       if (!appState.selectedYear) return showToast('Pilih database tahun terlebih dahulu!', 'warn');
       if (!targetSheet) return showToast('Isi nama sheet tujuan!', 'warn');
+      
+      // Keamanan URL Deployment Kosong
+      if (WEB_APP_URL.includes("GANTI_DENGAN_URL_DEPLOYMENT_ANDA")) {
+        return showToast('ERROR: Anda belum memasukkan WEB_APP_URL di Script HTML.', 'error');
+      }
 
-      setUploadBusy(true, '⏳ Menyiapkan Upload...');
-      setUploadProgress(0, 'Mulai proses upload', `File: ${file.name} • Tahun: ${appState.selectedYear}`, buildUploadStats(0, 0, 0, 0));
+      setUploadBusy(true, '⏳ Menyiapkan Ekstraksi...');
+      setUploadProgress(0, 'Mulai ekstraksi', `File: ${file.name}`, buildUploadStats(0, 0, 0, 0));
 
       const reader = new FileReader();
-
       reader.onprogress = (event) => {
         if (!event.lengthComputable) return;
-        const readPercent = Math.round((event.loaded / event.total) * 15);
-        setUploadProgress(readPercent, 'Membaca file Excel', `${formatNumber(event.loaded)} / ${formatNumber(event.total)} byte terbaca`, buildUploadStats(0, 0, 0, 0));
+        setUploadProgress(Math.round((event.loaded / event.total) * 10), 'Membaca file Excel', `${formatNumber(event.loaded)} byte terbaca`, buildUploadStats(0, 0, 0, 0));
       };
 
       reader.onload = async function(e) {
         try {
-          setUploadBusy(true, '🧠 Parsing Excel...');
-          setUploadProgress(18, 'Membaca workbook', 'Sheet sedang diproses ke format aplikasi...', buildUploadStats(0, 0, 0, 0));
+          setUploadBusy(true, '⚡ Parsing Turbo Excel...');
+          setUploadProgress(15, 'Mengekstrak Workbook (Tunggu Sebentar)', 'Membaca puluhan ribu baris memakan waktu beberapa detik...', buildUploadStats(0, 0, 0, 0));
           await yieldToUI();
 
           const data = new Uint8Array(e.target.result);
           const workbook = XLSX.read(data, { type: 'array' });
           const firstSheetName = workbook.SheetNames[0];
           const worksheet = workbook.Sheets[firstSheetName];
-          const excelRows = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
+          
+          const dataArr = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: '', raw: false }); 
 
-          if (!excelRows.length) throw new Error('File Excel kosong (Tidak ada data baris).');
+          if (!dataArr.length) throw new Error('File Excel kosong (Tidak ada data baris).');
 
-          setUploadProgress(28, 'Validasi struktur file', `Sheet aktif: ${firstSheetName}`, buildUploadStats(excelRows.length, 0, 0, 0));
-          showToast(`Mempersiapkan ${excelRows.length.toLocaleString('id-ID')} data...`, 'info');
+          setUploadProgress(20, 'Validasi & Persiapan', `Ditemukan ${formatNumber(dataArr.length)} baris. Memulai pemindaian kolom...`, buildUploadStats(dataArr.length, 0, 0, 0));
           await yieldToUI();
 
-          const payloadRows = [];
+          let headerRowIdx = 0;
+          let maxMatches = 0;
+          let colMap = {};
+
+          for(let i = 0; i < Math.min(20, dataArr.length); i++) {
+              const row = dataArr[i];
+              let matches = 0;
+              let tempMap = {};
+              row.forEach((cell, colIdx) => {
+                  const val = String(cell || '').trim().toLowerCase();
+                  for (const [field, aliasList] of Object.entries(aliases)) {
+                      if (tempMap[field] === undefined && aliasList.some(a => String(a).toLowerCase() === val)) {
+                          tempMap[field] = colIdx;
+                          matches++;
+                          break;
+                      }
+                  }
+              });
+              if(matches > maxMatches) {
+                  maxMatches = matches;
+                  headerRowIdx = i;
+                  colMap = tempMap;
+              }
+          }
+
+          if (colMap.code === undefined) {
+              throw new Error('Kolom ID Karyawan / Employee Code tidak ditemukan. Pastikan nama kolom sesuai format HR.');
+          }
+
+          const payloadRows = []; 
           const uniqueKeys = new Set();
-          let skippedRows = 0;
-          let duplicateRows = 0;
-          const normalizeChunkSize = 400;
+          let skippedRows = 0; 
+          let duplicateRows = 0; 
+          const len = dataArr.length;
 
-          for (let start = 0; start < excelRows.length; start += normalizeChunkSize) {
-            const batch = excelRows.slice(start, start + normalizeChunkSize);
-            for (const raw of batch) {
-              const norm = normalizeRow(raw, targetSheet);
-              norm.sourceFile = file.name;
-              norm.uniqueKey = buildUniqueKey(norm);
+          const dateCache = new Map();
+          const timeCache = new Map();
 
-              if (!norm.code) {
-                skippedRows += 1;
-                continue;
-              }
+          for (let i = headerRowIdx + 1; i < len; i++) {
+            const raw = dataArr[i];
+            const code = colMap.code !== undefined ? String(raw[colMap.code] || '').trim() : '';
+            if (!code) { skippedRows++; continue; }
 
-              if (uniqueKeys.has(norm.uniqueKey)) {
-                duplicateRows += 1;
-                continue;
-              }
+            const rawDate = colMap.clockDate !== undefined ? raw[colMap.clockDate] : '';
+            let clockDate = dateCache.get(rawDate);
+            if (clockDate === undefined) { clockDate = formatDateISO(parseToDate(rawDate)); dateCache.set(rawDate, clockDate); }
 
-              uniqueKeys.add(norm.uniqueKey);
-              payloadRows.push(norm);
+            const rawIn = colMap.clockIn !== undefined ? raw[colMap.clockIn] : '';
+            let clockIn = timeCache.get(rawIn);
+            if (clockIn === undefined) { clockIn = formatTimeValue(rawIn); timeCache.set(rawIn, clockIn); }
+
+            const rawOut = colMap.clockOut !== undefined ? raw[colMap.clockOut] : '';
+            let clockOut = timeCache.get(rawOut);
+            if (clockOut === undefined) { clockOut = formatTimeValue(rawOut); timeCache.set(rawOut, clockOut); }
+
+            const overtime = colMap.overtime !== undefined ? String(raw[colMap.overtime] || '0.0').trim() || '0.0' : '0.0';
+            const remarks = colMap.remarks !== undefined ? String(raw[colMap.remarks] || '').trim() : '';
+            const name = colMap.name !== undefined ? String(raw[colMap.name] || '').trim() : '';
+            const department = colMap.department !== undefined ? String(raw[colMap.department] || '').trim() : '';
+
+            const rawKey = colMap.uniqueKey !== undefined ? String(raw[colMap.uniqueKey] || '').trim() : '';
+            const uniqueKey = rawKey ? rawKey : `${code}|${clockDate}|${clockIn}|${clockOut}|${overtime}|${remarks}`;
+
+            if (uniqueKeys.has(uniqueKey)) { duplicateRows++; continue; }
+            uniqueKeys.add(uniqueKey); 
+
+            payloadRows.push({
+              code, name, department,
+              clockDate, clockIn, clockOut, overtime, remarks,
+              periodLabel: targetSheet, sourceFile: file.name, uniqueKey
+            });
+
+            if (i % 20000 === 0 && i > 0) {
+              const normalizePercent = 20 + Math.round((i / len) * 40);
+              setUploadProgress(normalizePercent, 'Menyusun Data Ekstrim', `Memproses ${formatNumber(i)} / ${formatNumber(len)} baris`, buildUploadStats(len, payloadRows.length, skippedRows, duplicateRows));
+              await yieldToUI();
             }
-
-            const processed = Math.min(start + batch.length, excelRows.length);
-            const normalizePercent = 28 + Math.round((processed / excelRows.length) * 40);
-            setUploadProgress(
-              normalizePercent,
-              'Normalisasi data Excel',
-              `Memproses ${formatNumber(processed)} dari ${formatNumber(excelRows.length)} baris`,
-              buildUploadStats(excelRows.length, payloadRows.length, skippedRows, duplicateRows)
-            );
-            await yieldToUI();
           }
 
-          if (!payloadRows.length) {
-            throw new Error('Tidak ada data valid untuk diupload. Pastikan kolom ID karyawan terisi.');
+          if (!payloadRows.length) throw new Error('Tidak ada data valid untuk diupload.');
+
+          setUploadBusy(true, targetSheetExists ? '🚀 Mengirim ke Drive...' : '🆕 Membuat & Mengirim...');
+          await yieldToUI(); await sleep(10);
+
+          // PENGIRIMAN SUPER KILAT FILE DRIVE: Google Drive sangat stabil, limit dinaikkan jadi 40.000 baris per kirim
+          const CHUNK_SIZE = 40000; 
+          const totalChunks = Math.ceil(payloadRows.length / CHUNK_SIZE);
+          let totalInserted = 0;
+          let isOpaqueFallback = false;
+
+          for (let i = 0; i < totalChunks; i++) {
+            const startIdx = i * CHUNK_SIZE;
+            const chunkRows = payloadRows.slice(startIdx, startIdx + CHUNK_SIZE);
+            const isFirstChunk = (i === 0);
+
+            const payload = {
+              action: 'upload', actionType: 'upload', sheetName: targetSheet,
+              mode: isFirstChunk ? 'replace_period' : 'append', 
+              rows: chunkRows, databaseYear: appState.selectedYear,
+              createSheetIfMissing: true, autoCreateSheet: true, createTargetSheet: true,
+              chunkIndex: i + 1, totalChunks: totalChunks
+            };
+
+            const progressPercent = 60 + Math.round(((i + 0.5) / totalChunks) * 35);
+            setUploadProgress(progressPercent, targetSheetExists ? `Upload ke Drive` : `Membuat & Menyimpan di Drive`, `Mengirim blok raksasa ${i + 1}/${totalChunks} (${formatNumber(chunkRows.length)} baris)...`, buildUploadStats(len, payloadRows.length, skippedRows, duplicateRows));
+
+            const result = await uploadPayloadWithProgress(payload, null); 
+            if (!result.ok && !result.opaque) throw new Error(result.message || `Gagal saat menyimpan blok ${i + 1}.`);
+            if (result.opaque) isOpaqueFallback = true;
+
+            totalInserted += chunkRows.length;
+            await sleep(10); // Jeda dikurangi hingga 10 milidetik agar secepat kilat
           }
 
-          setUploadBusy(true, '📦 Menyusun Payload...');
-          setUploadProgress(72, targetSheetExists ? 'Finalisasi data upload' : 'Menyiapkan sheet baru', targetSheetExists ? `Siap kirim ${formatNumber(payloadRows.length)} baris ke sheet ${targetSheet}` : `Sheet ${targetSheet} belum ada. Aplikasi akan meminta server membuat sheet baru otomatis.`, buildUploadStats(excelRows.length, payloadRows.length, skippedRows, duplicateRows));
-          await yieldToUI();
-          await sleep(80);
+          setUploadProgress(99, 'Penyelesaian...', targetSheetExists ? 'Aplikasi memverifikasi hasil simpan...' : `Aplikasi memverifikasi pembuatan file dan hasil simpan...`, buildUploadStats(len, payloadRows.length, skippedRows, duplicateRows));
 
-          const payload = {
-            sheetName: targetSheet,
-            mode: 'replace_period',
-            rows: payloadRows,
-            databaseYear: appState.selectedYear,
-            createSheetIfMissing: true,
-            autoCreateSheet: true,
-            createTargetSheet: true
-          };
+          el.excelFileInput.value = '';
+          appState.selectedSheet = targetSheet;
+          appState.sheetCache.delete(targetSheet);
 
-          setUploadBusy(true, targetSheetExists ? '🚀 Mengirim ke Google Sheet...' : '🆕 Membuat sheet & upload...');
-          const result = await uploadPayloadWithProgress(payload, (loaded, total) => {
-            if (!total) return;
-            const uploadPercent = 78 + Math.round((loaded / total) * 20);
-            setUploadProgress(
-              uploadPercent,
-              targetSheetExists ? 'Upload ke Google Sheet' : 'Membuat sheet baru & upload',
-              `${formatNumber(loaded)} / ${formatNumber(total)} byte terkirim`,
-              buildUploadStats(excelRows.length, payloadRows.length, skippedRows, duplicateRows)
-            );
-          });
-
-          setUploadProgress(99, 'Sinkronisasi akhir', targetSheetExists ? 'Aplikasi sedang memverifikasi hasil upload...' : `Aplikasi sedang memverifikasi pembuatan sheet ${targetSheet} dan hasil upload...`, buildUploadStats(excelRows.length, payloadRows.length, skippedRows, duplicateRows));
-
-          if (result.ok) {
-            el.excelFileInput.value = '';
-            appState.selectedSheet = targetSheet;
-            appState.sheetCache.delete(targetSheet);
-
-            if (result.opaque) {
-              setUploadProgress(99, 'Mode kompatibel browser aktif', targetSheetExists ? 'Request biasa diblokir browser. Upload dikirim ulang dengan mode kompatibel dan sedang diverifikasi...' : `Request biasa diblokir browser. Aplikasi mencoba membuat sheet ${targetSheet} dan upload dengan mode kompatibel...`, buildUploadStats(excelRows.length, payloadRows.length, skippedRows, duplicateRows));
-              const verified = await verifyUploadAfterFallback(targetSheet);
-              if (verified) {
-                setUploadProgress(100, 'Upload selesai', targetSheetExists ? `Request berhasil dikirim. Silakan cek sheet ${targetSheet} pada daftar sebelah kiri.` : `Sheet ${targetSheet} berhasil dibuat atau ditemukan, lalu upload dikirim. Silakan cek daftar sheet di sebelah kiri.`, buildUploadStats(excelRows.length, payloadRows.length, skippedRows, duplicateRows));
-                showToast(targetSheetExists ? 'Upload dikirim dalam mode kompatibel browser. Sheet berhasil dimuat ulang.' : `Sheet ${targetSheet} berhasil dibuat/dimuat ulang dalam mode kompatibel browser.`, 'success');
-              } else {
-                setUploadProgress(100, 'Upload kemungkinan terkirim', targetSheetExists ? 'Browser memblokir pembacaan respons server, tetapi request upload sudah dikirim. Tekan Refresh Sheet beberapa detik lagi untuk verifikasi.' : `Browser memblokir pembacaan respons server. Request membuat sheet ${targetSheet} dan upload sudah dikirim. Tekan Refresh Sheet beberapa detik lagi untuk verifikasi.`, buildUploadStats(excelRows.length, payloadRows.length, skippedRows, duplicateRows));
-                showToast(targetSheetExists ? 'Request upload terkirim, tetapi respons server tidak bisa dibaca browser. Tekan Refresh Sheet untuk cek hasilnya.' : `Request buat sheet ${targetSheet} dan upload terkirim. Tekan Refresh Sheet untuk cek hasilnya.`, 'warn');
-              }
+          if (isOpaqueFallback) {
+            setUploadProgress(99, 'Mode kompatibel browser aktif', targetSheetExists ? 'Request dikirim perlahan dengan mode kompatibel...' : `Request pembuatan file dikirim dengan mode kompatibel...`, buildUploadStats(len, payloadRows.length, skippedRows, duplicateRows));
+            const verified = await verifyUploadAfterFallback(targetSheet);
+            if (verified) {
+              setUploadProgress(100, 'Upload selesai', 'Request berhasil disimpan ke Google Drive.', buildUploadStats(len, payloadRows.length, skippedRows, duplicateRows));
+              showToast('Data berhasil disimpan di Google Drive.', 'success');
             } else {
-              const inserted = result.inserted || payloadRows.length;
-              setUploadProgress(100, 'Upload selesai', targetSheetExists ? `${formatNumber(inserted)} baris berhasil masuk ke Google Sheet` : `Sheet ${targetSheet} siap dipakai. ${formatNumber(inserted)} baris berhasil masuk ke Google Sheet`, buildUploadStats(excelRows.length, payloadRows.length, skippedRows, duplicateRows));
-              showToast(targetSheetExists ? `Upload Sukses! ${inserted.toLocaleString('id-ID')} baris masuk.` : `Sheet ${targetSheet} berhasil dibuat. ${inserted.toLocaleString('id-ID')} baris masuk.`, 'success');
-              await loadAppAndSheets();
+              setUploadProgress(100, 'Upload kemungkinan terkirim', 'Browser memblokir pembacaan respons server, tapi request terkirim.', buildUploadStats(len, payloadRows.length, skippedRows, duplicateRows));
+              showToast('Request upload terkirim, tekan Refresh Sheet beberapa saat lagi untuk cek.', 'warn');
             }
           } else {
-            throw new Error(result.message || 'Gagal menyimpan ke Sheet.');
+            setUploadProgress(100, 'Penyimpanan Selesai', `${formatNumber(totalInserted)} baris berhasil masuk ke Database Drive`, buildUploadStats(len, payloadRows.length, skippedRows, duplicateRows));
+            showToast(`Upload Super Sukses! ${totalInserted.toLocaleString('id-ID')} baris tersimpan.`, 'success');
+            await loadAppAndSheets();
           }
 
         } catch (err) {
           console.error(err);
-          setUploadProgress(100, 'Upload gagal', err.message, { });
-          showToast(`Upload Gagal: ${err.message}`, 'error');
-        } finally {
-          setUploadBusy(false);
-        }
+          setUploadProgress(100, 'Upload gagal', err.message, { }); showToast(`Upload Gagal: ${err.message}`, 'error');
+        } finally { setUploadBusy(false); }
       };
 
       reader.onerror = () => {
-        setUploadBusy(false);
-        setUploadProgress(100, 'Gagal membaca file', 'Browser tidak bisa membaca file dari komputer.', buildUploadStats(0, 0, 0, 0));
-        showToast('Gagal membaca file dari komputer.', 'error');
+        setUploadBusy(false); setUploadProgress(100, 'Gagal membaca file', 'Browser tidak bisa membaca file dari komputer.', buildUploadStats(0, 0, 0, 0)); showToast('Gagal membaca file dari komputer.', 'error');
       };
-
       reader.readAsArrayBuffer(file);
     }
+    
     el.btnUploadExcel.addEventListener('click', uploadExcelToGSheet);
-    // ------------------------------------
 
-    function normalizeSearchValue(value){
-      return String(value || '').toLowerCase().replace(/\s+/g, ' ').trim();
-    }
+    function normalizeSearchValue(value){ return String(value || '').toLowerCase().replace(/\s+/g, ' ').trim(); }
 
     function getEmployeeMatches(term){
-      const employees = appState.employeeOptions || [];
-      const clean = normalizeSearchValue(term);
+      const employees = appState.employeeOptions || []; const clean = normalizeSearchValue(term);
       if (!clean) return employees.slice(0, 50);
-
       const tokens = clean.split(/\s+/).filter(Boolean);
-
-      return employees
-        .map(emp => {
-          const code = String(emp.code || '');
-          const name = String(emp.name || '');
-          const codeNorm = normalizeSearchValue(code);
-          const nameNorm = normalizeSearchValue(name);
-          const fullNorm = `${codeNorm} ${nameNorm}`.trim();
+      return employees.map(emp => {
+          const code = String(emp.code || ''); const name = String(emp.name || '');
+          const codeNorm = normalizeSearchValue(code); const nameNorm = normalizeSearchValue(name); const fullNorm = `${codeNorm} ${nameNorm}`.trim();
           let score = 0;
-
-          if (codeNorm === clean) score += 1000;
-          if (codeNorm.startsWith(clean)) score += 700;
-          if (nameNorm.startsWith(clean)) score += 540;
-          if (fullNorm.includes(clean)) score += 420;
-
-          tokens.forEach(token => {
-            if (codeNorm.includes(token)) score += 160;
-            if (nameNorm.includes(token)) score += 140;
-          });
-
-          if (!score) return null;
-          return { ...emp, _score: score };
-        })
-        .filter(Boolean)
-        .sort((a,b) => (b._score - a._score) || String(a.code || '').localeCompare(String(b.code || '')))
-        .slice(0, 20);
+          if (codeNorm === clean) score += 1000; if (codeNorm.startsWith(clean)) score += 700;
+          if (nameNorm.startsWith(clean)) score += 540; if (fullNorm.includes(clean)) score += 420;
+          tokens.forEach(token => { if (codeNorm.includes(token)) score += 160; if (nameNorm.includes(token)) score += 140; });
+          if (!score) return null; return { ...emp, _score: score };
+        }).filter(Boolean).sort((a,b) => (b._score - a._score) || String(a.code || '').localeCompare(String(b.code || ''))).slice(0, 20);
     }
 
     function fillEmployeeSelect(matches){
       const current = appState.selectedCode;
       if (matches.length === 0) {
          el.employeeSelect.innerHTML = '<option value="">Tidak ada hasil</option>';
-         if (!el.searchInput.value.trim()) appState.selectedCode = '';
-         return;
+         if (!el.searchInput.value.trim()) appState.selectedCode = ''; return;
       }
-
-      el.employeeSelect.innerHTML = '<option value="">Pilih Karyawan...</option>' +
-        matches.map(emp => `<option value="${escapeHtml(emp.code)}">${escapeHtml(emp.code)} - ${escapeHtml(emp.name)}</option>`).join('');
-
-      if (matches.some(m => m.code === current)) {
-        el.employeeSelect.value = current;
-      } else {
-        el.employeeSelect.value = '';
-      }
+      el.employeeSelect.innerHTML = '<option value="">Pilih Karyawan...</option>' + matches.map(emp => `<option value="${escapeHtml(emp.code)}">${escapeHtml(emp.code)} - ${escapeHtml(emp.name)}</option>`).join('');
+      if (matches.some(m => m.code === current)) el.employeeSelect.value = current; else el.employeeSelect.value = '';
     }
 
     function applySearch(autoPreview = false){
       const matches = getEmployeeMatches(el.searchInput.value);
-      fillEmployeeSelect(matches);
-      renderSearchSuggestions(matches, el.searchInput.value);
-
-      if (autoPreview && appState.selectedCode) {
-        renderReport();
-      } else if (!el.searchInput.value.trim() && !appState.selectedCode) {
-        renderReport();
-      }
+      fillEmployeeSelect(matches); renderSearchSuggestions(matches, el.searchInput.value);
+      if (autoPreview && appState.selectedCode) renderReport(); else if (!el.searchInput.value.trim() && !appState.selectedCode) renderReport();
     }
 
     function getSelectedRows(){
-      if (!appState.selectedCode) return [];
-      return appState.employeeRowsMap.get(appState.selectedCode) || [];
+      if (!appState.selectedCode) return []; return appState.employeeRowsMap.get(appState.selectedCode) || [];
     }
 
-    // Tangkap event Edit Langsung dari Kertas
     el.paperTarget.addEventListener('input', (event) => {
       if(event.target.tagName === 'INPUT') {
-        const key = event.target.dataset.key;
-        const field = event.target.dataset.field;
-        const value = event.target.value;
-        const row = appState.rowMapByKey.get(key);
-        if (row) {
-          row[field] = field === 'overtime' ? String(value).trim() : value;
-        }
+        const key = event.target.dataset.key; const field = event.target.dataset.field; const value = event.target.value;
+        const row = appState.rowMapByKey.get(key); if (row) row[field] = field === 'overtime' ? String(value).trim() : value;
       }
     });
 
     function renderReport(){
-      const rows = getSelectedRows();
-      const version = el.versionInput.value.trim() || '1.25.02.28';
-      const systemCode = el.systemCodeInput.value.trim() || 'HRIDIN01';
+      const rows = getSelectedRows(); const version = el.versionInput.value.trim() || '1.25.02.28'; const systemCode = el.systemCodeInput.value.trim() || 'HRIDIN01';
       el.reportVersion.textContent = `Version: ${version}`;
       
       if (!rows.length) {
         const headerStyle = buildHeaderStyleVars(appState.headerLayout);
         el.reportRoot.innerHTML = `
           <div class="report-header" style="${headerStyle}">
-            <div class="report-company">Hop Lun</div>
-            <div class="report-title">Report Attendance Worker</div>
-            <div class="report-meta-band">
-              <div class="report-meta-left">&nbsp;</div>
-              <div class="report-period" style="color:#94a3b8;">Tidak ada data.</div>
-              <div class="report-meta-right">&nbsp;</div>
-            </div>
+            <div class="report-company">Hop Lun</div><div class="report-title">Report Attendance Worker</div>
+            <div class="report-meta-band"><div class="report-meta-left">&nbsp;</div><div class="report-period" style="color:#94a3b8;">Tidak ada data.</div><div class="report-meta-right">&nbsp;</div></div>
             <div class="report-range" style="color:#94a3b8;">Cari dan pilih ID Karyawan di panel kiri terlebih dahulu.</div>
           </div>
-        `;
-        return;
+        `; return;
       }
 
-      const first = rows[0];
-      const employeeMeta = appState.employeeMetaMap.get(appState.selectedCode) || { start: '', end: '' };
-      const start = employeeMeta.start ? formatDateDDMMYYYY(employeeMeta.start) : '';
-      const end = employeeMeta.end ? formatDateDDMMYYYY(employeeMeta.end) : '';
-      const generatedDate = formatGeneratedDate(new Date());
-      const headerStyle = buildHeaderStyleVars(appState.headerLayout);
+      const first = rows[0]; const employeeMeta = appState.employeeMetaMap.get(appState.selectedCode) || { start: '', end: '' };
+      const start = employeeMeta.start ? formatDateDDMMYYYY(employeeMeta.start) : ''; const end = employeeMeta.end ? formatDateDDMMYYYY(employeeMeta.end) : '';
+      const generatedDate = formatGeneratedDate(new Date()); const headerStyle = buildHeaderStyleVars(appState.headerLayout);
 
-      // Render Langsung Input Box di dalam TD untuk Edit Cepat
       const body = rows.map(row => `
         <tr>
-          <td class="col-code">${escapeHtml(row.code)}</td>
-          <td class="col-name">${escapeHtml(row.name)}</td>
-          <td class="col-dept">${escapeHtml(row.department)}</td>
+          <td class="col-code">${escapeHtml(row.code)}</td><td class="col-name">${escapeHtml(row.name)}</td><td class="col-dept">${escapeHtml(row.department)}</td>
           <td class="col-date">${escapeHtml(formatDateDDMMYYYY(row.clockDate))}</td>
           <td class="col-in"><input type="text" data-field="clockIn" data-key="${escapeHtml(row.uniqueKey)}" value="${escapeHtml(row.clockIn)}" placeholder="" /></td>
           <td class="col-out"><input type="text" data-field="clockOut" data-key="${escapeHtml(row.uniqueKey)}" value="${escapeHtml(row.clockOut)}" placeholder="" /></td>
@@ -2864,281 +1661,94 @@ async function uploadExcelToGSheet() {
 
       el.reportRoot.innerHTML = `
         <div class="report-header" style="${headerStyle}">
-          <div class="report-company">Hop Lun</div>
-          <div class="report-title">Report Attendance Worker</div>
-          <div class="report-meta-band">
-            <div class="report-meta-left">${escapeHtml(generatedDate)}</div>
-            <div class="report-period">Period: ${escapeHtml(start)} to ${escapeHtml(end)}. All Records</div>
-            <div class="report-meta-right">${escapeHtml(systemCode)} - Page 1 of 1</div>
-          </div>
+          <div class="report-company">Hop Lun</div><div class="report-title">Report Attendance Worker</div>
+          <div class="report-meta-band"><div class="report-meta-left">${escapeHtml(generatedDate)}</div><div class="report-period">Period: ${escapeHtml(start)} to ${escapeHtml(end)}. All Records</div><div class="report-meta-right">${escapeHtml(systemCode)} - Page 1 of 1</div></div>
           <div class="report-range">Range: ((Employee Code='${escapeHtml(first.code)}'))</div>
         </div>
         <table class="report-table">
-          <thead>
-            <tr>
-              <th class="col-code">Employee<br>Code</th>
-              <th class="col-name">Employee<br>Name</th>
-              <th class="col-dept">Department</th>
-              <th class="col-date">Clock Date</th>
-              <th class="col-in">Clock In</th>
-              <th class="col-out">Clock Out</th>
-              <th class="col-ot">Overtime</th>
-              <th class="col-remarks">Remarks</th>
-            </tr>
-          </thead>
+          <thead><tr><th class="col-code">Employee<br>Code</th><th class="col-name">Employee<br>Name</th><th class="col-dept">Department</th><th class="col-date">Clock Date</th><th class="col-in">Clock In</th><th class="col-out">Clock Out</th><th class="col-ot">Overtime</th><th class="col-remarks">Remarks</th></tr></thead>
           <tbody>${body}</tbody>
         </table>
-        <div class="report-footer-box">
-          <strong>Record Count</strong>
-          <span>${rows.length}</span>
-        </div>
+        <div class="report-footer-box"><strong>Record Count</strong><span>${rows.length}</span></div>
       `;
     }
 
     function resetCurrent(){
-      const currentRows = getSelectedRows();
-      if (!currentRows.length) return;
-      const keys = new Set(currentRows.map(r => r.uniqueKey));
-      const sourceMap = new Map(appState.sourceRows.map(row => [row.uniqueKey, row]));
-      const restoredRows = appState.workingRows.map(row => {
-        if (!keys.has(row.uniqueKey)) return row;
-        const original = sourceMap.get(row.uniqueKey);
-        return original ? { ...original } : row;
-      });
-      applyIndexedState(restoredRows, false);
-      renderReport();
-      showToast('Edit dibatalkan. Kembali ke data Sheet.', 'success');
+      const currentRows = getSelectedRows(); if (!currentRows.length) return;
+      const keys = new Set(currentRows.map(r => r.uniqueKey)); const sourceMap = new Map(appState.sourceRows.map(row => [row.uniqueKey, row]));
+      const restoredRows = appState.workingRows.map(row => { if (!keys.has(row.uniqueKey)) return row; const original = sourceMap.get(row.uniqueKey); return original ? { ...original } : row; });
+      applyIndexedState(restoredRows, false); renderReport(); showToast('Edit dibatalkan. Kembali ke data Sheet.', 'success');
     }
 
-    // Aksi PDF Download Khusus
     function downloadPdf() {
-      const rows = getSelectedRows();
-      if (!rows.length) return;
-
-      const first = rows[0];
-      const filename = `${first.code} - ${first.name}.pdf`;
-      
-      const oldShadow = el.paperTarget.style.boxShadow;
-      el.paperTarget.style.boxShadow = 'none';
-
+      const rows = getSelectedRows(); if (!rows.length) return;
+      const first = rows[0]; const filename = `${first.code} - ${first.name}.pdf`;
+      const oldShadow = el.paperTarget.style.boxShadow; el.paperTarget.style.boxShadow = 'none';
       showToast('Menyiapkan file PDF otomatis...', 'info');
-
-      const opt = {
-        margin:       [5, 5, 5, 5],
-        filename:     filename,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true, logging: false },
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-      };
-
-      html2pdf().set(opt).from(el.paperTarget).save().then(() => {
-        el.paperTarget.style.boxShadow = oldShadow;
-        showToast(`PDF Berhasil Terunduh`, 'success');
-      }).catch(err => {
-        console.error(err);
-        el.paperTarget.style.boxShadow = oldShadow;
-        showToast('Gagal membuat file PDF.', 'error');
-      });
+      const opt = { margin: [5, 5, 5, 5], filename: filename, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true, logging: false }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
+      html2pdf().set(opt).from(el.paperTarget).save().then(() => { el.paperTarget.style.boxShadow = oldShadow; showToast(`PDF Berhasil Terunduh`, 'success'); }).catch(err => { console.error(err); el.paperTarget.style.boxShadow = oldShadow; showToast('Gagal membuat file PDF.', 'error'); });
     }
 
-    // Logic Tombol Panel Pengaturan
-    el.btnSettings.addEventListener('click', () => {
-      el.settingsPanel.classList.toggle('hidden');
-    });
-
+    el.btnSettings.addEventListener('click', () => { el.settingsPanel.classList.toggle('hidden'); });
     el.btnSync.addEventListener('click', () => syncFromGSheet(true));
-    
-    // Logic gabungan: Print Kertas kemudian langsung Download PDF setelah jendela dialog tertutup
     el.btnPrint.addEventListener('click', () => {
-      if(!getSelectedRows().length) {
-         showToast("Pilih ID karyawan terlebih dahulu!", "warn");
-         return;
-      }
-      window.print();
-      // Tunggu jendela print tertutup, lalu otomatis download PDF
-      setTimeout(() => { downloadPdf(); }, 500);
+      if(!getSelectedRows().length) { showToast("Pilih ID karyawan terlebih dahulu!", "warn"); return; }
+      window.print(); setTimeout(() => { downloadPdf(); }, 500);
     });
     
     el.btnResetCurrent.addEventListener('click', resetCurrent);
-    
-    el.sheetSelect.addEventListener('change', () => {
-      appState.selectedCode = '';
-      appState.selectedSheet = el.sheetSelect.value;
-      syncFromGSheet(true);
-    });
-
-    el.searchInput.addEventListener('input', () => {
-      appState.searchSuggestIndex = -1;
-      clearTimeout(appState.searchDebounceTimer);
-      appState.searchDebounceTimer = setTimeout(() => {
-        applySearch(false);
-      }, 90);
-    });
-
-    el.searchInput.addEventListener('focus', () => {
-      if (el.searchInput.value.trim()) {
-        renderSearchSuggestions(getEmployeeMatches(el.searchInput.value), el.searchInput.value);
-      }
-    });
-
+    el.sheetSelect.addEventListener('change', () => { appState.selectedCode = ''; appState.selectedSheet = el.sheetSelect.value; syncFromGSheet(true); });
+    el.searchInput.addEventListener('input', () => { appState.searchSuggestIndex = -1; clearTimeout(appState.searchDebounceTimer); appState.searchDebounceTimer = setTimeout(() => { applySearch(false); }, 90); });
+    el.searchInput.addEventListener('focus', () => { if (el.searchInput.value.trim()) { renderSearchSuggestions(getEmployeeMatches(el.searchInput.value), el.searchInput.value); } });
     el.searchInput.addEventListener('keydown', (event) => {
       const matches = getEmployeeMatches(el.searchInput.value).slice(0, 8);
-      if (!matches.length) {
-        if (event.key === 'Escape') hideSearchSuggestions();
-        return;
-      }
-
-      if (event.key === 'ArrowDown') {
-        event.preventDefault();
-        appState.searchSuggestIndex = (appState.searchSuggestIndex + 1 + matches.length) % matches.length;
-        renderSearchSuggestions(matches, el.searchInput.value);
-      } else if (event.key === 'ArrowUp') {
-        event.preventDefault();
-        appState.searchSuggestIndex = (appState.searchSuggestIndex - 1 + matches.length) % matches.length;
-        renderSearchSuggestions(matches, el.searchInput.value);
-      } else if (event.key === 'Enter') {
-        event.preventDefault();
-        const idx = appState.searchSuggestIndex >= 0 ? appState.searchSuggestIndex : 0;
-        selectEmployeeByCode(matches[idx].code);
-      } else if (event.key === 'Escape') {
-        hideSearchSuggestions();
-      }
+      if (!matches.length) { if (event.key === 'Escape') hideSearchSuggestions(); return; }
+      if (event.key === 'ArrowDown') { event.preventDefault(); appState.searchSuggestIndex = (appState.searchSuggestIndex + 1 + matches.length) % matches.length; renderSearchSuggestions(matches, el.searchInput.value); } 
+      else if (event.key === 'ArrowUp') { event.preventDefault(); appState.searchSuggestIndex = (appState.searchSuggestIndex - 1 + matches.length) % matches.length; renderSearchSuggestions(matches, el.searchInput.value); } 
+      else if (event.key === 'Enter') { event.preventDefault(); const idx = appState.searchSuggestIndex >= 0 ? appState.searchSuggestIndex : 0; selectEmployeeByCode(matches[idx].code); } 
+      else if (event.key === 'Escape') { hideSearchSuggestions(); }
     });
-
-    el.searchInput.addEventListener('blur', () => {
-      setTimeout(hideSearchSuggestions, 140);
-    });
-
-    el.searchSuggest.addEventListener('mousedown', (event) => {
-      const item = event.target.closest('.search-suggest-item[data-code]');
-      if (!item) return;
-      selectEmployeeByCode(item.dataset.code);
-    });
-
-    el.bulkEmployeeInput.addEventListener('input', () => {
-      appState.bulkSuggestIndex = -1;
-      appState.bulkEmployeeSearchCode = '';
-      renderBulkEmployeeSuggestions(el.bulkEmployeeInput.value);
-    });
-
-    el.bulkEmployeeInput.addEventListener('focus', () => {
-      if (el.bulkEmployeeInput.value.trim()) {
-        renderBulkEmployeeSuggestions(el.bulkEmployeeInput.value);
-      }
-    });
-
+    el.searchInput.addEventListener('blur', () => { setTimeout(hideSearchSuggestions, 140); });
+    el.searchSuggest.addEventListener('mousedown', (event) => { const item = event.target.closest('.search-suggest-item[data-code]'); if (!item) return; selectEmployeeByCode(item.dataset.code); });
+    
+    el.bulkEmployeeInput.addEventListener('input', () => { appState.bulkSuggestIndex = -1; appState.bulkEmployeeSearchCode = ''; renderBulkEmployeeSuggestions(el.bulkEmployeeInput.value); });
+    el.bulkEmployeeInput.addEventListener('focus', () => { if (el.bulkEmployeeInput.value.trim()) renderBulkEmployeeSuggestions(el.bulkEmployeeInput.value); });
     el.bulkEmployeeInput.addEventListener('keydown', (event) => {
       const matches = getEmployeeMatches(el.bulkEmployeeInput.value).slice(0, 8);
-
-      if (event.key === 'ArrowDown' && matches.length) {
-        event.preventDefault();
-        appState.bulkSuggestIndex = (appState.bulkSuggestIndex + 1 + matches.length) % matches.length;
-        renderBulkEmployeeSuggestions(el.bulkEmployeeInput.value);
-      } else if (event.key === 'ArrowUp' && matches.length) {
-        event.preventDefault();
-        appState.bulkSuggestIndex = (appState.bulkSuggestIndex - 1 + matches.length) % matches.length;
-        renderBulkEmployeeSuggestions(el.bulkEmployeeInput.value);
-      } else if (event.key === 'Enter') {
-        event.preventDefault();
-        if (matches.length) {
-          const idx = appState.bulkSuggestIndex >= 0 ? appState.bulkSuggestIndex : 0;
-          selectBulkEmployeeByCode(matches[idx].code);
-        } else {
-          addBulkEntry();
-        }
-      } else if (event.key === 'Escape') {
-        hideBulkEmployeeSuggestions();
-      }
+      if (event.key === 'ArrowDown' && matches.length) { event.preventDefault(); appState.bulkSuggestIndex = (appState.bulkSuggestIndex + 1 + matches.length) % matches.length; renderBulkEmployeeSuggestions(el.bulkEmployeeInput.value); } 
+      else if (event.key === 'ArrowUp' && matches.length) { event.preventDefault(); appState.bulkSuggestIndex = (appState.bulkSuggestIndex - 1 + matches.length) % matches.length; renderBulkEmployeeSuggestions(el.bulkEmployeeInput.value); } 
+      else if (event.key === 'Enter') { event.preventDefault(); if (matches.length) { const idx = appState.bulkSuggestIndex >= 0 ? appState.bulkSuggestIndex : 0; selectBulkEmployeeByCode(matches[idx].code); } else { addBulkEntry(); } } 
+      else if (event.key === 'Escape') hideBulkEmployeeSuggestions();
     });
-
-    el.bulkEmployeeInput.addEventListener('blur', () => {
-      setTimeout(hideBulkEmployeeSuggestions, 140);
-    });
-
-    el.bulkEmployeeSuggest.addEventListener('mousedown', (event) => {
-      const item = event.target.closest('.search-suggest-item[data-bulk-code]');
-      if (!item) return;
-      selectBulkEmployeeByCode(item.dataset.bulkCode);
-    });
-
-    el.employeeSelect.addEventListener('change', () => {
-      const code = el.employeeSelect.value.trim();
-      if (!code) return;
-      selectEmployeeByCode(code, false);
-    });
-
+    el.bulkEmployeeInput.addEventListener('blur', () => { setTimeout(hideBulkEmployeeSuggestions, 140); });
+    el.bulkEmployeeSuggest.addEventListener('mousedown', (event) => { const item = event.target.closest('.search-suggest-item[data-bulk-code]'); if (!item) return; selectBulkEmployeeByCode(item.dataset.bulkCode); });
+    
+    el.employeeSelect.addEventListener('change', () => { const code = el.employeeSelect.value.trim(); if (!code) return; selectEmployeeByCode(code, false); });
     el.btnBulkAddEntry.addEventListener('click', addBulkEntry);
+    if (el.btnBulkClearEntries) el.btnBulkClearEntries.addEventListener('click', () => { clearBulkEntries(); showToast('List cetak banyak dikosongkan.', 'success'); });
+    el.bulkEntryList.addEventListener('click', (event) => { const button = event.target.closest('[data-remove-bulk-entry]'); if (!button) return; removeBulkEntry(button.dataset.removeBulkEntry); });
+    el.btnBulkPdf.addEventListener('click', downloadBulkPdf);
+    
+    el.systemCodeInput.addEventListener('input', renderReport); el.versionInput.addEventListener('input', renderReport);
 
-    if (el.btnBulkClearEntries) {
-      el.btnBulkClearEntries.addEventListener('click', () => {
-        clearBulkEntries();
-        showToast('List cetak banyak dikosongkan.', 'success');
+    [el.companyFontInput, el.titleFontInput, el.metaFontInput, el.periodFontInput, el.rangeFontInput, el.companyGapInput, el.titleGapInput, el.metaGapInput, el.periodGapInput, el.rangeBottomGapInput].forEach(input => {
+      input.addEventListener('input', () => { setHeaderLayout(getHeaderLayoutFromInputs()); });
+    });
+    el.btnApplyHeaderPreset.addEventListener('click', () => { setHeaderLayout(HEADER_LAYOUT_IMAGE); showToast('Header disesuaikan lebih rapat seperti contoh gambar.', 'success'); });
+    el.btnResetHeaderLayout.addEventListener('click', () => { setHeaderLayout(HEADER_LAYOUT_DEFAULT); showToast('Header dikembalikan ke default.', 'success'); });
+
+    if (el.dbYearSelect) {
+      el.dbYearSelect.addEventListener('change', () => {
+        const nextYear = String(el.dbYearSelect.value || '').trim(); if (!nextYear || nextYear === appState.selectedYear) return;
+        appState.selectedYear = nextYear; clearYearScopedState(); hideSearchSuggestions(); hideBulkEmployeeSuggestions(); resetUploadProgress();
+        if (!el.uploadSheetName.value.trim()) el.uploadSheetName.placeholder = `Msl: AttBIPO-01-${nextYear}`;
+        loadAppAndSheets();
       });
     }
 
-    el.bulkEntryList.addEventListener('click', (event) => {
-      const button = event.target.closest('[data-remove-bulk-entry]');
-      if (!button) return;
-      removeBulkEntry(button.dataset.removeBulkEntry);
-    });
-
-    el.btnBulkPdf.addEventListener('click', downloadBulkPdf);
-
-    el.systemCodeInput.addEventListener('input', renderReport);
-    el.versionInput.addEventListener('input', renderReport);
-
-    [
-      el.companyFontInput,
-      el.titleFontInput,
-      el.metaFontInput,
-      el.periodFontInput,
-      el.rangeFontInput,
-      el.companyGapInput,
-      el.titleGapInput,
-      el.metaGapInput,
-      el.periodGapInput,
-      el.rangeBottomGapInput
-    ].forEach(input => {
-      input.addEventListener('input', () => {
-        setHeaderLayout(getHeaderLayoutFromInputs());
-      });
-    });
-
-    el.btnApplyHeaderPreset.addEventListener('click', () => {
-      setHeaderLayout(HEADER_LAYOUT_IMAGE);
-      showToast('Header disesuaikan lebih rapat seperti contoh gambar.', 'success');
-    });
-
-    el.btnResetHeaderLayout.addEventListener('click', () => {
-      setHeaderLayout(HEADER_LAYOUT_DEFAULT);
-      showToast('Header dikembalikan ke default.', 'success');
-    });
-
-    el.dbYearSelect?.addEventListener('change', () => {
-      const nextYear = String(el.dbYearSelect.value || '').trim();
-      if (!nextYear || nextYear === appState.selectedYear) return;
-      appState.selectedYear = nextYear;
-      clearYearScopedState();
-      hideSearchSuggestions();
-      hideBulkEmployeeSuggestions();
-      resetUploadProgress();
-      if (!el.uploadSheetName.value.trim()) {
-        el.uploadSheetName.placeholder = `Msl: AttBIPO-01-${nextYear}`;
-      }
-      loadAppAndSheets();
-    });
-
     window.addEventListener('DOMContentLoaded', () => {
-      fillDatabaseYearOptions();
-      setHeaderLayout(loadHeaderLayout(), false);
-      resetUploadProgress();
-      hideSearchSuggestions();
-      updateBulkPeriodOptions();
-      updateBulkEmployeeOptions();
-      renderReport();
-      if (el.uploadSheetName && appState.selectedYear) {
-        el.uploadSheetName.placeholder = `Msl: AttBIPO-01-${appState.selectedYear}`;
-      }
+      fillDatabaseYearOptions(); setHeaderLayout(loadHeaderLayout(), false); resetUploadProgress(); hideSearchSuggestions(); updateBulkPeriodOptions(); updateBulkEmployeeOptions(); renderReport();
+      if (el.uploadSheetName && appState.selectedYear) el.uploadSheetName.placeholder = `Msl: AttBIPO-01-${appState.selectedYear}`;
       setTimeout(() => { loadAppAndSheets(); }, 300); 
     });
 
