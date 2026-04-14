@@ -126,7 +126,7 @@
       background: #fff;
       color: #111;
       box-shadow: 0 24px 60px rgba(15,23,42,.15);
-      padding: 8mm 15mm 10mm; /* Batas atas ditarik lagi ke 8mm dan bawah 10mm agar lebih lega */
+      padding: 10mm 15mm 12mm; /* Margin disesuaikan agar pas 1 halaman */
       position: relative;
     }
 
@@ -158,28 +158,35 @@
     .btn-xs { padding:8px 10px; font-size:12px; }
     
     .report-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 9.6px; line-height: 1.1; }
-    .report-table thead th { text-align: center !important; font-size: 10.88px; padding: 6px 2px; font-weight: 800; border-top: 2px solid #000; border-bottom: 2px solid #000; vertical-align: middle !important; white-space: nowrap !important; } /* nowrap memaksa judul kolom selalu 1 baris */
-    .report-table thead th.col-code, .report-table thead th.col-name { text-align: left !important; padding-left: 4px; }
     
-    .report-table tbody td { padding: 4px 2px; vertical-align: middle !important; border-bottom: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; height: auto; min-height: 18px; }
+    /* SETTING JUDUL TABEL (Semuanya otomatis Middle Center, kecuali yang dipaksa Kiri) */
+    .report-table thead th { text-align: center !important; font-size: 10.88px; padding: 6px 2px; font-weight: 800; border-top: 2px solid #000; border-bottom: 2px solid #000; vertical-align: middle !important; white-space: nowrap !important; }
+    
+    /* FIX: Agar Judul Dept Lurus Kiri dengan data di bawahnya */
+    .report-table thead th.col-code, 
+    .report-table thead th.col-name, 
+    .report-table thead th.col-dept { text-align: left !important; padding-left: 4px; }
+    
+    /* FIX 1: Padding Atas-Bawah diturunkan dari 4px ke 2.5px agar 31+ baris muat di 1 halaman */
+    .report-table tbody td { padding: 2.5px 2px; vertical-align: middle !important; border-bottom: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; height: auto; min-height: 16px; }
     
     /* Wrap text otomatis untuk Kolom Nama dan Departemen */
     .report-table tbody td.col-name, .report-table tbody td.col-dept { white-space: normal !important; overflow: visible !important; word-wrap: break-word !important; overflow-wrap: break-word !important; line-height: 1.15; }
 
-    /* PRESISI LEBAR KOLOM 100% FULL */
-    .report-table .col-code { width: 9.5%; }
-    .report-table .col-name { width: 14.5%; }
-    .report-table .col-dept { width: 15.5%; } /* Departemen digeser ke kiri */
-    .report-table .col-date { width: 11.5%; }
-    .report-table .col-in { width: 8%; }
-    .report-table .col-out { width: 8%; }
-    .report-table .col-ot { width: 8%; }
-    .report-table .col-remarks { width: 25%; } /* Area Remarks diperluas */
+    /* PRESISI LEBAR KOLOM 100% FULL (Overtime & Clock Out dijauhkan, Dept geser kiri) */
+    .report-table .col-code { width: 9%; }
+    .report-table .col-name { width: 13.5%; }
+    .report-table .col-dept { width: 16.5%; } 
+    .report-table .col-date { width: 11%; }
+    .report-table .col-in { width: 8.5%; }
+    .report-table .col-out { width: 9.5%; } 
+    .report-table .col-ot { width: 9.5%; } 
+    .report-table .col-remarks { width: 22.5%; } 
     
     /* Alignment Isi Baris Tabel */
     .report-table tbody td.col-code, .report-table tbody td.col-name, .report-table tbody td.col-dept { text-align: left !important; padding-left: 4px; }
     .report-table tbody td.col-date, .report-table tbody td.col-in, .report-table tbody td.col-out, .report-table tbody td.col-ot { text-align: center !important; }
-    .report-table tbody td.col-remarks { text-align: left !important; padding-left: 16px !important; } /* Jauhkan teks dari Overtime */
+    .report-table tbody td.col-remarks { text-align: left !important; padding-left: 16px !important; }
     
     /* Style Edit Langsung pada mode Tampilan Layar */
     .report-table input {
@@ -189,11 +196,11 @@
     }
     .report-table input:hover, .report-table input:focus { background: #e0f2fe; border-color: #93c5fd; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05); color: #1e3a8a; font-weight: bold; }
     
-    /* MENGUBAH GARIS MENJADI 1 GARIS (SINGLE LINE) */
-    .report-footer-box { margin-top: 6px; border-top: 2px solid #000; border-bottom: 1px solid #000; padding: 5px 0; font-size: 10.5px; display: flex; gap: 15px; align-items: center; line-height: 1; position: relative; }
-    /* Pseudo-element ::after (yang membuat garis dobel sebelumnya) telah dihapus dari sini */
+    /* FIX 2: Margin diperkecil agar footer naik */
+    .report-footer-box { margin-top: 4px; border-top: 2px solid #000; border-bottom: 1px solid #000; padding: 4px 0; font-size: 10.5px; display: flex; gap: 15px; align-items: center; line-height: 1; position: relative; }
     
-    .report-version { margin-top: 8px; font-size: 9px; color: #111; text-align: left; } /* Margin atas diperkecil agar version ikut naik */
+    /* FIX 3: Posisi Version dinaikkan dari 8mm menjadi 12mm dari ujung bawah kertas */
+    .report-version { position: absolute; bottom: 12mm; left: 15mm; font-size: 9px; color: #111; text-align: left; margin: 0; }
     
     .hidden { display: none !important; }
 
@@ -265,6 +272,18 @@
       .sidebar { width: 100%; min-width: 100%; border-right: none; border-bottom: 1px solid #e2e8f0; height: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.05); padding: 16px; }
       .main-stage { padding: 16px; overflow-y: visible; }
       .paper { transform-origin: top center; width: 210mm; }
+      .bulk-entry-grid {
+        grid-template-columns: 88px minmax(0, 1fr) 38px !important;
+      }
+      .bulk-search-wrap .search-suggest {
+        width:min(320px, calc(100vw - 36px));
+      }
+      .bulk-list-head,
+      .bulk-list-row {
+        grid-template-columns: 26px 84px minmax(0, 1fr) 22px;
+        gap:6px;
+        padding:8px;
+      }
     }
     
     /* ========================================================================= */
@@ -283,15 +302,18 @@
       .paper { 
         box-shadow: none !important; 
         width: 210mm !important; 
-        height: 295mm !important; /* MENGUNCI TINGGI */
-        max-height: 295mm !important; 
+        height: 294mm !important; /* MENGUNCI TINGGI: Pas untuk 1 lembar tanpa blank page */
+        max-height: 294mm !important; 
         overflow: hidden !important; 
         box-sizing: border-box !important;
         margin: 0 auto !important; 
-        padding: 8mm 15mm 10mm !important; /* Porsi Margin ditarik agar Version masuk sempurna 1 halaman */
+        padding: 10mm 15mm 15mm !important; 
         page-break-after: always;
       }
-      .report-version { position: static; margin-top: 8px; }
+      
+      /* FIX 4: Posisi Version absolut saat print dinaikkan ke 12mm */
+      .report-version { position: absolute !important; bottom: 12mm !important; left: 15mm !important; margin: 0 !important; }
+      
       /* Menetralkan input box jadi teks biasa saat di print */
       .report-table input { 
         border: none !important; 
@@ -329,12 +351,21 @@
       transform: none !important;
       width: 210mm !important; 
       max-width: 210mm !important;
-      height: 295mm !important; 
-      max-height: 295mm !important;
+      height: 294mm !important; /* MENGUNCI TINGGI: Pas untuk 1 lembar tanpa blank page */
+      max-height: 294mm !important;
       overflow: hidden !important;
       box-sizing: border-box !important;
-      padding: 8mm 15mm 10mm !important; /* Porsi Margin ditarik ke atas */
+      padding: 10mm 15mm 15mm !important; 
     }
+    
+    /* FIX 5: Posisi Version absolut saat PDF dinaikkan ke 12mm */
+    body.pdf-export .report-version {
+      position: absolute !important; 
+      bottom: 12mm !important; 
+      left: 15mm !important; 
+      margin: 0 !important;
+    }
+    
     body.pdf-export .report-table input {
       border: none !important;
       background: transparent !important;
