@@ -119,7 +119,7 @@
       align-items: flex-start;
     }
     
-    /* KERTAS A4 DINAMIS */
+    /* KERTAS A4 DINAMIS - IDENTIK SCREEN & PDF */
     .paper {
       width: 210mm;
       min-height: auto;
@@ -171,7 +171,7 @@
     .report-table .col-ot { width: 8.6%; text-align: center; }
     .report-table .col-remarks { width: 27.6%; }
     
-    /* Style Edit Langsung */
+    /* Style Edit Langsung pada mode Tampilan Layar */
     .report-table input {
       width: 100%; border: 1px solid transparent; background: transparent; border-radius: 2px;
       font-family: inherit; font-size: inherit; color: inherit; padding: 1px 2px; margin: -1px -2px;
@@ -254,15 +254,53 @@
       .paper { transform-origin: top center; width: 210mm; }
     }
     
-    /* Aturan Print - Disesuaikan agar tidak blank page */
-    @page { size: A4 portrait; margin: 10mm; }
+    /* ========================================================================= */
+    /* RULES CETAK & PDF - MEMASTIKAN 1:1 DENGAN TAMPILAN LAYAR */
+    /* ========================================================================= */
+    
+    /* 1. Aturan CSS Print Native (Tekan Tombol Print / Ctrl+P) */
+    @page { 
+      size: A4 portrait; 
+      margin: 0; /* Hapus margin browser agar tidak dobel dengan padding kertas */
+    }
     @media print {
-      body { background: #fff; padding: 0; display: block; overflow: visible; height: auto; }
+      body { background: #fff; padding: 0; margin: 0; display: block; overflow: visible; height: auto; }
       .sidebar { display: none !important; }
       .main-stage { padding: 0; background: none; overflow: visible; display: block; }
-      .paper { box-shadow: none; width: auto; min-height: auto; margin: 0; padding: 0; }
+      .paper { 
+        box-shadow: none !important; 
+        width: 210mm !important; 
+        min-height: auto !important; 
+        margin: 0 auto !important; 
+        padding: 22mm 15mm 18mm !important; /* Pertahankan margin asli kertas */
+        page-break-after: always;
+      }
       .report-version { position: static; margin-top: 15px; }
-      .report-table input { border: none !important; background: transparent !important; box-shadow: none !important; color: #000 !important; font-weight: normal !important; }
+      /* Menetralkan input box jadi teks biasa saat di print */
+      .report-table input { 
+        border: none !important; 
+        background: transparent !important; 
+        box-shadow: none !important; 
+        color: #111 !important; 
+        font-weight: normal !important; 
+        padding: 0 !important; 
+        margin: 0 !important; 
+      }
+    }
+
+    /* 2. Aturan Khusus PDF Engine (Digunakan saat html2pdf merender) */
+    body.pdf-export .paper {
+      box-shadow: none !important;
+      margin: 0 auto !important;
+    }
+    body.pdf-export .report-table input {
+      border: none !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      color: #111 !important;
+      font-weight: normal !important;
+      padding: 0 !important;
+      margin: 0 !important;
     }
 
   </style>
@@ -357,7 +395,7 @@
           <button id="btnCloseSettings" class="btn-close-settings" title="Tutup Pengaturan">×</button>
         </div>
 
-        <!-- 1. UPLOAD DATABASE (DI POSISI PALING ATAS) -->
+        <!-- 1. UPLOAD DATABASE -->
         <div class="settings-section highlight">
           <h4 style="margin:0 0 12px; font-size:12px; color:#166534; display:flex; align-items:center; gap:6px;">📤 Upload Database Excel</h4>
           <div class="control-group">
@@ -453,7 +491,6 @@
     <main class="main-stage">
       <div class="paper" id="paperTarget">
         <div id="reportRoot" class="report"></div>
-        <!-- Tulisan Version akan otomatis dirender di dalam reportRoot agar nyambung -->
       </div>
     </main>
   </div>
@@ -649,17 +686,6 @@
       } finally {
         clearTimeout(timeoutId);
       }
-    }
-
-    async function verifyUploadAfterFallback(targetSheet) {
-      for (let attempt = 1; attempt <= 4; attempt++) {
-        await sleep(1200);
-        try {
-          await loadAppAndSheets();
-          if (appState.sheetNames.includes(targetSheet)) return true;
-        } catch (_error) {}
-      }
-      return false;
     }
 
     function uploadPayloadWithProgress(payload, onProgress) {
@@ -1053,13 +1079,14 @@
     function chunkRows(rows, size = 25){ const chunks = []; for (let i = 0; i < rows.length; i += size) { chunks.push(rows.slice(i, i + size)); } return chunks; }
 
     async function exportElementToPdfBlob(element, filename){
+      // Parameter Margin PDF diset 0 karena jarak padding kertas sudah mewakilinya
       return await html2pdf().set({
-        margin: [10, 5, 10, 5],
+        margin: 0,
         filename: filename, 
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, logging: false }, 
+        image: { type: 'jpeg', quality: 1 },
+        html2canvas: { scale: 2, useCORS: true, logging: false, windowWidth: 800 }, 
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-      }).from(element).toPdf().outputPdf('blob');
+      }).from(element).outputPdf('blob');
     }
 
     function downloadBlob(blob, filename){
@@ -1088,8 +1115,10 @@
         <tr>
           <td class="col-code">${escapeHtml(row.code)}</td><td class="col-name">${escapeHtml(row.name)}</td>
           <td class="col-dept">${escapeHtml(row.department)}</td><td class="col-date">${escapeHtml(formatDateDDMMYYYY(row.clockDate))}</td>
-          <td class="col-in">${escapeHtml(row.clockIn || '')}</td><td class="col-out">${escapeHtml(row.clockOut || '')}</td>
-          <td class="col-ot">${escapeHtml(row.overtime || '0.0')}</td><td class="col-remarks">${escapeHtml(row.remarks || '')}</td>
+          <td class="col-in"><input type="text" data-field="clockIn" data-key="${escapeHtml(row.uniqueKey)}" value="${escapeHtml(row.clockIn)}" placeholder="" /></td>
+          <td class="col-out"><input type="text" data-field="clockOut" data-key="${escapeHtml(row.uniqueKey)}" value="${escapeHtml(row.clockOut)}" placeholder="" /></td>
+          <td class="col-ot"><input type="text" data-field="overtime" data-key="${escapeHtml(row.uniqueKey)}" value="${escapeHtml(row.overtime)}" placeholder="0.0" /></td>
+          <td class="col-remarks"><input type="text" data-field="remarks" data-key="${escapeHtml(row.uniqueKey)}" value="${escapeHtml(row.remarks)}" placeholder="" /></td>
         </tr>
       `).join('');
 
@@ -1124,6 +1153,9 @@
       if (!entries.length) return showToast('Masukkan dulu item ke list cetak banyak.', 'warn');
       if (typeof JSZip === 'undefined') return showToast('Library ZIP belum termuat. Coba refresh halaman.', 'error');
       showToast('Menyiapkan file cetak banyak...', 'info');
+
+      // Aktifkan mode styling statis untuk export (Input menjadi teks)
+      document.body.classList.add('pdf-export');
 
       const groupedByEmployee = new Map();
       entries.forEach(entry => {
@@ -1160,17 +1192,20 @@
 
         const pageChunks = chunkRows(collectedRows, 25);
         const container = document.createElement('div');
-        container.style.padding = '0'; container.style.background = '#fff';
+        // Setting CSS inline agar margin tidak kacau saat di-append ke body
+        container.style.padding = '0'; container.style.margin = '0'; container.style.background = '#fff'; container.style.width = '210mm';
         container.innerHTML = pageChunks.map((chunk, pageIdx) => buildReportPageHtml(chunk, group.code, systemCode, version, pageIdx + 1, pageChunks.length)).join('<div style="page-break-after:always;"></div>');
         document.body.appendChild(container);
 
         try {
           const safeName = sanitizeFileName(`${group.code}_${group.name || 'Tanpa Nama'}`) || group.code;
-          const pdfBlob = await exportElementToPdfBlob(container, `${safeName}.pdf`);
+          const pdfBlob = await exportElementToPdfBlob(container, safeName);
           zip.file(`${safeName}.pdf`, pdfBlob); fileCount += 1;
         } finally { document.body.removeChild(container); }
         await yieldToUI();
       }
+
+      document.body.classList.remove('pdf-export');
 
       if (!fileCount) return showToast('Tidak ada data yang cocok untuk list cetak tersebut.', 'warn');
       const zipBlob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE' });
@@ -1627,14 +1662,28 @@
       const first = rows[0]; const filename = `${first.code} - ${first.name}.pdf`;
       const oldShadow = el.paperTarget.style.boxShadow; el.paperTarget.style.boxShadow = 'none';
       showToast('Menyiapkan file PDF otomatis...', 'info');
+      
+      // Tambahkan class khusus agar rendering PDF membuat kotak input jadi datar
+      document.body.classList.add('pdf-export');
+
       const opt = { 
-        margin: [10, 5, 10, 5], 
+        margin: 0, // KUNCI UTAMA: Margin dinolkan karena padding kertas asli (22mm dll) sudah cukup
         filename: filename, 
-        image: { type: 'jpeg', quality: 0.98 }, 
-        html2canvas: { scale: 2, useCORS: true, logging: false }, 
+        image: { type: 'jpeg', quality: 1 }, 
+        html2canvas: { scale: 2, useCORS: true, logging: false, windowWidth: 800 }, 
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
       };
-      html2pdf().set(opt).from(el.paperTarget).save().then(() => { el.paperTarget.style.boxShadow = oldShadow; showToast(`PDF Berhasil Terunduh`, 'success'); }).catch(err => { console.error(err); el.paperTarget.style.boxShadow = oldShadow; showToast('Gagal membuat file PDF.', 'error'); });
+      
+      html2pdf().set(opt).from(el.paperTarget).save().then(() => { 
+        el.paperTarget.style.boxShadow = oldShadow; 
+        document.body.classList.remove('pdf-export');
+        showToast(`PDF Berhasil Terunduh`, 'success'); 
+      }).catch(err => { 
+        console.error(err); 
+        el.paperTarget.style.boxShadow = oldShadow; 
+        document.body.classList.remove('pdf-export');
+        showToast('Gagal membuat file PDF.', 'error'); 
+      });
     }
 
     // Navigasi Pengaturan & Menu
