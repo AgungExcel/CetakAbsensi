@@ -68,9 +68,10 @@
 
     .control-group { display: flex; flex-direction: column; gap: 6px; }
     label { font-size: 11px; font-weight: 700; color: #334155; text-transform: uppercase; letter-spacing: .05em; }
-    input[type="text"], input[type="search"], input[type="date"], select {
-      width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 10px;
-      font: inherit; font-size: 13px; background: #fff; color: var(--text); outline: none; transition: border 0.2s;
+    
+    input[type="text"], input[type="search"], input[type="date"], input[type="number"], select {
+      width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 8px;
+      font: inherit; font-size: 12px; background: #fff; color: var(--text); outline: none; transition: border 0.2s;
     }
     input:focus, select:focus { border-color: var(--accent-2); box-shadow: 0 0 0 3px rgba(29,78,216,.15); }
     select:disabled { background: #f1f5f9; color: #94a3b8; cursor: not-allowed; }
@@ -232,45 +233,40 @@
     
     .hidden { display: none !important; }
 
-
+    /* SEARCH STYLES DIRAPIKAN */
     .search-box-wrap { position: relative; }
+    input[type="search"] {
+      font-size: 11.5px !important;
+      padding: 8px 10px !important;
+      height: 34px !important;
+    }
     .search-suggest {
       position: absolute;
-      top: calc(100% + 6px);
+      top: calc(100% + 4px);
       left: 0;
       right: 0;
       background: #fff;
       border: 1px solid #cbd5e1;
-      border-radius: 12px;
-      box-shadow: 0 12px 28px rgba(15,23,42,.12);
-      max-height: 240px;
+      border-radius: 8px;
+      box-shadow: 0 8px 20px rgba(15,23,42,.12);
+      max-height: 220px;
       overflow-y: auto;
       z-index: 50;
     }
-    .search-suggest.hidden { display: none !important; }
     .search-suggest-item {
-      padding: 10px 12px;
+      padding: 6px 10px;
       cursor: pointer;
-      border-bottom: 1px solid #e2e8f0;
+      border-bottom: 1px solid #f1f5f9;
     }
     .search-suggest-item:last-child { border-bottom: none; }
     .search-suggest-item:hover,
-    .search-suggest-item.active {
-      background: #eff6ff;
-    }
-    .search-suggest-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: #0f172a;
-      line-height: 1.2;
-    }
-    .search-suggest-sub {
-      margin-top: 2px;
-      font-size: 11px;
-      color: #64748b;
-      line-height: 1.3;
-    }
-    
+    .search-suggest-item.active { background: #eff6ff; }
+    .search-suggest-row { display: flex; gap: 6px; align-items: center; flex-wrap: nowrap; }
+    .search-suggest-code { font-size: 11px; font-weight: 800; color: #1d4ed8; }
+    .search-suggest-name { font-size: 11px; font-weight: 600; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+    .search-suggest-sub { margin-top: 2px; font-size: 9.5px; color: #64748b; line-height: 1.2; }
+    .search-suggest-mark { background: #fde68a; color:#111; border-radius:3px; font-weight:800; }
+
     /* Toast Notification */
     .toast {
       position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px);
@@ -302,30 +298,32 @@
     .upload-stat-value { font-size:13px; font-weight:800; color:#0f172a; margin-top:2px; }
 
     .bulk-panel {
-      background:#f8fafc;
-      border:1px solid #cbd5e1;
-      border-radius:14px;
-      padding:12px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      overflow:visible;
+      background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:10px; overflow:visible;
     }
     .bulk-inline { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
     .bulk-hint { font-size:11px; color:#64748b; line-height:1.45; margin-top:2px; }
-    .bulk-entry-grid { display:grid; grid-template-columns:minmax(96px,110px) minmax(0,1fr); gap:10px; align-items:end; }
-    .bulk-field { min-width:0; display:flex; flex-direction:column; gap:6px; }
-    .bulk-field-label { font-size:10px; font-weight:800; color:#475569; text-transform:uppercase; letter-spacing:.04em; line-height:1.2; }
-    .bulk-entry-grid select, .bulk-entry-grid input { width:100%; min-width:0; height:40px; padding:10px 12px; font-size:13px; border-radius:12px; }
+    .bulk-entry-grid { display:grid !important; grid-template-columns: 86px minmax(0, 1fr) 36px !important; gap:6px !important; align-items:end !important; }
+    .bulk-field { min-width:0; display:flex; flex-direction:column; gap:4px; }
+    .bulk-field-label { font-size:10px; font-weight:800; color:#475569; text-transform:uppercase; letter-spacing:.04em; line-height:1.1; }
     
-    .search-suggest-mark {
-      background: linear-gradient(180deg, #fde68a 0%, #fcd34d 100%);
-      color:#111827;
-      border-radius:5px;
-      padding:0 2px;
-      box-shadow: inset 0 -1px 0 rgba(0,0,0,.05);
-      font-weight:800;
-    }
+    #bulkEntryPeriod, #bulkEmployeeInput { width:100%; min-width:0; height:32px !important; padding:6px 8px !important; font-size:11.5px !important; border-radius:8px; }
+    .bulk-icon-btn { width:36px; min-width:36px; height:32px; padding:0; font-size:18px; line-height:1; border-radius:8px; }
+    .bulk-toolbar { display:flex; justify-content:flex-end; margin-top:-2px; }
+    .bulk-clear-btn { width:32px; min-width:32px; height:28px; padding:0; border-radius:8px; font-size:14px; line-height:1; }
+    
+    .bulk-entry-list { min-height:50px; padding:0; background:#fff; overflow:hidden; border:1px dashed #cbd5e1; border-radius:8px;}
+    .bulk-list-table { display:flex; flex-direction:column; width:100%; }
+    .bulk-list-head, .bulk-list-row { display:grid; grid-template-columns: 24px 80px minmax(0, 1fr) 24px; gap:6px; align-items:start; padding:6px 8px; }
+    .bulk-list-head { background:#eef2f7; border-bottom:1px solid #dbe5ef; font-size:9.5px; font-weight:800; color:#475569; text-transform:uppercase; letter-spacing:.05em; }
+    .bulk-list-row { background:#fff; border-bottom:1px solid #e2e8f0; font-size:10.5px; }
+    .bulk-list-row:last-child { border-bottom:none; }
+    .bulk-list-no, .bulk-list-period { font-weight:700; color:#0f172a; line-height:1.2; word-break:break-word; }
+    .bulk-list-employee { min-width:0; line-height:1.2; word-break:break-word; }
+    .bulk-list-code { font-weight:700; color:#0f172a; }
+    .bulk-list-name { margin-top:2px; color:#475569; }
+    .bulk-list-remove { width:20px; height:20px; min-width:20px; padding:0; border-radius:999px; background:#fee2e2; color:#b91c1c; box-shadow:none; font-size:12px; line-height:1; align-self:center; justify-self:end; }
+
+    .bulk-chip-empty { font-size:11px; color:#94a3b8; align-self:center; padding:10px 0; text-align:center; line-height:1.45; }
 
     /* Responsif Layar Kecil */
     @media (max-width: 900px) {
@@ -333,6 +331,7 @@
       .sidebar { width: 100%; min-width: 100%; border-right: none; border-bottom: 1px solid #e2e8f0; height: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.05); padding: 16px; }
       .main-stage { padding: 16px; overflow-y: visible; }
       .paper { transform-origin: top center; width: 210mm; }
+      .bulk-entry-grid { grid-template-columns:1fr; }
     }
     
     /* Aturan Print */
@@ -345,28 +344,7 @@
       .report-version { position: fixed; left: 15mm; bottom: 8mm; }
       .report-table input { border: none !important; background: transparent !important; box-shadow: none !important; }
     }
-  
-    /* Bulk print panel final compact layout */
-    .bulk-entry-grid { display:grid !important; grid-template-columns: 92px minmax(0, 1fr) 42px !important; gap:8px !important; align-items:end !important; }
-    .bulk-field { gap:4px; }
-    .bulk-field-label { font-size:11px; letter-spacing:.05em; line-height:1.1; }
-    #bulkEntryPeriod, #bulkEmployeeInput { width:100%; height:38px; padding:8px 10px; font-size:12px; line-height:1.2; border-radius:12px; }
-    .bulk-icon-btn { width:42px; min-width:42px; height:38px; padding:0; font-size:22px; line-height:1; }
-    .bulk-toolbar { display:flex; justify-content:flex-end; margin-top:-2px; }
-    .bulk-clear-btn { width:36px; min-width:36px; height:32px; padding:0; border-radius:10px; font-size:15px; line-height:1; }
-    .bulk-search-wrap .search-suggest { left:0; right:auto; width:min(340px, calc(100vw - 40px)); max-width:none; border-radius:12px; }
-    .bulk-entry-list { min-height:62px; padding:0; background:#fff; overflow:hidden; border:1px dashed #cbd5e1; border-radius:12px;}
-    .bulk-list-table { display:flex; flex-direction:column; width:100%; }
-    .bulk-list-head, .bulk-list-row { display:grid; grid-template-columns: 28px 88px minmax(0, 1fr) 24px; gap:8px; align-items:start; padding:8px 10px; }
-    .bulk-list-head { background:#eef2f7; border-bottom:1px solid #dbe5ef; font-size:10px; font-weight:800; color:#475569; text-transform:uppercase; letter-spacing:.05em; }
-    .bulk-list-row { background:#fff; border-bottom:1px solid #e2e8f0; font-size:11px; }
-    .bulk-list-row:last-child { border-bottom:none; }
-    .bulk-list-no, .bulk-list-period { font-weight:700; color:#0f172a; line-height:1.25; word-break:break-word; }
-    .bulk-list-employee { min-width:0; line-height:1.25; word-break:break-word; }
-    .bulk-list-code { font-weight:700; color:#0f172a; }
-    .bulk-list-name { margin-top:2px; color:#475569; }
-    .bulk-list-remove { width:24px; height:24px; min-width:24px; padding:0; border-radius:999px; background:#fee2e2; color:#b91c1c; box-shadow:none; font-size:13px; line-height:1; align-self:center; justify-self:end; }
-    .bulk-chip-empty { font-size:11px; color:#94a3b8; align-self:center; padding:10px 0; text-align:center; line-height:1.45; }
+
 </style>
 </head>
 <body>
@@ -460,14 +438,20 @@
             <label style="color:#15803d;">1. Pilih File (.xlsx / .xls)</label>
             <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" style="border-color:#bbf7d0; padding:6px 10px; font-size:11px;" />
           </div>
-          <div class="control-group">
-            <label style="color:#15803d;">2. Nama Target Database</label>
-            <input type="text" id="uploadSheetName" placeholder="Msl: AttBIPO-12-2025" style="border-color:#bbf7d0;" />
-            <div style="margin-top:6px;font-size:11px;color:#991b1b;line-height:1.45;background:#fee2e2;padding:6px 8px;border-radius:6px;border:1px solid #fca5a5;">
-              <strong>⚠️ PENTING:</strong> Wajib upload lewat menu ini agar data diubah jadi JSON. JANGAN upload manual file .xlsx langsung ke folder Drive!
+          <div class="layout-grid">
+            <div class="control-group">
+              <label style="color:#15803d;">2. Tahun Data</label>
+              <input type="number" id="uploadYearInput" placeholder="2026" style="border-color:#bbf7d0;" />
+            </div>
+            <div class="control-group">
+              <label style="color:#15803d;">3. Target Sheet</label>
+              <input type="text" id="uploadSheetName" placeholder="Msl: Bulan-01" style="border-color:#bbf7d0;" />
             </div>
           </div>
-          <button id="btnUploadExcel" class="btn-green" style="margin-top:4px;">
+          <div style="font-size:10px;color:#991b1b;line-height:1.4;background:#fee2e2;padding:6px;border-radius:6px;border:1px solid #fca5a5; margin-top: 4px;">
+            <strong>⚠️ PENTING:</strong> Wajib upload lewat menu ini agar data diubah jadi JSON. JANGAN taruh file .xlsx manual ke folder Drive!
+          </div>
+          <button id="btnUploadExcel" class="btn-green" style="margin-top:6px;">
             ⬆️ Upload ke Database Drive
           </button>
           <div id="uploadProgressCard" class="upload-progress-card hidden">
@@ -507,7 +491,7 @@
         <select id="dbYearSelect">
           <option value="">Memuat daftar tahun...</option>
         </select>
-        <div style="font-size:11px;color:#64748b;line-height:1.45;">Otomatis membuat folder per tahun di Google Drive Anda.</div>
+        <div style="font-size:10px;color:#64748b;line-height:1.35;">Hanya menampilkan tahun yang sudah memiliki data / pernah di-upload.</div>
       </div>
 
       <div class="control-group">
@@ -519,7 +503,7 @@
       
       <div class="control-group search-box-wrap">
         <label>Cari No ID / Nama</label>
-        <input id="searchInput" type="search" placeholder="Ketik nama / ID, lalu pilih seperti pencarian Google..." autocomplete="off" />
+        <input id="searchInput" type="search" placeholder="Ketik nama / ID, lalu pilih..." autocomplete="off" />
         <div id="searchSuggest" class="search-suggest hidden"></div>
       </div>
       
@@ -548,12 +532,12 @@
                 <div id="bulkEmployeeSuggest" class="search-suggest hidden"></div>
               </div>
             </div>
-            <button id="btnBulkAddEntry" type="button" class="btn-light bulk-icon-btn" title="Tambah ke list cetak" aria-label="Tambah ke list cetak">＋</button>
+            <button id="btnBulkAddEntry" type="button" class="btn-light bulk-icon-btn" title="Tambah ke list cetak">＋</button>
           </div>
           <div class="bulk-hint">Pilih periode, lalu ketik No ID / Nama.</div>
         </div>
         <div class="bulk-toolbar">
-          <button id="btnBulkClearEntries" type="button" class="btn-light bulk-clear-btn" title="Kosongkan list cetak" aria-label="Kosongkan list cetak">🧹</button>
+          <button id="btnBulkClearEntries" type="button" class="btn-light bulk-clear-btn" title="Kosongkan list cetak">🧹</button>
         </div>
         <div class="control-group">
           <label>List Cetak Banyak</label>
@@ -588,7 +572,6 @@
     // =========================================================================
     // KONFIGURASI DATABASE TERPUSAT (GOOGLE DRIVE + APPS SCRIPT)
     // =========================================================================
-    // Masukkan 1 URL Deployment Web App Apps Script Anda di sini. 
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwHG4lHhwXp18aMKJr-Bftyeh7hBG2G6-FYpVSnHlUrpmh044_fi9LySaBrfUiIGHiQdQ/exec";
     const AVAILABLE_YEARS = ["2024", "2025", "2026", "2027", "2028"];
 
@@ -605,10 +588,10 @@
       code: ['Employee Code','employee code','employee_code','code', 'id', 'nik', 'employee_id', 'id karyawan', 'employee no', 'pin', 'emp code', 'emp. code', 'no id', 'id no'],
       name: ['Employee Name','employee name','employee_name','name', 'nama', 'nama karyawan', 'employee', 'emp name', 'emp. name', 'nama lengkap'],
       department: ['Department','department', 'dept', 'departemen', 'bagian', 'divisi'],
-      clockDate: ['Clock Date','clock date','clock_date','date', 'tanggal', 'tanggal_absen', 'date record', 'tgl'],
-      clockIn: ['Clock In','clock in','clock_in', 'in', 'jam_masuk', 'masuk', 'time in', 'scan masuk'],
-      clockOut: ['Clock Out','clock out','clock_out', 'out', 'jam_keluar', 'keluar', 'time out', 'scan keluar'],
-      overtime: ['OT Authorized','Overtime','OT','ot authorized','overtime','ot', 'lembur', 'jam lembur'],
+      clockDate: ['Clock Date','clock date','clock_date','date', 'tanggal', 'tanggal_absen', 'date record', 'tgl', 'tanggal absen', 'work date', 'attendance date'],
+      clockIn: ['Clock In','clock in','clock_in', 'in', 'jam_masuk', 'masuk', 'time in', 'scan masuk', 'check in', 'first in', 'jam masuk'],
+      clockOut: ['Clock Out','clock out','clock_out', 'out', 'jam_keluar', 'keluar', 'time out', 'scan keluar', 'check out', 'last out', 'jam keluar'],
+      overtime: ['OT Authorized','Overtime','OT','ot authorized','overtime','ot', 'lembur', 'jam lembur', 'total ot', 'ot hours', 'overtime hours'],
       remarks: ['Remarks Description','Remarks','remarks description','remarks', 'keterangan', 'desc', 'keterangan/remarks'],
       uniqueKey: ['Unique Key','unique key','uniqueKey', 'key']
     };
@@ -626,6 +609,7 @@
       settingsPanel: document.getElementById('settingsPanel'), reportRoot: document.getElementById('reportRoot'),
       reportVersion: document.getElementById('reportVersion'), paperTarget: document.getElementById('paperTarget'),
       excelFileInput: document.getElementById('excelFileInput'), uploadSheetName: document.getElementById('uploadSheetName'),
+      uploadYearInput: document.getElementById('uploadYearInput'),
       btnUploadExcel: document.getElementById('btnUploadExcel'), uploadProgressCard: document.getElementById('uploadProgressCard'),
       uploadProgressTitle: document.getElementById('uploadProgressTitle'), uploadProgressPercent: document.getElementById('uploadProgressPercent'),
       uploadProgressBar: document.getElementById('uploadProgressBar'), uploadProgressStage: document.getElementById('uploadProgressStage'),
@@ -768,17 +752,6 @@
       }
     }
 
-    async function verifyUploadAfterFallback(targetSheet) {
-      for (let attempt = 1; attempt <= 4; attempt++) {
-        await sleep(1200);
-        try {
-          await loadAppAndSheets();
-          if (appState.sheetNames.includes(targetSheet)) return true;
-        } catch (_error) {}
-      }
-      return false;
-    }
-
     function uploadPayloadWithProgress(payload, onProgress) {
       const payloadText = JSON.stringify(payload);
       const totalBytes = Math.max(payloadText.length, 1);
@@ -860,15 +833,6 @@
       });
     }
 
-    function fillDatabaseYearOptions(){
-      if (!el.dbYearSelect) return;
-      if (!appState.selectedYear) appState.selectedYear = new Date().getFullYear().toString();
-      el.dbYearSelect.innerHTML = AVAILABLE_YEARS.map(year => {
-        return `<option value="${escapeHtml(year)}">Database ${escapeHtml(year)}</option>`;
-      }).join('');
-      el.dbYearSelect.disabled = false; el.dbYearSelect.value = appState.selectedYear;
-    }
-
     function clearYearScopedState(){
       appState.sheetNames = []; appState.sourceRows = []; appState.workingRows = []; appState.selectedCode = ''; appState.selectedSheet = '';
       appState.rowMapByKey = new Map(); appState.employeeRowsMap = new Map(); appState.employeeMetaMap = new Map(); appState.employeeOptions = [];
@@ -879,100 +843,87 @@
     function escapeHtml(value){ return String(value ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
     function pad(num){ return String(num).padStart(2, '0'); }
 
+    // PARSER TANGGAL SUPER AMAN (Mencegah tanggal hilang karena format Excel yang aneh)
     function parseToDate(value){
-      if (!value && value !== 0) return null;
-      if (value instanceof Date && !Number.isNaN(value.getTime())) return new Date(value.getFullYear(), value.getMonth(), value.getDate());
-      if (typeof value === 'string') {
-        let clean = value.trim().split(' ')[0]; // Ambil bagian tanggal saja jika string mengandung jam
-        if (!clean) return null;
-        
-        const dmyMatch = clean.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{2,4})$/);
-        if (dmyMatch) {
-            let yy = Number(dmyMatch[3]);
-            if (yy < 100) yy += (yy < 50 ? 2000 : 1900); // Konversi 2 digit tahun ke 4 digit
-            return new Date(yy, Number(dmyMatch[2]) - 1, Number(dmyMatch[1]));
-        }
-        
-        const ymdMatch = clean.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})$/);
-        if (ymdMatch) {
-            return new Date(Number(ymdMatch[1]), Number(ymdMatch[2]) - 1, Number(ymdMatch[3]));
-        }
-        
-        const parsed = new Date(clean);
-        if (!Number.isNaN(parsed.getTime())) return new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate());
-      }
+      if (value === null || value === undefined || value === '') return null;
+      if (value instanceof Date && !Number.isNaN(value.getTime())) return value;
+      // Jika dari Excel terbaca sebagai angka seri (misal 44665)
       if (typeof value === 'number') {
         const base = new Date(Math.round((value - 25569) * 86400 * 1000));
         if (!Number.isNaN(base.getTime())) return new Date(base.getUTCFullYear(), base.getUTCMonth(), base.getUTCDate());
       }
+      if (typeof value === 'string') {
+        let clean = value.trim().split(' ')[0]; // Ambil bagian tanggal saja jika string mengandung jam
+        if (!clean) return null;
+        
+        let match = clean.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})$/);
+        if (match) return new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+        
+        match = clean.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{2,4})$/);
+        if (match) {
+            let p1 = Number(match[1]); let p2 = Number(match[2]); let yy = Number(match[3]);
+            if (yy < 100) yy += (yy < 50 ? 2000 : 1900); // Konversi 2 digit tahun ke 4 digit
+            if (p1 > 12) return new Date(yy, p2 - 1, p1); 
+            if (p2 > 12) return new Date(yy, p1 - 1, p2); 
+            return new Date(yy, p2 - 1, p1); // default ke DD/MM/YYYY jika meragukan
+        }
+        const parsed = new Date(clean);
+        if (!Number.isNaN(parsed.getTime())) return new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate());
+      }
       return null;
     }
 
-    function formatDateISO(dateObj){
-      if (!(dateObj instanceof Date) || Number.isNaN(dateObj.getTime())) return '';
-      return `${dateObj.getFullYear()}-${pad(dateObj.getMonth()+1)}-${pad(dateObj.getDate())}`;
+    // Mengembalikan string aslinya jika gagal parsing agar tanggal yang aneh tidak hilang di database JSON
+    function formatDateISO(rawVal, fallbackVal = ''){
+      const d = parseToDate(rawVal); 
+      if (!d) return String(fallbackVal || '').trim();
+      return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
     }
+    
+    // Saat merender ke HTML (Kertas Report), jika format kacau tetap dimunculkan format mentahnya
     function formatDateDDMMYYYY(value){
-      const d = parseToDate(value); if (!d) return ''; return `${pad(d.getDate())}-${pad(d.getMonth()+1)}-${d.getFullYear()}`;
+      const d = parseToDate(value); 
+      if (!d) return String(value || ''); 
+      return `${pad(d.getDate())}-${pad(d.getMonth()+1)}-${d.getFullYear()}`;
     }
+
     function formatGeneratedDate(date = new Date()){
       const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
       return `${pad(date.getDate())}-${pad(date.getMonth()+1)}-${date.getFullYear()} (${days[date.getDay()]})`;
     }
+
     function formatTimeValue(value){
-      if (value === null || value === undefined) return '';
+      if (value === null || value === undefined || value === '') return '';
+      if (typeof value === 'number') {
+        const totalMinutes = Math.round(value * 24 * 60); const h = Math.floor(totalMinutes / 60) % 24; const m = totalMinutes % 60; return `${pad(h)}:${pad(m)}`;
+      }
       if (typeof value === 'string') {
         const clean = value.trim(); 
         if (!clean || clean.toLowerCase() === 'nan' || /^0(?:\.0+)?$/.test(clean)) return '';
-        
         let timePart = clean;
         if (clean.includes(' ')) {
             const parts = clean.split(' ');
-            timePart = parts[parts.length - 1]; // Ambil elemen terakhir (jamnya)
+            timePart = parts[parts.length - 1]; 
         }
         const tm = timePart.match(/^(\d{1,2}):(\d{2})/);
         if (tm) return `${pad(tm[1])}:${pad(tm[2])}`;
-        return timePart; // fallback
-      }
-      if (typeof value === 'number') {
-        const totalMinutes = Math.round(value * 24 * 60); const h = Math.floor(totalMinutes / 60) % 24; const m = totalMinutes % 60; return `${pad(h)}:${pad(m)}`;
+        return timePart; // fallback ke tulisan aslinya jika gagal parsing
       }
       return String(value);
     }
 
     function buildUniqueKey(row){ return [row.code || row.name || '', row.clockDate || '', row.clockIn || '', row.clockOut || '', row.overtime || '', row.remarks || ''].join('|'); }
 
-    function pickValue(obj, keys){
-      if (!obj || typeof obj !== 'object') return '';
-      const entries = Object.keys(obj);
-      for (const wanted of keys) { const found = entries.find(key => String(key).trim() === wanted); if (found !== undefined) return obj[found]; }
-      const lowerMap = entries.reduce((acc, key) => { acc[String(key).trim().toLowerCase()] = obj[key]; return acc; }, {});
-      for (const wanted of keys) { const val = lowerMap[String(wanted).trim().toLowerCase()]; if (val !== undefined) return val; }
-      return '';
-    }
-
-    function normalizeRow(raw, targetSheetName = null){
-      const row = {
-        code: pickValue(raw, aliases.code), name: pickValue(raw, aliases.name), department: pickValue(raw, aliases.department),
-        clockDate: formatDateISO(parseToDate(pickValue(raw, aliases.clockDate))), clockIn: formatTimeValue(pickValue(raw, aliases.clockIn)),
-        clockOut: formatTimeValue(pickValue(raw, aliases.clockOut)), overtime: String(pickValue(raw, aliases.overtime) || '0.0').trim() || '0.0',
-        remarks: String(pickValue(raw, aliases.remarks) || '').trim(), uniqueKey: String(pickValue(raw, aliases.uniqueKey) || '').trim(),
-        periodLabel: targetSheetName || appState.selectedSheet
-      };
-      if (!row.uniqueKey) row.uniqueKey = buildUniqueKey(row);
-      return row;
-    }
-
     function dedupeRows(rows){
       const map = new Map();
       rows.forEach(raw => {
-        const row = normalizeRow(raw); if (!row.code && !row.name) return;
-        if (!map.has(row.uniqueKey)) map.set(row.uniqueKey, row);
+        if (!raw.code && !raw.name) return;
+        if (!map.has(raw.uniqueKey)) map.set(raw.uniqueKey, raw);
       });
       return Array.from(map.values()).sort((a,b) => {
-        if (a.code !== b.code) return a.code.localeCompare(b.code);
-        if (a.clockDate !== b.clockDate) return a.clockDate.localeCompare(b.clockDate);
-        return a.clockIn.localeCompare(b.clockIn);
+        if (a.code !== b.code) return String(a.code || '').localeCompare(String(b.code || ''));
+        if (a.clockDate !== b.clockDate) return String(a.clockDate || '').localeCompare(String(b.clockDate || ''));
+        return String(a.clockIn || '').localeCompare(String(b.clockIn || ''));
       });
     }
 
@@ -1318,18 +1269,48 @@
       showToast(`${fileCount} file PDF berhasil dibuat dalam ZIP.`, 'success');
     }
 
+    // FUNGSI UNTUK MENAMPILKAN HANYA TAHUN YANG ADA DATANYA
+    async function fetchActiveYears() {
+      if (!el.dbYearSelect) return;
+      el.dbYearSelect.innerHTML = '<option>Mencari data...</option>';
+      const defaultYear = new Date().getFullYear().toString();
+      
+      const promises = AVAILABLE_YEARS.map(y => 
+        fetchJson(`${WEB_APP_URL}?action=getSheets&year=${y}`)
+          .then(res => ({ year: y, count: res.sheets?.length || 0 }))
+          .catch(() => ({ year: y, count: 0 }))
+      );
+      
+      try {
+        const results = await Promise.all(promises);
+        const activeYears = results.filter(r => r.count > 0).map(r => r.year);
+        
+        if (activeYears.length === 0) {
+          el.dbYearSelect.innerHTML = '<option value="">Belum ada database</option>';
+          if(!appState.selectedYear) appState.selectedYear = defaultYear;
+        } else {
+          el.dbYearSelect.innerHTML = activeYears.map(y => `<option value="${y}">${y}</option>`).join('');
+          if (!activeYears.includes(appState.selectedYear)) {
+             appState.selectedYear = activeYears[0];
+          }
+          el.dbYearSelect.value = appState.selectedYear;
+        }
+        await loadAppAndSheets();
+      } catch (e) {
+        el.dbYearSelect.innerHTML = '<option value="">Koneksi Error</option>';
+      }
+    }
+
     async function loadAppAndSheets() {
       showToast(`Memuat Database Drive tahun ${appState.selectedYear || '-'}...`, 'info');
       el.sheetSelect.disabled = true;
       const url = `${WEB_APP_URL}?action=getSheets&year=${encodeURIComponent(appState.selectedYear || '')}`;
       let sheetsFound = [];
-      let isNetworkSuccess = false; // Penanda apakah berhasil connect ke Google
+      let isNetworkSuccess = false; 
       
       try {
         let payload = null; 
         try { payload = await fetchJson(url); } catch (e) { payload = await jsonp(url); }
-        
-        // Cek jika server Google berhasil merespons
         if (payload && payload.ok !== false) {
            isNetworkSuccess = true;
            if (payload.sheets && Array.isArray(payload.sheets)) sheetsFound = payload.sheets;
@@ -1344,11 +1325,8 @@
         else { el.sheetSelect.value = sheetsFound[0]; appState.selectedSheet = sheetsFound[0]; }
         syncFromGSheet(false);
       } else if (isNetworkSuccess) { 
-        // Berhasil connect ke Google, tapi foldernya memang masih kosong
-        showToast('Folder Database Drive masih kosong. Silakan Upload Excel pertama Anda.', 'warn'); 
         el.sheetSelect.innerHTML = `<option value="">Belum ada file</option>`;
       } else {
-        // Gagal connect ke Google Apps Script sama sekali
         showToast('Gagal terhubung! Pastikan URL Web App benar & akses diset "Anyone".', 'error'); 
         el.sheetSelect.innerHTML = `<option value="">Koneksi Error</option>`;
       }
@@ -1385,25 +1363,25 @@
 
     el.excelFileInput.addEventListener('change', (e) => {
       const file = e.target.files[0]; if (!file) return;
-      const guessedYear = guessYearFromText(file.name);
-      if (guessedYear && AVAILABLE_YEARS.includes(guessedYear)) { appState.selectedYear = guessedYear; fillDatabaseYearOptions(); }
+      const guessedYear = guessYearFromText(file.name) || new Date().getFullYear().toString();
+      el.uploadYearInput.value = guessedYear;
       
-      // SELALU otomatis isi nama target berdasarkan nama file terbaru tanpa harus menghapus manual
       if(file) {
-        const nameWithoutExt = file.name.replace(/\.[^/.]+$/, ""); el.uploadSheetName.value = makeSafeSheetName(nameWithoutExt);
+        const nameWithoutExt = file.name.replace(/\.[^/.]+$/, ""); 
+        el.uploadSheetName.value = makeSafeSheetName(nameWithoutExt);
       }
     });
 
     async function uploadExcelToGSheet() {
       const file = el.excelFileInput.files[0];
       const targetSheet = el.uploadSheetName.value.trim();
-      const targetSheetExists = appState.sheetNames.includes(targetSheet);
+      const targetYear = el.uploadYearInput.value.trim();
+      const targetSheetExists = appState.sheetNames.includes(targetSheet) && targetYear === appState.selectedYear;
 
       if (!file) return showToast('Pilih file Excel terlebih dahulu!', 'warn');
-      if (!appState.selectedYear) return showToast('Pilih database tahun terlebih dahulu!', 'warn');
-      if (!targetSheet) return showToast('Isi nama sheet tujuan!', 'warn');
+      if (!targetYear) return showToast('Isi Tahun Data terlebih dahulu!', 'warn');
+      if (!targetSheet) return showToast('Isi nama target sheet!', 'warn');
       
-      // Keamanan URL Deployment Kosong
       if (WEB_APP_URL.includes("GANTI_DENGAN_URL_DEPLOYMENT_ANDA")) {
         return showToast('ERROR: Anda belum memasukkan WEB_APP_URL di Script HTML.', 'error');
       }
@@ -1428,7 +1406,8 @@
           const firstSheetName = workbook.SheetNames[0];
           const worksheet = workbook.Sheets[firstSheetName];
           
-          const dataArr = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: '', raw: false }); 
+          // MENGGUNAKAN RAW: TRUE UNTUK MENDAPATKAN ANGKA SERI EXCEL (Lebih kebal dari perubahan format cell Excel)
+          const dataArr = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: '', raw: true }); 
 
           if (!dataArr.length) throw new Error('File Excel kosong (Tidak ada data baris).');
 
@@ -1444,7 +1423,7 @@
               let matches = 0;
               let tempMap = {};
               row.forEach((cell, colIdx) => {
-                  const val = String(cell || '').trim().toLowerCase();
+                  const val = String(cell || '').replace(/\s+/g, ' ').trim().toLowerCase();
                   for (const [field, aliasList] of Object.entries(aliases)) {
                       if (tempMap[field] === undefined && aliasList.some(a => String(a).toLowerCase() === val)) {
                           tempMap[field] = colIdx;
@@ -1480,7 +1459,7 @@
 
             const rawDate = colMap.clockDate !== undefined ? raw[colMap.clockDate] : '';
             let clockDate = dateCache.get(rawDate);
-            if (clockDate === undefined) { clockDate = formatDateISO(parseToDate(rawDate)); dateCache.set(rawDate, clockDate); }
+            if (clockDate === undefined) { clockDate = formatDateISO(rawDate, rawDate); dateCache.set(rawDate, clockDate); }
 
             const rawIn = colMap.clockIn !== undefined ? raw[colMap.clockIn] : '';
             let clockIn = timeCache.get(rawIn);
@@ -1519,8 +1498,8 @@
           setUploadBusy(true, targetSheetExists ? '🚀 Mengirim ke Drive...' : '🆕 Membuat & Mengirim...');
           await yieldToUI(); await sleep(10);
 
-          // PENGIRIMAN SUPER KILAT FILE DRIVE: Google Drive sangat stabil, limit dinaikkan jadi 40.000 baris per kirim
-          const CHUNK_SIZE = 40000; 
+          // PENGIRIMAN SUPER KILAT: Langsung 100.000 baris dalam satu kiriman tanpa jeda
+          const CHUNK_SIZE = 100000; 
           const totalChunks = Math.ceil(payloadRows.length / CHUNK_SIZE);
           let totalInserted = 0;
           let isOpaqueFallback = false;
@@ -1533,25 +1512,26 @@
             const payload = {
               action: 'upload', actionType: 'upload', sheetName: targetSheet,
               mode: isFirstChunk ? 'replace_period' : 'append', 
-              rows: chunkRows, databaseYear: appState.selectedYear,
+              rows: chunkRows, databaseYear: targetYear,
               createSheetIfMissing: true, autoCreateSheet: true, createTargetSheet: true,
               chunkIndex: i + 1, totalChunks: totalChunks
             };
 
             const progressPercent = 60 + Math.round(((i + 0.5) / totalChunks) * 35);
-            setUploadProgress(progressPercent, targetSheetExists ? `Upload ke Drive` : `Membuat & Menyimpan di Drive`, `Mengirim blok raksasa ${i + 1}/${totalChunks} (${formatNumber(chunkRows.length)} baris)...`, buildUploadStats(len, payloadRows.length, skippedRows, duplicateRows));
+            setUploadProgress(progressPercent, targetSheetExists ? `Upload ke Drive` : `Membuat & Menyimpan di Drive`, `Mengirim blok raksasa ${i + 1}/${totalChunks} (${formatNumber(chunkRows.length)} baris sekaligus)...`, buildUploadStats(len, payloadRows.length, skippedRows, duplicateRows));
 
             const result = await uploadPayloadWithProgress(payload, null); 
             if (!result.ok && !result.opaque) throw new Error(result.message || `Gagal saat menyimpan blok ${i + 1}.`);
             if (result.opaque) isOpaqueFallback = true;
 
             totalInserted += chunkRows.length;
-            await sleep(10); // Jeda dikurangi hingga 10 milidetik agar secepat kilat
+            await sleep(10); // Jeda kilat 10ms
           }
 
           setUploadProgress(99, 'Penyelesaian...', targetSheetExists ? 'Aplikasi memverifikasi hasil simpan...' : `Aplikasi memverifikasi pembuatan file dan hasil simpan...`, buildUploadStats(len, payloadRows.length, skippedRows, duplicateRows));
 
           el.excelFileInput.value = '';
+          appState.selectedYear = targetYear; 
           appState.selectedSheet = targetSheet;
           appState.sheetCache.delete(targetSheet);
 
@@ -1561,14 +1541,16 @@
             if (verified) {
               setUploadProgress(100, 'Upload selesai', 'Request berhasil disimpan ke Google Drive.', buildUploadStats(len, payloadRows.length, skippedRows, duplicateRows));
               showToast('Data berhasil disimpan di Google Drive.', 'success');
+              fetchActiveYears();
             } else {
               setUploadProgress(100, 'Upload kemungkinan terkirim', 'Browser memblokir pembacaan respons server, tapi request terkirim.', buildUploadStats(len, payloadRows.length, skippedRows, duplicateRows));
               showToast('Request upload terkirim, tekan Refresh Sheet beberapa saat lagi untuk cek.', 'warn');
+              fetchActiveYears();
             }
           } else {
             setUploadProgress(100, 'Penyimpanan Selesai', `${formatNumber(totalInserted)} baris berhasil masuk ke Database Drive`, buildUploadStats(len, payloadRows.length, skippedRows, duplicateRows));
             showToast(`Upload Super Sukses! ${totalInserted.toLocaleString('id-ID')} baris tersimpan.`, 'success');
-            await loadAppAndSheets();
+            fetchActiveYears();
           }
 
         } catch (err) {
@@ -1737,19 +1719,15 @@
     el.btnApplyHeaderPreset.addEventListener('click', () => { setHeaderLayout(HEADER_LAYOUT_IMAGE); showToast('Header disesuaikan lebih rapat seperti contoh gambar.', 'success'); });
     el.btnResetHeaderLayout.addEventListener('click', () => { setHeaderLayout(HEADER_LAYOUT_DEFAULT); showToast('Header dikembalikan ke default.', 'success'); });
 
-    if (el.dbYearSelect) {
-      el.dbYearSelect.addEventListener('change', () => {
-        const nextYear = String(el.dbYearSelect.value || '').trim(); if (!nextYear || nextYear === appState.selectedYear) return;
-        appState.selectedYear = nextYear; clearYearScopedState(); hideSearchSuggestions(); hideBulkEmployeeSuggestions(); resetUploadProgress();
-        if (!el.uploadSheetName.value.trim()) el.uploadSheetName.placeholder = `Msl: AttBIPO-01-${nextYear}`;
-        loadAppAndSheets();
-      });
-    }
+    el.dbYearSelect?.addEventListener('change', () => {
+      const nextYear = String(el.dbYearSelect.value || '').trim(); if (!nextYear || nextYear === appState.selectedYear) return;
+      appState.selectedYear = nextYear; clearYearScopedState(); hideSearchSuggestions(); hideBulkEmployeeSuggestions(); resetUploadProgress();
+      loadAppAndSheets();
+    });
 
     window.addEventListener('DOMContentLoaded', () => {
-      fillDatabaseYearOptions(); setHeaderLayout(loadHeaderLayout(), false); resetUploadProgress(); hideSearchSuggestions(); updateBulkPeriodOptions(); updateBulkEmployeeOptions(); renderReport();
-      if (el.uploadSheetName && appState.selectedYear) el.uploadSheetName.placeholder = `Msl: AttBIPO-01-${appState.selectedYear}`;
-      setTimeout(() => { loadAppAndSheets(); }, 300); 
+      setHeaderLayout(loadHeaderLayout(), false); resetUploadProgress(); hideSearchSuggestions(); 
+      setTimeout(() => { fetchActiveYears(); }, 100); 
     });
 
   </script>
