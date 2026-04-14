@@ -158,18 +158,25 @@
     .btn-xs { padding:8px 10px; font-size:12px; }
     
     .report-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 9.6px; line-height: 1; }
-    .report-table thead th { text-align: center; font-size: 10.88px; padding: 2px 2px 1px; font-weight: 800; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); vertical-align: middle; line-height: 1.02; }
-    .report-table tbody td { padding: 1px 2px; vertical-align: middle; border-bottom: none; white-space: nowrap; overflow: hidden; height: auto; min-height: 18px; line-height: 1.08; }
-    .report-table tbody td.col-name, .report-table tbody td.col-dept { white-space: normal; overflow: visible; overflow-wrap: anywhere; word-break: break-word; line-height: 1.08; }
+    .report-table thead th { text-align: center; font-size: 10.88px; padding: 4px 2px; font-weight: 800; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); vertical-align: bottom; line-height: 1.1; }
+    .report-table tbody td { padding: 3px 2px; vertical-align: middle; border-bottom: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; height: auto; min-height: 18px; line-height: 1.1; }
+    .report-table tbody td.col-name, .report-table tbody td.col-dept { white-space: normal; overflow: visible; word-break: break-word; }
 
-    .report-table .col-code { width: 10.5%; }
-    .report-table .col-name { width: 12%; }
-    .report-table .col-dept { width: 12.7%; }
-    .report-table .col-date { width: 9.8%; }
-    .report-table .col-in { width: 8.9%; text-align: center; }
-    .report-table .col-out { width: 9.9%; text-align: center; }
-    .report-table .col-ot { width: 8.6%; text-align: center; }
-    .report-table .col-remarks { width: 27.6%; }
+    .report-table .col-code { width: 12%; text-align: center; }
+    .report-table .col-name { width: 18%; text-align: left; }
+    .report-table .col-dept { width: 15%; text-align: left; }
+    .report-table .col-date { width: 11%; text-align: center; }
+    .report-table .col-in { width: 8.5%; text-align: center; }
+    .report-table .col-out { width: 8.5%; text-align: center; }
+    .report-table .col-ot { width: 8%; text-align: center; }
+    .report-table .col-remarks { width: 19%; text-align: left; }
+    
+    .report-table thead th.col-name, 
+    .report-table thead th.col-dept, 
+    .report-table thead th.col-remarks { text-align: left; padding-left: 4px; }
+    .report-table tbody td.col-name, 
+    .report-table tbody td.col-dept, 
+    .report-table tbody td.col-remarks { padding-left: 4px; text-align: left; }
     
     /* Style Edit Langsung pada mode Tampilan Layar */
     .report-table input {
@@ -289,9 +296,28 @@
     }
 
     /* 2. Aturan Khusus PDF Engine (Digunakan saat html2pdf merender) */
+    body.pdf-export, body.pdf-export html {
+      overflow: visible !important;
+      height: auto !important;
+    }
+    body.pdf-export .app {
+      display: block !important;
+      height: auto !important;
+      overflow: visible !important;
+    }
+    body.pdf-export .sidebar {
+      display: none !important;
+    }
+    body.pdf-export .main-stage {
+      padding: 0 !important;
+      overflow: visible !important;
+      background: none !important;
+      display: block !important;
+    }
     body.pdf-export .paper {
       box-shadow: none !important;
-      margin: 0 auto !important;
+      margin: 0 !important;
+      transform: none !important;
     }
     body.pdf-export .report-table input {
       border: none !important;
@@ -779,7 +805,6 @@
     function escapeHtml(value){ return String(value ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
     function pad(num){ return String(num).padStart(2, '0'); }
 
-    // PARSER TANGGAL SUPER AMAN
     function parseToDate(value){
       if (value === null || value === undefined || value === '') return null;
       if (value instanceof Date && !Number.isNaN(value.getTime())) return value;
@@ -1084,7 +1109,7 @@
         margin: 0,
         filename: filename, 
         image: { type: 'jpeg', quality: 1 },
-        html2canvas: { scale: 2, useCORS: true, logging: false, windowWidth: 800 }, 
+        html2canvas: { scale: 2, useCORS: true, logging: false }, 
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
       }).from(element).outputPdf('blob');
     }
@@ -1093,15 +1118,6 @@
       const url = URL.createObjectURL(blob); const anchor = document.createElement('a');
       anchor.href = url; anchor.download = filename; document.body.appendChild(anchor); anchor.click();
       setTimeout(() => { URL.revokeObjectURL(url); document.body.removeChild(anchor); }, 400);
-    }
-
-    async function getRowsForSheet(sheetName, forceRefresh = false){
-      if (!forceRefresh && appState.sheetCache.has(sheetName)) return cloneRows(appState.sheetCache.get(sheetName));
-      const url = `${WEB_APP_URL}?action=read&year=${encodeURIComponent(appState.selectedYear || '')}&sheetName=${encodeURIComponent(sheetName)}`;
-      let payload = null;
-      try { payload = await fetchJson(url); } catch (_error) { payload = await jsonp(url); }
-      const rows = dedupeRows(parseApiPayload(payload));
-      appState.sheetCache.set(sheetName, cloneRows(rows)); return cloneRows(rows);
     }
 
     function buildReportPageHtml(rows, employeeCode, systemCode, version, pageNumber, totalPages){
@@ -1194,6 +1210,7 @@
         const container = document.createElement('div');
         // Setting CSS inline agar margin tidak kacau saat di-append ke body
         container.style.padding = '0'; container.style.margin = '0'; container.style.background = '#fff'; container.style.width = '210mm';
+        container.style.position = 'absolute'; container.style.top = '0'; container.style.left = '0'; container.style.zIndex = '-9999';
         container.innerHTML = pageChunks.map((chunk, pageIdx) => buildReportPageHtml(chunk, group.code, systemCode, version, pageIdx + 1, pageChunks.length)).join('<div style="page-break-after:always;"></div>');
         document.body.appendChild(container);
 
@@ -1214,67 +1231,116 @@
       showToast(`${fileCount} file PDF berhasil dibuat dalam ZIP.`, 'success');
     }
 
-    // FUNGSI UNTUK MENAMPILKAN HANYA TAHUN YANG ADA DATANYA
-    async function fetchActiveYears() {
-      if (!el.dbYearSelect) return;
-      el.dbYearSelect.innerHTML = '<option>Mencari data...</option>';
-      const defaultYear = new Date().getFullYear().toString();
+    // FUNGSI INISIALISASI SUPER CEPAT (TIDAK LEMOT)
+    async function initDataFetching() {
+      if (!appState.selectedYear) {
+         appState.selectedYear = new Date().getFullYear().toString();
+      }
       
+      // 1. Load data sheet untuk tahun yang dipilih menggunakan Cache instan (0 detik)
+      loadAppAndSheets();
+      
+      // 2. Load ketersediaan tahun-tahun lain secara diam-diam di latar belakang
+      setTimeout(() => {
+          fetchActiveYearsInBackground();
+      }, 100);
+    }
+
+    async function fetchActiveYearsInBackground() {
+      const cachedYears = localStorage.getItem('activeYearsCache');
+      if (cachedYears) {
+         try { updateYearDropdownUI(JSON.parse(cachedYears)); } catch(e){}
+      }
+
       const promises = AVAILABLE_YEARS.map(y => 
         fetchJson(`${WEB_APP_URL}?action=getSheets&year=${y}`)
-          .then(res => ({ year: y, count: res.sheets?.length || 0 }))
-          .catch(() => ({ year: y, count: 0 }))
+          .then(res => ({ year: y, sheets: res.sheets || [] }))
+          .catch(() => ({ year: y, sheets: [] }))
       );
       
-      try {
-        const results = await Promise.all(promises);
-        const activeYears = results.filter(r => r.count > 0).map(r => r.year);
+      Promise.all(promises).then(results => {
+        const activeYears = results.filter(r => r.sheets.length > 0).map(r => r.year);
         
-        if (activeYears.length === 0) {
-          el.dbYearSelect.innerHTML = '<option value="">Belum ada database</option>';
-          if(!appState.selectedYear) appState.selectedYear = defaultYear;
-        } else {
-          el.dbYearSelect.innerHTML = activeYears.map(y => `<option value="${y}">${y}</option>`).join('');
-          if (!activeYears.includes(appState.selectedYear)) {
-             appState.selectedYear = activeYears[0];
+        if (activeYears.length > 0) {
+          const newYearsStr = JSON.stringify(activeYears);
+          if (cachedYears !== newYearsStr) {
+             localStorage.setItem('activeYearsCache', newYearsStr);
+             updateYearDropdownUI(activeYears);
           }
-          el.dbYearSelect.value = appState.selectedYear;
+          
+          results.forEach(r => {
+             if (r.sheets.length > 0) localStorage.setItem(`sheets_${r.year}`, JSON.stringify(r.sheets));
+          });
+
+          if (!activeYears.includes(appState.selectedYear) && el.sheetSelect.options.length <= 1) {
+             appState.selectedYear = activeYears[0];
+             el.dbYearSelect.value = appState.selectedYear;
+             loadAppAndSheets(); 
+          }
+        } else {
+          el.dbYearSelect.innerHTML = '<option value="">Belum ada database</option>';
         }
-        await loadAppAndSheets();
-      } catch (e) {
-        el.dbYearSelect.innerHTML = '<option value="">Koneksi Error</option>';
-      }
+      }).catch(e => console.warn("Latar belakang gagal", e));
+    }
+
+    function updateYearDropdownUI(yearsArray) {
+        if (!el.dbYearSelect) return;
+        el.dbYearSelect.innerHTML = yearsArray.map(y => `<option value="${y}">${y}</option>`).join('');
+        el.dbYearSelect.value = appState.selectedYear;
     }
 
     async function loadAppAndSheets() {
-      showToast(`Memuat Database Drive tahun ${appState.selectedYear || '-'}...`, 'info');
+      const year = appState.selectedYear;
       el.sheetSelect.disabled = true;
-      const url = `${WEB_APP_URL}?action=getSheets&year=${encodeURIComponent(appState.selectedYear || '')}`;
-      let sheetsFound = [];
-      let isNetworkSuccess = false; 
       
-      try {
-        let payload = null; 
-        try { payload = await fetchJson(url); } catch (e) { payload = await jsonp(url); }
-        if (payload && payload.ok !== false) {
-           isNetworkSuccess = true;
-           if (payload.sheets && Array.isArray(payload.sheets)) sheetsFound = payload.sheets;
-        }
-      } catch (error) { console.warn('Gagal memuat list:', error); }
+      // CACHE ENGINE: Baca dari LocalStorage untuk kecepatan 0 detik
+      const cachedSheets = localStorage.getItem(`sheets_${year}`);
+      let isLoadedFromCache = false;
+      
+      if (cachedSheets) {
+          try {
+              const sheetsFound = JSON.parse(cachedSheets);
+              if (sheetsFound.length > 0) {
+                  populateSheetDropdown(sheetsFound);
+                  isLoadedFromCache = true;
+              }
+          } catch(e){}
+      }
 
-      if (sheetsFound.length > 0) {
+      if (!isLoadedFromCache) showToast(`Memuat Database Drive tahun ${year || '-'}...`, 'info');
+      
+      // Latar belakang ambil data terbaru dari server tanpa mengganggu interaksi Anda
+      const url = `${WEB_APP_URL}?action=getSheets&year=${encodeURIComponent(year || '')}`;
+      fetchJson(url).then(payload => {
+          if (payload && payload.sheets && Array.isArray(payload.sheets) && payload.sheets.length > 0) {
+              const newSheetsStr = JSON.stringify(payload.sheets);
+              if (cachedSheets !== newSheetsStr) {
+                  localStorage.setItem(`sheets_${year}`, newSheetsStr);
+                  populateSheetDropdown(payload.sheets);
+                  if (isLoadedFromCache) showToast('Daftar periode diperbarui otomatis.', 'success');
+              }
+          } else if (!isLoadedFromCache) {
+             el.sheetSelect.innerHTML = `<option value="">Belum ada file</option>`;
+             if (payload && payload.ok !== false) showToast(`Folder Drive ${year} masih kosong.`, 'warn');
+          }
+      }).catch(error => { 
+          if (!isLoadedFromCache) {
+             showToast('Gagal terhubung! Pastikan URL Web App benar.', 'error'); 
+             el.sheetSelect.innerHTML = `<option value="">Koneksi Error</option>`;
+          }
+      });
+    }
+
+    function populateSheetDropdown(sheetsFound) {
         appState.sheetNames = sheetsFound;
         el.sheetSelect.innerHTML = sheetsFound.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
-        el.sheetSelect.disabled = false; updateBulkPeriodOptions();
+        el.sheetSelect.disabled = false; 
+        updateBulkPeriodOptions();
+        
         if (appState.selectedSheet && sheetsFound.includes(appState.selectedSheet)) el.sheetSelect.value = appState.selectedSheet;
         else { el.sheetSelect.value = sheetsFound[0]; appState.selectedSheet = sheetsFound[0]; }
+        
         syncFromGSheet(false);
-      } else if (isNetworkSuccess) { 
-        el.sheetSelect.innerHTML = `<option value="">Belum ada file</option>`;
-      } else {
-        showToast('Gagal terhubung! Pastikan URL Web App benar & akses diset "Anyone".', 'error'); 
-        el.sheetSelect.innerHTML = `<option value="">Koneksi Error</option>`;
-      }
     }
 
     async function syncFromGSheet(forceRefresh = false){
@@ -1484,16 +1550,19 @@
             if (verified) {
               setUploadProgress(100, 'Upload selesai', 'Request berhasil disimpan ke Google Drive.', buildUploadStats(len, payloadRows.length, skippedRows, duplicateRows));
               showToast('Data berhasil disimpan di Google Drive.', 'success');
-              fetchActiveYears();
+              sessionStorage.removeItem(`sheets_${targetYear}`);
+              initDataFetching();
             } else {
               setUploadProgress(100, 'Upload kemungkinan terkirim', 'Browser memblokir pembacaan respons server, tapi request terkirim.', buildUploadStats(len, payloadRows.length, skippedRows, duplicateRows));
               showToast('Request upload terkirim, tekan Refresh Sheet beberapa saat lagi untuk cek.', 'warn');
-              fetchActiveYears();
+              sessionStorage.removeItem(`sheets_${targetYear}`);
+              initDataFetching();
             }
           } else {
             setUploadProgress(100, 'Penyimpanan Selesai', `${formatNumber(totalInserted)} baris berhasil masuk ke Database Drive`, buildUploadStats(len, payloadRows.length, skippedRows, duplicateRows));
             showToast(`Upload Super Sukses! ${totalInserted.toLocaleString('id-ID')} baris tersimpan.`, 'success');
-            fetchActiveYears();
+            sessionStorage.removeItem(`sheets_${targetYear}`);
+            initDataFetching();
           }
 
         } catch (err) {
@@ -1658,11 +1727,17 @@
     }
 
     function downloadPdf() {
-      const rows = getSelectedRows(); if (!rows.length) return;
-      const first = rows[0]; const filename = `${first.code} - ${first.name}.pdf`;
-      const oldShadow = el.paperTarget.style.boxShadow; el.paperTarget.style.boxShadow = 'none';
-      showToast('Menyiapkan file PDF otomatis...', 'info');
+      const rows = getSelectedRows();
+      if (!rows.length) return;
+
+      const first = rows[0];
+      const filename = `${first.code} - ${first.name}.pdf`;
       
+      const oldShadow = el.paperTarget.style.boxShadow;
+      el.paperTarget.style.boxShadow = 'none';
+
+      showToast('Menyiapkan file PDF otomatis...', 'info');
+
       // Tambahkan class khusus agar rendering PDF membuat kotak input jadi datar
       document.body.classList.add('pdf-export');
 
@@ -1670,7 +1745,7 @@
         margin: 0, // KUNCI UTAMA: Margin dinolkan karena padding kertas asli (22mm dll) sudah cukup
         filename: filename, 
         image: { type: 'jpeg', quality: 1 }, 
-        html2canvas: { scale: 2, useCORS: true, logging: false, windowWidth: 800 }, 
+        html2canvas: { scale: 2, useCORS: true, logging: false }, 
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
       };
       
@@ -1758,7 +1833,7 @@
 
     window.addEventListener('DOMContentLoaded', () => {
       setHeaderLayout(loadHeaderLayout(), false); resetUploadProgress(); hideSearchSuggestions(); 
-      setTimeout(() => { fetchActiveYears(); }, 100); 
+      setTimeout(() => { initDataFetching(); }, 100); 
     });
 
   </script>
