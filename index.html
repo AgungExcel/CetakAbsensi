@@ -126,7 +126,7 @@
       background: #fff;
       color: #111;
       box-shadow: 0 24px 60px rgba(15,23,42,.15);
-      padding: 12mm 15mm 15mm; /* Batas atas dinaikkan dari 22mm ke 12mm agar Version terlihat */
+      padding: 8mm 15mm 10mm; /* Batas atas ditarik lagi ke 8mm dan bawah 10mm agar lebih lega */
       position: relative;
     }
 
@@ -189,9 +189,11 @@
     }
     .report-table input:hover, .report-table input:focus { background: #e0f2fe; border-color: #93c5fd; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05); color: #1e3a8a; font-weight: bold; }
     
+    /* MENGUBAH GARIS MENJADI 1 GARIS (SINGLE LINE) */
     .report-footer-box { margin-top: 6px; border-top: 2px solid #000; border-bottom: 1px solid #000; padding: 5px 0; font-size: 10.5px; display: flex; gap: 15px; align-items: center; line-height: 1; position: relative; }
-    .report-footer-box::after { content: ''; position: absolute; bottom: -3px; left: 0; right: 0; border-bottom: 1px solid #000; }
-    .report-version { margin-top: 15px; font-size: 9px; color: #111; text-align: left; }
+    /* Pseudo-element ::after (yang membuat garis dobel sebelumnya) telah dihapus dari sini */
+    
+    .report-version { margin-top: 8px; font-size: 9px; color: #111; text-align: left; } /* Margin atas diperkecil agar version ikut naik */
     
     .hidden { display: none !important; }
 
@@ -281,15 +283,15 @@
       .paper { 
         box-shadow: none !important; 
         width: 210mm !important; 
-        height: 295mm !important; /* MENGUNCI TINGGI: Cegah lembar kedua yang kosong */
+        height: 295mm !important; /* MENGUNCI TINGGI */
         max-height: 295mm !important; 
         overflow: hidden !important; 
         box-sizing: border-box !important;
         margin: 0 auto !important; 
-        padding: 12mm 15mm 15mm !important; /* Batas atas ditarik naik agar Version tidak terpotong */
+        padding: 8mm 15mm 10mm !important; /* Porsi Margin ditarik agar Version masuk sempurna 1 halaman */
         page-break-after: always;
       }
-      .report-version { position: static; margin-top: 15px; }
+      .report-version { position: static; margin-top: 8px; }
       /* Menetralkan input box jadi teks biasa saat di print */
       .report-table input { 
         border: none !important; 
@@ -327,11 +329,11 @@
       transform: none !important;
       width: 210mm !important; 
       max-width: 210mm !important;
-      height: 295mm !important; /* KUNCI 1 HALAMAN: Kunci tinggi maksimal sedikit di bawah A4 */
+      height: 295mm !important; 
       max-height: 295mm !important;
       overflow: hidden !important;
       box-sizing: border-box !important;
-      padding: 12mm 15mm 15mm !important; /* Batas atas ditarik naik agar Version tidak terpotong */
+      padding: 8mm 15mm 10mm !important; /* Porsi Margin ditarik ke atas */
     }
     body.pdf-export .report-table input {
       border: none !important;
