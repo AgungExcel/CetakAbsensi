@@ -23,8 +23,8 @@
       --muted:#64748b;
       --line:#111111;
       --accent:#0f172a;
-      --accent-2:#1d4ed8;
-      --font: Arial, Helvetica, sans-serif;
+      --accent-2:#2563eb;
+      --font: 'Segoe UI', Arial, Helvetica, sans-serif;
     }
 
     *{box-sizing:border-box}
@@ -35,63 +35,83 @@
     
     /* Sidebar Kiri */
     .sidebar {
-      width: 320px;
-      min-width: 320px;
+      width: 340px;
+      min-width: 340px;
       background: var(--card);
       border-right: 1px solid #e2e8f0;
       padding: 24px 20px;
       display: flex;
       flex-direction: column;
-      gap: 18px;
+      gap: 16px;
       overflow-y: auto;
       z-index: 10;
-      box-shadow: 4px 0 15px rgba(0,0,0,0.03);
+      box-shadow: 4px 0 20px rgba(0,0,0,0.04);
     }
 
-    .header-top { display: flex; justify-content: space-between; align-items: flex-start; }
+    .header-top { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 12px; border-bottom: 1px solid #f1f5f9; }
     .header-logo { display: flex; align-items: center; gap: 12px; }
     .header-logo img { height: 42px; width: auto; border-radius: 8px; object-fit: contain; }
-    .title { margin: 0; font-size: 17px; line-height: 1.1; font-weight: 800; letter-spacing: .1px; color: #0f172a; white-space: nowrap; }
-    .subtitle { margin: 4px 0 0; color: var(--muted); font-size: 11px; line-height: 1.5; }
+    .title { margin: 0; font-size: 16px; line-height: 1.2; font-weight: 800; color: #0f172a; white-space: nowrap; }
+    .subtitle { margin: 2px 0 0; color: var(--muted); font-size: 11px; line-height: 1.4; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
     
     /* Tombol Pengaturan Meta */
     .btn-settings {
-      background: transparent; border: none; font-size: 20px; cursor: pointer; padding: 4px;
-      border-radius: 8px; transition: background 0.2s; color: var(--muted);
+      background: #f8fafc; border: 1px solid #e2e8f0; font-size: 18px; cursor: pointer; padding: 6px;
+      border-radius: 8px; transition: all 0.2s ease; color: #475569; display: flex; align-items: center; justify-content: center;
     }
-    .btn-settings:hover { background: #f1f5f9; color: #0f172a; }
+    .btn-settings:hover { background: #e2e8f0; color: #0f172a; transform: rotate(15deg); }
     
+    /* Wrapper Menu Utama & Pengaturan */
+    .main-controls { display: flex; flex-direction: column; gap: 16px; flex: 1; }
     .settings-panel {
-      background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px;
-      display: flex; flex-direction: column; gap: 10px; margin-top: -8px;
+      background: #ffffff;
+      display: flex; flex-direction: column; gap: 14px; flex: 1;
+      animation: fadeIn 0.3s ease;
     }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+    .settings-header-bar { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0; }
+    .settings-header-bar h3 { margin: 0; font-size: 12px; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.05em; }
+    .btn-close-settings { background: #fee2e2; border: none; color: #b91c1c; font-size: 16px; font-weight: bold; cursor: pointer; border-radius: 6px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+    .btn-close-settings:hover { background: #fca5a5; }
 
     .control-group { display: flex; flex-direction: column; gap: 6px; }
-    label { font-size: 11px; font-weight: 700; color: #334155; text-transform: uppercase; letter-spacing: .05em; }
+    label { font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: .05em; }
     
     input[type="text"], input[type="search"], input[type="date"], input[type="number"], select {
-      width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 8px;
-      font: inherit; font-size: 12px; background: #fff; color: var(--text); outline: none; transition: border 0.2s;
+      width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 10px;
+      font: inherit; font-size: 13px; background: #f8fafc; color: var(--text); outline: none; transition: all 0.2s ease;
     }
-    input:focus, select:focus { border-color: var(--accent-2); box-shadow: 0 0 0 3px rgba(29,78,216,.15); }
+    input:focus, select:focus { background: #fff; border-color: var(--accent-2); box-shadow: 0 0 0 3px rgba(37,99,235,.15); }
     select:disabled { background: #f1f5f9; color: #94a3b8; cursor: not-allowed; }
     
-    .btn-col { display: flex; flex-direction: column; gap: 10px; margin-top: 6px; }
+    /* Tombol Aksi Keren */
     button {
-      appearance: none; border: 0; border-radius: 10px; padding: 12px 16px; font: inherit; font-weight: 700; font-size: 13px;
-      cursor: pointer; transition: all .15s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      appearance: none; border: 0; border-radius: 10px; padding: 12px 14px; font: inherit; font-weight: 700; font-size: 12.5px;
+      cursor: pointer; transition: all .2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
     }
-    button:hover { transform: translateY(-1px); }
-    button:disabled { opacity: .55; cursor: not-allowed; transform: none; }
-    .btn-dark { background: var(--accent); color: #fff; box-shadow: 0 4px 10px rgba(15,23,42,.15); }
-    .btn-blue { background: var(--accent-2); color: #fff; box-shadow: 0 4px 10px rgba(29,78,216,.15); }
-    .btn-green { background: #166534; color: #fff; box-shadow: 0 4px 10px rgba(22,101,52,.15); }
+    button:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.1); }
+    button:active { transform: translateY(0); }
+    button:disabled { opacity: .55; cursor: not-allowed; transform: none; box-shadow: none; }
+    
+    .btn-print { background: linear-gradient(135deg, #2563eb, #1d4ed8); color: #fff; box-shadow: 0 4px 12px rgba(37,99,235,0.25); }
+    .btn-pdf { background: linear-gradient(135deg, #e11d48, #be123c); color: #fff; box-shadow: 0 4px 12px rgba(225,29,72,0.25); }
+    .btn-refresh { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; }
+    .btn-reset { background: #fff1f2; color: #be123c; border: 1px solid #fecdd3; }
+    .btn-green { background: linear-gradient(135deg, #16a34a, #15803d); color: #fff; box-shadow: 0 4px 12px rgba(22,163,74,0.25); }
     .btn-light { background: #f8fafc; color: #0f172a; border: 1px solid #cbd5e1; }
+    
+    .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: auto; padding-top: 10px; border-top: 1px solid #f1f5f9; }
+    .action-grid .btn-print, .action-grid .btn-pdf { grid-column: span 1; }
+    
+    /* Panel Settings Sections */
+    .settings-section { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; }
+    .settings-section.highlight { background: #f0fdf4; border-color: #bbf7d0; }
     
     /* Area Kanan (Preview Kertas) */
     .main-stage {
       flex: 1;
-      background: linear-gradient(180deg, #e9edf4 0%, #eef2f7 100%);
+      background: linear-gradient(180deg, #e2e8f0 0%, #eef2f7 100%);
       overflow-y: auto;
       padding: 40px;
       display: flex;
@@ -99,9 +119,10 @@
       align-items: flex-start;
     }
     
+    /* KERTAS A4 DINAMIS */
     .paper {
       width: 210mm;
-      min-height: 297mm;
+      min-height: auto;
       background: #fff;
       color: #111;
       box-shadow: 0 24px 60px rgba(15,23,42,.15);
@@ -123,91 +144,23 @@
       --period-gap: 0px;
       --range-bottom-gap: 6px;
     }
-    .report-company {
-      text-align: center;
-      font-size: var(--company-font-size);
-      font-weight: 700;
-      margin-bottom: var(--company-gap);
-      line-height: 1;
-    }
-    .report-title {
-      text-align: center;
-      font-size: var(--title-font-size);
-      font-weight: 800;
-      margin: 0 0 var(--title-gap);
-      line-height: 1;
-    }
-    .report-meta-band {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      align-items: end;
-      column-gap: 8px;
-      margin: 0 0 var(--meta-gap);
-      line-height: 1;
-    }
-    .report-meta-left,
-    .report-meta-right {
-      font-size: var(--meta-font-size);
-      font-weight: 400;
-      white-space: nowrap;
-    }
+    .report-company { text-align: center; font-size: var(--company-font-size); font-weight: 700; margin-bottom: var(--company-gap); line-height: 1; }
+    .report-title { text-align: center; font-size: var(--title-font-size); font-weight: 800; margin: 0 0 var(--title-gap); line-height: 1; }
+    .report-meta-band { display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; column-gap: 8px; margin: 0 0 var(--meta-gap); line-height: 1; }
+    .report-meta-left, .report-meta-right { font-size: var(--meta-font-size); font-weight: 400; white-space: nowrap; }
     .report-meta-left { text-align: left; }
     .report-meta-right { text-align: right; }
-    .report-period {
-      text-align: center;
-      font-size: var(--period-font-size);
-      font-weight: 700;
-      margin: 0;
-      line-height: 1;
-      white-space: nowrap;
-    }
-    .report-range {
-      text-align: center;
-      font-size: var(--range-font-size);
-      font-weight: 700;
-      margin: 0 0 var(--range-bottom-gap);
-      line-height: 1;
-    }
+    .report-period { text-align: center; font-size: var(--period-font-size); font-weight: 700; margin: 0; line-height: 1; white-space: nowrap; }
+    .report-range { text-align: center; font-size: var(--range-font-size); font-weight: 700; margin: 0 0 var(--range-bottom-gap); line-height: 1; }
+    
     .layout-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
     .layout-actions { display:flex; gap:8px; margin-top:8px; }
     .btn-xs { padding:8px 10px; font-size:12px; }
-    .layout-help { margin-top:6px; font-size:11px; color:#475569; line-height:1.4; }
     
-    .report-table {
-      width: 100%;
-      border-collapse: collapse;
-      table-layout: fixed;
-      font-size: 9.6px;
-      line-height: 1;
-    }
-    .report-table thead th {
-      text-align: center;
-      font-size: 10.88px;
-      padding: 2px 2px 1px;
-      font-weight: 800;
-      border-top: 1px solid var(--line);
-      border-bottom: 1px solid var(--line);
-      vertical-align: middle;
-      line-height: 1.02;
-    }
-    .report-table tbody td {
-      padding: 1px 2px;
-      vertical-align: middle;
-      border-bottom: none;
-      white-space: nowrap;
-      overflow: hidden;
-      height: auto;
-      min-height: 18px;
-      line-height: 1.08;
-    }
-    .report-table tbody td.col-name,
-    .report-table tbody td.col-dept {
-      white-space: normal;
-      overflow: visible;
-      overflow-wrap: anywhere;
-      word-break: break-word;
-      line-height: 1.08;
-    }
+    .report-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 9.6px; line-height: 1; }
+    .report-table thead th { text-align: center; font-size: 10.88px; padding: 2px 2px 1px; font-weight: 800; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); vertical-align: middle; line-height: 1.02; }
+    .report-table tbody td { padding: 1px 2px; vertical-align: middle; border-bottom: none; white-space: nowrap; overflow: hidden; height: auto; min-height: 18px; line-height: 1.08; }
+    .report-table tbody td.col-name, .report-table tbody td.col-dept { white-space: normal; overflow: visible; overflow-wrap: anywhere; word-break: break-word; line-height: 1.08; }
 
     .report-table .col-code { width: 10.5%; }
     .report-table .col-name { width: 12%; }
@@ -218,50 +171,31 @@
     .report-table .col-ot { width: 8.6%; text-align: center; }
     .report-table .col-remarks { width: 27.6%; }
     
-    /* Style Edit Langsung (Input Tembus Pandang) */
+    /* Style Edit Langsung */
     .report-table input {
       width: 100%; border: 1px solid transparent; background: transparent; border-radius: 2px;
       font-family: inherit; font-size: inherit; color: inherit; padding: 1px 2px; margin: -1px -2px;
       text-align: inherit; outline: none; transition: background 0.2s, border 0.2s;
     }
-    .report-table input:hover, .report-table input:focus {
-      background: #f1f5f9; border-color: #cbd5e1; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
-    }
+    .report-table input:hover, .report-table input:focus { background: #e0f2fe; border-color: #93c5fd; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05); color: #1e3a8a; font-weight: bold; }
     
     .report-footer-box { margin-top: 4px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 3px 0; font-size: 9.6px; display: flex; gap: 10px; align-items: center; line-height: 1; }
-    .report-version { position: absolute; left: 15mm; bottom: 11mm; font-size: 9px; color: #111; }
+    .report-version { margin-top: 15px; font-size: 9px; color: #111; text-align: left; }
     
     .hidden { display: none !important; }
 
-    /* SEARCH STYLES DIRAPIKAN */
+    /* SEARCH STYLES */
     .search-box-wrap { position: relative; }
-    input[type="search"] {
-      font-size: 11.5px !important;
-      padding: 8px 10px !important;
-      height: 34px !important;
-    }
+    input[type="search"] { font-size: 12px !important; padding: 10px 12px !important; height: 38px !important; }
     .search-suggest {
-      position: absolute;
-      top: calc(100% + 4px);
-      left: 0;
-      right: 0;
-      background: #fff;
-      border: 1px solid #cbd5e1;
-      border-radius: 8px;
-      box-shadow: 0 8px 20px rgba(15,23,42,.12);
-      max-height: 220px;
-      overflow-y: auto;
-      z-index: 50;
+      position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: #fff;
+      border: 1px solid #cbd5e1; border-radius: 10px; box-shadow: 0 8px 25px rgba(15,23,42,.12);
+      max-height: 220px; overflow-y: auto; z-index: 50;
     }
-    .search-suggest-item {
-      padding: 6px 10px;
-      cursor: pointer;
-      border-bottom: 1px solid #f1f5f9;
-    }
+    .search-suggest-item { padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #f1f5f9; }
     .search-suggest-item:last-child { border-bottom: none; }
-    .search-suggest-item:hover,
-    .search-suggest-item.active { background: #eff6ff; }
-    .search-suggest-row { display: flex; gap: 6px; align-items: center; flex-wrap: nowrap; }
+    .search-suggest-item:hover, .search-suggest-item.active { background: #eff6ff; }
+    .search-suggest-row { display: flex; gap: 8px; align-items: center; flex-wrap: nowrap; }
     .search-suggest-code { font-size: 11px; font-weight: 800; color: #1d4ed8; }
     .search-suggest-name { font-size: 11px; font-weight: 600; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
     .search-suggest-sub { margin-top: 2px; font-size: 9.5px; color: #64748b; line-height: 1.2; }
@@ -270,7 +204,7 @@
     /* Toast Notification */
     .toast {
       position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px);
-      background: #1e293b; color: #fff; padding: 10px 24px; border-radius: 50px; font-size: 13px; font-weight: 600;
+      background: #1e293b; color: #fff; padding: 12px 24px; border-radius: 50px; font-size: 13px; font-weight: 600;
       box-shadow: 0 10px 25px rgba(0,0,0,0.2); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       z-index: 1000; pointer-events: none; white-space: nowrap; opacity: 0;
     }
@@ -279,12 +213,8 @@
     .toast.success { background: #15803d; }
     .toast.warn { background: #ca8a04; color: #fff; }
 
-    .upload-progress-card {
-      margin-top: 10px; padding: 12px; border: 1px solid #bbf7d0; border-radius: 12px;
-      background: #ffffff; display: flex; flex-direction: column; gap: 8px;
-    }
-    .upload-progress-card.hidden { display: none !important; }
-
+    /* Upload Progress */
+    .upload-progress-card { margin-top: 12px; padding: 12px; border: 1px solid #bbf7d0; border-radius: 10px; background: #ffffff; display: flex; flex-direction: column; gap: 8px; }
     .upload-progress-head { display:flex; justify-content:space-between; align-items:center; gap:8px; }
     .upload-progress-title { font-size: 12px; font-weight: 800; color: #166534; }
     .upload-progress-percent { font-size: 12px; font-weight: 800; color: #166534; }
@@ -293,59 +223,49 @@
     .upload-progress-stage { font-size: 12px; font-weight: 700; color: #166534; }
     .upload-progress-detail { font-size: 11px; line-height: 1.45; color: #475569; min-height: 16px; }
     .upload-stats { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
-    .upload-stat { background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:8px; }
+    .upload-stat { background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:8px; }
     .upload-stat-label { font-size:10px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:.04em; }
     .upload-stat-value { font-size:13px; font-weight:800; color:#0f172a; margin-top:2px; }
 
-    .bulk-panel {
-      background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:10px; overflow:visible;
-    }
-    .bulk-inline { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-    .bulk-hint { font-size:11px; color:#64748b; line-height:1.45; margin-top:2px; }
-    .bulk-entry-grid { display:grid !important; grid-template-columns: 86px minmax(0, 1fr) 36px !important; gap:6px !important; align-items:end !important; }
-    .bulk-field { min-width:0; display:flex; flex-direction:column; gap:4px; }
-    .bulk-field-label { font-size:10px; font-weight:800; color:#475569; text-transform:uppercase; letter-spacing:.04em; line-height:1.1; }
-    
-    #bulkEntryPeriod, #bulkEmployeeInput { width:100%; min-width:0; height:32px !important; padding:6px 8px !important; font-size:11.5px !important; border-radius:8px; }
-    .bulk-icon-btn { width:36px; min-width:36px; height:32px; padding:0; font-size:18px; line-height:1; border-radius:8px; }
-    .bulk-toolbar { display:flex; justify-content:flex-end; margin-top:-2px; }
-    .bulk-clear-btn { width:32px; min-width:32px; height:28px; padding:0; border-radius:8px; font-size:14px; line-height:1; }
-    
-    .bulk-entry-list { min-height:50px; padding:0; background:#fff; overflow:hidden; border:1px dashed #cbd5e1; border-radius:8px;}
+    /* Bulk Panel */
+    .bulk-panel { background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:14px; display:flex; flex-direction:column; gap:10px; }
+    .bulk-entry-grid { display:grid !important; grid-template-columns: 86px minmax(0, 1fr) 36px !important; gap:8px !important; align-items:end !important; }
+    .bulk-field { display:flex; flex-direction:column; gap:4px; }
+    .bulk-field-label { font-size:10px; font-weight:800; color:#475569; text-transform:uppercase; letter-spacing:.04em; }
+    .bulk-icon-btn { width:36px; height:38px; padding:0; font-size:18px; border-radius:8px; }
+    .bulk-toolbar { display:flex; justify-content:flex-end; margin-top:-4px; }
+    .bulk-clear-btn { width:32px; height:28px; padding:0; border-radius:6px; font-size:14px; }
+    .bulk-entry-list { min-height:50px; padding:0; background:#fff; overflow:hidden; border:1px dashed #cbd5e1; border-radius:8px; }
     .bulk-list-table { display:flex; flex-direction:column; width:100%; }
     .bulk-list-head, .bulk-list-row { display:grid; grid-template-columns: 24px 80px minmax(0, 1fr) 24px; gap:6px; align-items:start; padding:6px 8px; }
-    .bulk-list-head { background:#eef2f7; border-bottom:1px solid #dbe5ef; font-size:9.5px; font-weight:800; color:#475569; text-transform:uppercase; letter-spacing:.05em; }
+    .bulk-list-head { background:#eef2f7; border-bottom:1px solid #dbe5ef; font-size:9.5px; font-weight:800; color:#475569; text-transform:uppercase; }
     .bulk-list-row { background:#fff; border-bottom:1px solid #e2e8f0; font-size:10.5px; }
-    .bulk-list-row:last-child { border-bottom:none; }
-    .bulk-list-no, .bulk-list-period { font-weight:700; color:#0f172a; line-height:1.2; word-break:break-word; }
+    .bulk-list-no, .bulk-list-period { font-weight:700; color:#0f172a; }
     .bulk-list-employee { min-width:0; line-height:1.2; word-break:break-word; }
     .bulk-list-code { font-weight:700; color:#0f172a; }
     .bulk-list-name { margin-top:2px; color:#475569; }
-    .bulk-list-remove { width:20px; height:20px; min-width:20px; padding:0; border-radius:999px; background:#fee2e2; color:#b91c1c; box-shadow:none; font-size:12px; line-height:1; align-self:center; justify-self:end; }
+    .bulk-list-remove { width:20px; height:20px; padding:0; border-radius:999px; background:#fee2e2; color:#b91c1c; font-size:12px; line-height:1; align-self:center; justify-self:end; }
+    .bulk-chip-empty { font-size:11px; color:#94a3b8; align-self:center; padding:10px 0; text-align:center; }
 
-    .bulk-chip-empty { font-size:11px; color:#94a3b8; align-self:center; padding:10px 0; text-align:center; line-height:1.45; }
-
-    /* Responsif Layar Kecil */
     @media (max-width: 900px) {
       .app { flex-direction: column; overflow-y: auto; }
       .sidebar { width: 100%; min-width: 100%; border-right: none; border-bottom: 1px solid #e2e8f0; height: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.05); padding: 16px; }
       .main-stage { padding: 16px; overflow-y: visible; }
       .paper { transform-origin: top center; width: 210mm; }
-      .bulk-entry-grid { grid-template-columns:1fr; }
     }
     
-    /* Aturan Print */
+    /* Aturan Print - Disesuaikan agar tidak blank page */
     @page { size: A4 portrait; margin: 10mm; }
     @media print {
       body { background: #fff; padding: 0; display: block; overflow: visible; height: auto; }
       .sidebar { display: none !important; }
       .main-stage { padding: 0; background: none; overflow: visible; display: block; }
       .paper { box-shadow: none; width: auto; min-height: auto; margin: 0; padding: 0; }
-      .report-version { position: fixed; left: 15mm; bottom: 8mm; }
-      .report-table input { border: none !important; background: transparent !important; box-shadow: none !important; }
+      .report-version { position: static; margin-top: 15px; }
+      .report-table input { border: none !important; background: transparent !important; box-shadow: none !important; color: #000 !important; font-weight: normal !important; }
     }
 
-</style>
+  </style>
 </head>
 <body>
   <div class="app">
@@ -355,105 +275,109 @@
         <div class="header-logo">
           <img src="hoplun128.png" alt="Logo" onerror="this.style.display='none'">
           <div>
-            <h1 class="title">Cetak Time Record</h1>
+            <h1 class="title">Time Record</h1>
             <p class="subtitle">Attendance Bipo System</p>
           </div>
         </div>
-        <button id="btnSettings" class="btn-settings" title="Pengaturan & Upload Database">⚙️</button>
+        <button id="btnSettings" class="btn-settings" title="Buka Pengaturan Sistem">⚙️</button>
+      </div>
+
+      <!-- MENU UTAMA (Disembunyikan saat Pengaturan dibuka) -->
+      <div id="mainControls" class="main-controls">
+        <div class="control-group">
+          <label>Database Tahun</label>
+          <select id="dbYearSelect">
+            <option value="">Memuat daftar tahun...</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label>Pilih Periode</label>
+          <select id="sheetSelect" disabled>
+            <option value="">Memuat daftar file...</option>
+          </select>
+        </div>
+        
+        <div class="control-group search-box-wrap">
+          <label>Cari No ID / Nama</label>
+          <input id="searchInput" type="search" placeholder="Ketik nama / ID, lalu pilih..." autocomplete="off" />
+          <div id="searchSuggest" class="search-suggest hidden"></div>
+        </div>
+        
+        <div class="control-group">
+          <label>Hasil Pencarian</label>
+          <select id="employeeSelect">
+            <option value="">Tunggu Sinkronisasi...</option>
+          </select>
+        </div>
+
+        <details class="bulk-panel">
+          <summary style="cursor:pointer;font-weight:800;color:#0f172a;outline:none;font-size:12px;display:flex;align-items:center;gap:6px;">
+            🗂️ Menu Cetak Banyak
+          </summary>
+          <div class="control-group" style="margin-top:10px;">
+            <div class="bulk-entry-grid">
+              <div class="bulk-field">
+                <div class="bulk-field-label">Periode</div>
+                <select id="bulkEntryPeriod"></select>
+              </div>
+              <div class="bulk-field search-box-wrap">
+                <div class="bulk-field-label">No ID / Nama</div>
+                <input id="bulkEmployeeInput" type="search" placeholder="Ketik ID / Nama..." autocomplete="off" />
+                <div id="bulkEmployeeSuggest" class="search-suggest hidden"></div>
+              </div>
+              <button id="btnBulkAddEntry" type="button" class="btn-light bulk-icon-btn" title="Tambah ke list cetak">＋</button>
+            </div>
+          </div>
+          <div class="bulk-toolbar">
+            <button id="btnBulkClearEntries" type="button" class="btn-light bulk-clear-btn" title="Kosongkan list cetak">🧹</button>
+          </div>
+          <div class="control-group">
+            <label>List Antrian Cetak</label>
+            <div id="bulkEntryList" class="bulk-entry-list">
+              <div class="bulk-chip-empty">Belum ada antrian.</div>
+            </div>
+          </div>
+          <button id="btnBulkPdf" type="button" class="btn-dark" style="margin-top: 4px;">📥 Download ZIP Cetak Banyak</button>
+        </details>
+
+        <!-- TOMBOL AKSI UTAMA BAWAH -->
+        <div class="action-grid">
+          <button id="btnPrint" class="btn-print" title="Print langsung ke Kertas">🖨️ Print</button>
+          <button id="btnDownloadPdf" class="btn-pdf" title="Simpan sebagai file PDF">📄 PDF</button>
+          <button id="btnSync" class="btn-refresh" title="Ambil ulang data dari Google Drive">🔄 Refresh</button>
+          <button id="btnResetCurrent" class="btn-reset" title="Kembalikan tabel ke kondisi awal">↺ Reset</button>
+        </div>
       </div>
 
       <!-- PANEL PENGATURAN META (Tersembunyi by default) -->
       <div id="settingsPanel" class="settings-panel hidden">
-        <div class="control-group">
-          <label>Kode Report</label>
-          <input id="systemCodeInput" type="text" value="HRIDIN01" />
-        </div>
-        <div class="control-group">
-          <label>Versi Footer</label>
-          <input id="versionInput" type="text" value="1.25.02.28" />
+        <div class="settings-header-bar">
+          <h3>Konfigurasi Sistem</h3>
+          <button id="btnCloseSettings" class="btn-close-settings" title="Tutup Pengaturan">×</button>
         </div>
 
-        <div style="height:1px;background:#e2e8f0;margin:4px 0;"></div>
-
-        <details open style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:12px; padding:12px;">
-          <summary style="cursor:pointer;font-weight:800;color:#1d4ed8;outline:none;font-size:12px;display:flex;align-items:center;gap:6px;">
-            🔧 Atur Header Report
-          </summary>
-          <div class="layout-grid" style="margin-top:10px;">
-            <div class="control-group">
-              <label style="color:#1d4ed8;">Font Company</label>
-              <input id="companyFontInput" type="number" min="8" max="24" step="1" value="12" />
-            </div>
-            <div class="control-group">
-              <label style="color:#1d4ed8;">Font Title</label>
-              <input id="titleFontInput" type="number" min="10" max="30" step="0.1" value="14.4" />
-            </div>
-            <div class="control-group">
-              <label style="color:#1d4ed8;">Font Meta Kiri/Kanan</label>
-              <input id="metaFontInput" type="number" min="8" max="18" step="0.1" value="9.6" />
-            </div>
-            <div class="control-group">
-              <label style="color:#1d4ed8;">Font Period</label>
-              <input id="periodFontInput" type="number" min="8" max="18" step="0.1" value="9.6" />
-            </div>
-            <div class="control-group">
-              <label style="color:#1d4ed8;">Font Range</label>
-              <input id="rangeFontInput" type="number" min="6" max="16" step="0.1" value="7.2" />
-            </div>
-            <div class="control-group">
-              <label style="color:#1d4ed8;">Jarak Company → Title</label>
-              <input id="companyGapInput" type="number" min="0" max="20" step="0.1" value="1" />
-            </div>
-            <div class="control-group">
-              <label style="color:#1d4ed8;">Jarak Title → Baris Tengah</label>
-              <input id="titleGapInput" type="number" min="0" max="20" step="0.1" value="7" />
-            </div>
-            <div class="control-group">
-              <label style="color:#1d4ed8;">Jarak Baris Tengah → Range</label>
-              <input id="metaGapInput" type="number" min="0" max="20" step="0.1" value="5" />
-            </div>
-            <div class="control-group">
-              <label style="color:#1d4ed8;">Jarak tambahan Period</label>
-              <input id="periodGapInput" type="number" min="0" max="20" step="0.1" value="0" />
-            </div>
-            <div class="control-group">
-              <label style="color:#1d4ed8;">Jarak Range → Tabel</label>
-              <input id="rangeBottomGapInput" type="number" min="0" max="24" step="0.1" value="6" />
-            </div>
-          </div>
-          <div class="layout-actions">
-            <button id="btnApplyHeaderPreset" type="button" class="btn-light btn-xs">🖼️ Sesuaikan dengan gambar</button>
-            <button id="btnResetHeaderLayout" type="button" class="btn-light btn-xs">↺ Reset Header</button>
-          </div>
-          <div class="layout-help">Default sudah disetel mendekati file contoh. Nilai tetap bisa diubah sendiri dan disimpan di browser.</div>
-        </details>
-
-        <div style="height:1px;background:#e2e8f0;margin:4px 0;"></div>
-
-        <details open style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:12px; padding:12px;">
-          <summary style="cursor:pointer;font-weight:800;color:#166534;outline:none;font-size:12px;display:flex;align-items:center;gap:6px;">
-            📤 Upload Database Excel
-          </summary>
-          <div class="control-group" style="margin-top:10px;">
+        <!-- 1. UPLOAD DATABASE (DI POSISI PALING ATAS) -->
+        <div class="settings-section highlight">
+          <h4 style="margin:0 0 12px; font-size:12px; color:#166534; display:flex; align-items:center; gap:6px;">📤 Upload Database Excel</h4>
+          <div class="control-group">
             <label style="color:#15803d;">1. Pilih File (.xlsx / .xls)</label>
-            <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" style="border-color:#bbf7d0; padding:6px 10px; font-size:11px;" />
+            <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" style="border-color:#bbf7d0; padding:8px 10px; font-size:11px; background:#fff;" />
           </div>
-          <div class="layout-grid">
+          <div class="layout-grid" style="margin-top: 10px;">
             <div class="control-group">
               <label style="color:#15803d;">2. Tahun Data</label>
-              <input type="number" id="uploadYearInput" placeholder="2026" style="border-color:#bbf7d0;" />
+              <input type="number" id="uploadYearInput" placeholder="2026" style="border-color:#bbf7d0; background:#fff;" />
             </div>
             <div class="control-group">
               <label style="color:#15803d;">3. Target Sheet</label>
-              <input type="text" id="uploadSheetName" placeholder="Msl: Bulan-01" style="border-color:#bbf7d0;" />
+              <input type="text" id="uploadSheetName" placeholder="Msl: Bulan-01" style="border-color:#bbf7d0; background:#fff;" />
             </div>
           </div>
-          <div style="font-size:10px;color:#991b1b;line-height:1.4;background:#fee2e2;padding:6px;border-radius:6px;border:1px solid #fca5a5; margin-top: 4px;">
-            <strong>⚠️ PENTING:</strong> Wajib upload lewat menu ini agar data diubah jadi JSON. JANGAN taruh file .xlsx manual ke folder Drive!
-          </div>
-          <button id="btnUploadExcel" class="btn-green" style="margin-top:6px;">
+          <button id="btnUploadExcel" class="btn-green" style="margin-top:12px;">
             ⬆️ Upload ke Database Drive
           </button>
+          
           <div id="uploadProgressCard" class="upload-progress-card hidden">
             <div class="upload-progress-head">
               <div id="uploadProgressTitle" class="upload-progress-title">Progress Upload</div>
@@ -483,84 +407,53 @@
               </div>
             </div>
           </div>
+        </div>
+
+        <!-- 2. KODE REPORT & VERSI -->
+        <div class="settings-section">
+          <div class="layout-grid">
+            <div class="control-group">
+              <label>Kode Report</label>
+              <input id="systemCodeInput" type="text" value="HRIDIN01" />
+            </div>
+            <div class="control-group">
+              <label>Versi Footer</label>
+              <input id="versionInput" type="text" value="1.25.02.28" />
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. ATUR HEADER REPORT -->
+        <details class="settings-section">
+          <summary style="cursor:pointer;font-weight:800;color:#1d4ed8;outline:none;font-size:12px;display:flex;align-items:center;gap:6px;">
+            🔧 Atur Header & Margin Spasi
+          </summary>
+          <div class="layout-grid" style="margin-top:14px;">
+            <div class="control-group"><label style="color:#1d4ed8;">Font Company</label><input id="companyFontInput" type="number" min="8" max="24" step="1" value="12" /></div>
+            <div class="control-group"><label style="color:#1d4ed8;">Font Title</label><input id="titleFontInput" type="number" min="10" max="30" step="0.1" value="14.4" /></div>
+            <div class="control-group"><label style="color:#1d4ed8;">Font Meta Kiri/Kanan</label><input id="metaFontInput" type="number" min="8" max="18" step="0.1" value="9.6" /></div>
+            <div class="control-group"><label style="color:#1d4ed8;">Font Period</label><input id="periodFontInput" type="number" min="8" max="18" step="0.1" value="9.6" /></div>
+            <div class="control-group"><label style="color:#1d4ed8;">Font Range</label><input id="rangeFontInput" type="number" min="6" max="16" step="0.1" value="7.2" /></div>
+            <div class="control-group"><label style="color:#1d4ed8;">Jarak Company → Title</label><input id="companyGapInput" type="number" min="0" max="20" step="0.1" value="1" /></div>
+            <div class="control-group"><label style="color:#1d4ed8;">Jarak Title → Baris Tengah</label><input id="titleGapInput" type="number" min="0" max="20" step="0.1" value="7" /></div>
+            <div class="control-group"><label style="color:#1d4ed8;">Jarak Baris Tengah → Range</label><input id="metaGapInput" type="number" min="0" max="20" step="0.1" value="5" /></div>
+            <div class="control-group"><label style="color:#1d4ed8;">Jarak tambahan Period</label><input id="periodGapInput" type="number" min="0" max="20" step="0.1" value="0" /></div>
+            <div class="control-group"><label style="color:#1d4ed8;">Jarak Range → Tabel</label><input id="rangeBottomGapInput" type="number" min="0" max="24" step="0.1" value="6" /></div>
+          </div>
+          <div class="layout-actions">
+            <button id="btnApplyHeaderPreset" type="button" class="btn-light btn-xs" style="flex:1;">🖼️ Paskan Gambar</button>
+            <button id="btnResetHeaderLayout" type="button" class="btn-light btn-xs" style="flex:1;">↺ Reset</button>
+          </div>
         </details>
       </div>
 
-      <div class="control-group">
-        <label>Database Tahun</label>
-        <select id="dbYearSelect">
-          <option value="">Memuat daftar tahun...</option>
-        </select>
-        <div style="font-size:10px;color:#64748b;line-height:1.35;">Hanya menampilkan tahun yang sudah memiliki data / pernah di-upload.</div>
-      </div>
-
-      <div class="control-group">
-        <label>Pilih Periode</label>
-        <select id="sheetSelect" disabled>
-          <option value="">Memuat daftar file...</option>
-        </select>
-      </div>
-      
-      <div class="control-group search-box-wrap">
-        <label>Cari No ID / Nama</label>
-        <input id="searchInput" type="search" placeholder="Ketik nama / ID, lalu pilih..." autocomplete="off" />
-        <div id="searchSuggest" class="search-suggest hidden"></div>
-      </div>
-      
-      <div class="control-group">
-        <label>Hasil Pencarian</label>
-        <select id="employeeSelect">
-          <option value="">Tunggu Sinkronisasi...</option>
-        </select>
-      </div>
-
-      <details class="bulk-panel">
-        <summary style="cursor:pointer;font-weight:800;color:#0f172a;outline:none;font-size:12px;display:flex;align-items:center;gap:6px;">
-          🗂️ Menu Cetak Banyak
-        </summary>
-        <div class="control-group" style="margin-top:8px;">
-          <label>Tambah ke List Cetak</label>
-          <div class="bulk-entry-grid">
-            <div class="bulk-field">
-              <div class="bulk-field-label">Periode</div>
-              <select id="bulkEntryPeriod"></select>
-            </div>
-            <div class="bulk-field">
-              <div class="bulk-field-label">No ID / Nama</div>
-              <div class="search-box-wrap bulk-search-wrap">
-                <input id="bulkEmployeeInput" type="search" placeholder="Ketik ID / Nama..." autocomplete="off" />
-                <div id="bulkEmployeeSuggest" class="search-suggest hidden"></div>
-              </div>
-            </div>
-            <button id="btnBulkAddEntry" type="button" class="btn-light bulk-icon-btn" title="Tambah ke list cetak">＋</button>
-          </div>
-          <div class="bulk-hint">Pilih periode, lalu ketik No ID / Nama.</div>
-        </div>
-        <div class="bulk-toolbar">
-          <button id="btnBulkClearEntries" type="button" class="btn-light bulk-clear-btn" title="Kosongkan list cetak">🧹</button>
-        </div>
-        <div class="control-group">
-          <label>List Cetak Banyak</label>
-          <div id="bulkEntryList" class="bulk-entry-list">
-            <div class="bulk-chip-empty">Belum ada item dalam list cetak.</div>
-          </div>
-          <div class="bulk-hint">Setelah semua item dimasukkan, klik Cetak Banyak. Hasil akan dibuat per file 1 ID_Nama dan diunduh dalam 1 file ZIP.</div>
-        </div>
-        <button id="btnBulkPdf" type="button" class="btn-dark">🖨️ Cetak Banyak</button>
-      </details>
-
-      <div class="btn-col" style="margin-top:auto;">
-        <button id="btnSync" class="btn-light">🔄 Refresh</button>
-        <button id="btnResetCurrent" class="btn-light" style="color:#9a3412; border-color:#fdba74; background:#fff7ed;">↺ Batal</button>
-        <button id="btnPrint" class="btn-dark" title="Cetak ke Printer lalu Otomatis Download PDF">🖨️ Print & Download PDF</button>
-      </div>
     </aside>
 
     <!-- AREA KANAN (PREVIEW KERTAS) -->
     <main class="main-stage">
       <div class="paper" id="paperTarget">
         <div id="reportRoot" class="report"></div>
-        <div id="reportVersion" class="report-version">Version: 1.25.02.28</div>
+        <!-- Tulisan Version akan otomatis dirender di dalam reportRoot agar nyambung -->
       </div>
     </main>
   </div>
@@ -597,6 +490,11 @@
     };
 
     const el = {
+      mainControls: document.getElementById('mainControls'),
+      settingsPanel: document.getElementById('settingsPanel'),
+      btnSettings: document.getElementById('btnSettings'),
+      btnCloseSettings: document.getElementById('btnCloseSettings'),
+      
       dbYearSelect: document.getElementById('dbYearSelect'), sheetSelect: document.getElementById('sheetSelect'),
       searchInput: document.getElementById('searchInput'), searchSuggest: document.getElementById('searchSuggest'),
       employeeSelect: document.getElementById('employeeSelect'), bulkEntryPeriod: document.getElementById('bulkEntryPeriod'),
@@ -604,10 +502,11 @@
       bulkEntryList: document.getElementById('bulkEntryList'), btnBulkAddEntry: document.getElementById('btnBulkAddEntry'),
       btnBulkClearEntries: document.getElementById('btnBulkClearEntries'), btnBulkPdf: document.getElementById('btnBulkPdf'),
       systemCodeInput: document.getElementById('systemCodeInput'), versionInput: document.getElementById('versionInput'),
-      btnSync: document.getElementById('btnSync'), btnPrint: document.getElementById('btnPrint'),
-      btnResetCurrent: document.getElementById('btnResetCurrent'), btnSettings: document.getElementById('btnSettings'),
-      settingsPanel: document.getElementById('settingsPanel'), reportRoot: document.getElementById('reportRoot'),
-      reportVersion: document.getElementById('reportVersion'), paperTarget: document.getElementById('paperTarget'),
+      
+      btnSync: document.getElementById('btnSync'), btnPrint: document.getElementById('btnPrint'), 
+      btnDownloadPdf: document.getElementById('btnDownloadPdf'), btnResetCurrent: document.getElementById('btnResetCurrent'),
+      reportRoot: document.getElementById('reportRoot'), paperTarget: document.getElementById('paperTarget'),
+      
       excelFileInput: document.getElementById('excelFileInput'), uploadSheetName: document.getElementById('uploadSheetName'),
       uploadYearInput: document.getElementById('uploadYearInput'),
       btnUploadExcel: document.getElementById('btnUploadExcel'), uploadProgressCard: document.getElementById('uploadProgressCard'),
@@ -752,6 +651,17 @@
       }
     }
 
+    async function verifyUploadAfterFallback(targetSheet) {
+      for (let attempt = 1; attempt <= 4; attempt++) {
+        await sleep(1200);
+        try {
+          await loadAppAndSheets();
+          if (appState.sheetNames.includes(targetSheet)) return true;
+        } catch (_error) {}
+      }
+      return false;
+    }
+
     function uploadPayloadWithProgress(payload, onProgress) {
       const payloadText = JSON.stringify(payload);
       const totalBytes = Math.max(payloadText.length, 1);
@@ -843,17 +753,16 @@
     function escapeHtml(value){ return String(value ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
     function pad(num){ return String(num).padStart(2, '0'); }
 
-    // PARSER TANGGAL SUPER AMAN (Mencegah tanggal hilang karena format Excel yang aneh)
+    // PARSER TANGGAL SUPER AMAN
     function parseToDate(value){
       if (value === null || value === undefined || value === '') return null;
       if (value instanceof Date && !Number.isNaN(value.getTime())) return value;
-      // Jika dari Excel terbaca sebagai angka seri (misal 44665)
       if (typeof value === 'number') {
         const base = new Date(Math.round((value - 25569) * 86400 * 1000));
         if (!Number.isNaN(base.getTime())) return new Date(base.getUTCFullYear(), base.getUTCMonth(), base.getUTCDate());
       }
       if (typeof value === 'string') {
-        let clean = value.trim().split(' ')[0]; // Ambil bagian tanggal saja jika string mengandung jam
+        let clean = value.trim().split(' ')[0]; 
         if (!clean) return null;
         
         let match = clean.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})$/);
@@ -862,10 +771,10 @@
         match = clean.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{2,4})$/);
         if (match) {
             let p1 = Number(match[1]); let p2 = Number(match[2]); let yy = Number(match[3]);
-            if (yy < 100) yy += (yy < 50 ? 2000 : 1900); // Konversi 2 digit tahun ke 4 digit
+            if (yy < 100) yy += (yy < 50 ? 2000 : 1900); 
             if (p1 > 12) return new Date(yy, p2 - 1, p1); 
             if (p2 > 12) return new Date(yy, p1 - 1, p2); 
-            return new Date(yy, p2 - 1, p1); // default ke DD/MM/YYYY jika meragukan
+            return new Date(yy, p2 - 1, p1); 
         }
         const parsed = new Date(clean);
         if (!Number.isNaN(parsed.getTime())) return new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate());
@@ -873,14 +782,12 @@
       return null;
     }
 
-    // Mengembalikan string aslinya jika gagal parsing agar tanggal yang aneh tidak hilang di database JSON
     function formatDateISO(rawVal, fallbackVal = ''){
       const d = parseToDate(rawVal); 
       if (!d) return String(fallbackVal || '').trim();
       return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
     }
     
-    // Saat merender ke HTML (Kertas Report), jika format kacau tetap dimunculkan format mentahnya
     function formatDateDDMMYYYY(value){
       const d = parseToDate(value); 
       if (!d) return String(value || ''); 
@@ -907,7 +814,7 @@
         }
         const tm = timePart.match(/^(\d{1,2}):(\d{2})/);
         if (tm) return `${pad(tm[1])}:${pad(tm[2])}`;
-        return timePart; // fallback ke tulisan aslinya jika gagal parsing
+        return timePart; 
       }
       return String(value);
     }
@@ -1147,8 +1054,11 @@
 
     async function exportElementToPdfBlob(element, filename){
       return await html2pdf().set({
-        margin: [5, 5, 5, 5], filename, image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, logging: false }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        margin: [10, 5, 10, 5],
+        filename: filename, 
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, logging: false }, 
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
       }).from(element).toPdf().outputPdf('blob');
     }
 
@@ -1406,7 +1316,6 @@
           const firstSheetName = workbook.SheetNames[0];
           const worksheet = workbook.Sheets[firstSheetName];
           
-          // MENGGUNAKAN RAW: TRUE UNTUK MENDAPATKAN ANGKA SERI EXCEL (Lebih kebal dari perubahan format cell Excel)
           const dataArr = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: '', raw: true }); 
 
           if (!dataArr.length) throw new Error('File Excel kosong (Tidak ada data baris).');
@@ -1498,7 +1407,6 @@
           setUploadBusy(true, targetSheetExists ? '🚀 Mengirim ke Drive...' : '🆕 Membuat & Mengirim...');
           await yieldToUI(); await sleep(10);
 
-          // PENGIRIMAN SUPER KILAT: Langsung 100.000 baris dalam satu kiriman tanpa jeda
           const CHUNK_SIZE = 100000; 
           const totalChunks = Math.ceil(payloadRows.length / CHUNK_SIZE);
           let totalInserted = 0;
@@ -1525,7 +1433,7 @@
             if (result.opaque) isOpaqueFallback = true;
 
             totalInserted += chunkRows.length;
-            await sleep(10); // Jeda kilat 10ms
+            await sleep(10); 
           }
 
           setUploadProgress(99, 'Penyelesaian...', targetSheetExists ? 'Aplikasi memverifikasi hasil simpan...' : `Aplikasi memverifikasi pembuatan file dan hasil simpan...`, buildUploadStats(len, payloadRows.length, skippedRows, duplicateRows));
@@ -1604,16 +1512,67 @@
       if (!appState.selectedCode) return []; return appState.employeeRowsMap.get(appState.selectedCode) || [];
     }
 
-    el.paperTarget.addEventListener('input', (event) => {
+    // =========================================================================
+    // FITUR AUTO-SAVE OTOMATIS SAAT EDIT TABEL KERTAS
+    // =========================================================================
+    let autoSaveTimer = null;
+    
+    // Mendengarkan ketikan namun baru menyimpan saat user memindahkan kursor / selesai mengetik ('change')
+    el.paperTarget.addEventListener('change', (event) => {
       if(event.target.tagName === 'INPUT') {
         const key = event.target.dataset.key; const field = event.target.dataset.field; const value = event.target.value;
-        const row = appState.rowMapByKey.get(key); if (row) row[field] = field === 'overtime' ? String(value).trim() : value;
+        const row = appState.rowMapByKey.get(key); 
+        
+        if (row) {
+          row[field] = field === 'overtime' ? String(value).trim() : value;
+          
+          // Trigger Auto Save
+          clearTimeout(autoSaveTimer);
+          showToast('Data diubah. Menyimpan otomatis...', 'info');
+          
+          autoSaveTimer = setTimeout(async () => {
+             try {
+                const payload = {
+                  action: 'upload', actionType: 'upload', sheetName: appState.selectedSheet,
+                  mode: 'replace_period', 
+                  rows: appState.workingRows, databaseYear: appState.selectedYear,
+                  createSheetIfMissing: true, autoCreateSheet: true, createTargetSheet: true,
+                  chunkIndex: 1, totalChunks: 1
+                };
+                
+                const url = WEB_APP_URL + (WEB_APP_URL.includes('?') ? '&' : '?') + 'action=upload';
+                const response = await fetch(url, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                  body: JSON.stringify(payload)
+                });
+                
+                if (response.ok) {
+                   showToast('Auto-Save Berhasil!', 'success');
+                   appState.sheetCache.set(appState.selectedSheet, cloneRows(appState.workingRows));
+                   appState.sourceRows = cloneRows(appState.workingRows);
+                } else {
+                   showToast('Auto-Save Gagal. Cek internet Anda.', 'error');
+                }
+             } catch(e) {
+                showToast('Gagal terhubung untuk Auto-Save.', 'error');
+             }
+          }, 1500); 
+        }
       }
     });
 
+    el.paperTarget.addEventListener('input', (event) => {
+      if(event.target.tagName === 'INPUT') {
+        const key = event.target.dataset.key; const field = event.target.dataset.field; const value = event.target.value;
+        const row = appState.rowMapByKey.get(key); 
+        if (row) row[field] = field === 'overtime' ? String(value).trim() : value;
+      }
+    });
+
+
     function renderReport(){
       const rows = getSelectedRows(); const version = el.versionInput.value.trim() || '1.25.02.28'; const systemCode = el.systemCodeInput.value.trim() || 'HRIDIN01';
-      el.reportVersion.textContent = `Version: ${version}`;
       
       if (!rows.length) {
         const headerStyle = buildHeaderStyleVars(appState.headerLayout);
@@ -1652,6 +1611,7 @@
           <tbody>${body}</tbody>
         </table>
         <div class="report-footer-box"><strong>Record Count</strong><span>${rows.length}</span></div>
+        <div class="report-version">Version: ${escapeHtml(version)}</div>
       `;
     }
 
@@ -1659,7 +1619,7 @@
       const currentRows = getSelectedRows(); if (!currentRows.length) return;
       const keys = new Set(currentRows.map(r => r.uniqueKey)); const sourceMap = new Map(appState.sourceRows.map(row => [row.uniqueKey, row]));
       const restoredRows = appState.workingRows.map(row => { if (!keys.has(row.uniqueKey)) return row; const original = sourceMap.get(row.uniqueKey); return original ? { ...original } : row; });
-      applyIndexedState(restoredRows, false); renderReport(); showToast('Edit dibatalkan. Kembali ke data Sheet.', 'success');
+      applyIndexedState(restoredRows, false); renderReport(); showToast('Reset form. Kembali ke data Sheet awal.', 'success');
     }
 
     function downloadPdf() {
@@ -1667,15 +1627,37 @@
       const first = rows[0]; const filename = `${first.code} - ${first.name}.pdf`;
       const oldShadow = el.paperTarget.style.boxShadow; el.paperTarget.style.boxShadow = 'none';
       showToast('Menyiapkan file PDF otomatis...', 'info');
-      const opt = { margin: [5, 5, 5, 5], filename: filename, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true, logging: false }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
+      const opt = { 
+        margin: [10, 5, 10, 5], 
+        filename: filename, 
+        image: { type: 'jpeg', quality: 0.98 }, 
+        html2canvas: { scale: 2, useCORS: true, logging: false }, 
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
+      };
       html2pdf().set(opt).from(el.paperTarget).save().then(() => { el.paperTarget.style.boxShadow = oldShadow; showToast(`PDF Berhasil Terunduh`, 'success'); }).catch(err => { console.error(err); el.paperTarget.style.boxShadow = oldShadow; showToast('Gagal membuat file PDF.', 'error'); });
     }
 
-    el.btnSettings.addEventListener('click', () => { el.settingsPanel.classList.toggle('hidden'); });
+    // Navigasi Pengaturan & Menu
+    el.btnSettings.addEventListener('click', () => { 
+      el.settingsPanel.classList.remove('hidden'); 
+      el.mainControls.classList.add('hidden');
+    });
+    
+    el.btnCloseSettings.addEventListener('click', () => {
+      el.settingsPanel.classList.add('hidden'); 
+      el.mainControls.classList.remove('hidden');
+    });
+
     el.btnSync.addEventListener('click', () => syncFromGSheet(true));
+    
     el.btnPrint.addEventListener('click', () => {
       if(!getSelectedRows().length) { showToast("Pilih ID karyawan terlebih dahulu!", "warn"); return; }
-      window.print(); setTimeout(() => { downloadPdf(); }, 500);
+      window.print();
+    });
+
+    el.btnDownloadPdf.addEventListener('click', () => {
+      if(!getSelectedRows().length) { showToast("Pilih ID karyawan terlebih dahulu!", "warn"); return; }
+      downloadPdf();
     });
     
     el.btnResetCurrent.addEventListener('click', resetCurrent);
