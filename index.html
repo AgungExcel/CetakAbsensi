@@ -199,8 +199,8 @@
     /* FIX 2: Margin diperkecil agar footer naik */
     .report-footer-box { margin-top: 4px; border-top: 2px solid #000; border-bottom: 1px solid #000; padding: 4px 0; font-size: 10.5px; display: flex; gap: 15px; align-items: center; line-height: 1; position: relative; }
     
-    /* FIX 3: Posisi Version dinaikkan dari 8mm menjadi 12mm dari ujung bawah kertas */
-    .report-version { position: absolute; bottom: 12mm; left: 15mm; font-size: 9px; color: #111; text-align: left; margin: 0; }
+    /* Version mengikuti tinggi konten dan tetap berjarak sekitar 2cm dari garis footer */
+    .report-version { display:block; margin-top:10mm; font-size: 9px; color: #111; text-align: left; }
     
     .hidden { display: none !important; }
 
@@ -307,12 +307,12 @@
         overflow: hidden !important; 
         box-sizing: border-box !important;
         margin: 0 auto !important; 
-        padding: 10mm 15mm 15mm !important; 
-        page-break-after: always;
+        padding: 10mm 15mm 10mm !important; 
+        page-break-after: auto !important;
       }
       
-      /* FIX 4: Posisi Version absolut saat print dinaikkan ke 12mm */
-      .report-version { position: absolute !important; bottom: 12mm !important; left: 15mm !important; margin: 0 !important; }
+      /* Version tetap mengikuti tinggi konten saat print */
+      .report-version { display:block !important; position: static !important; margin-top:10mm !important; }
       
       /* Menetralkan input box jadi teks biasa saat di print */
       .report-table input { 
@@ -355,15 +355,14 @@
       max-height: 294mm !important;
       overflow: hidden !important;
       box-sizing: border-box !important;
-      padding: 10mm 15mm 15mm !important; 
+      padding: 10mm 15mm 10mm !important; 
     }
     
-    /* FIX 5: Posisi Version absolut saat PDF dinaikkan ke 12mm */
+    /* Version tetap mengikuti tinggi konten saat export PDF */
     body.pdf-export .report-version {
-      position: absolute !important; 
-      bottom: 12mm !important; 
-      left: 15mm !important; 
-      margin: 0 !important;
+      display:block !important;
+      position: static !important;
+      margin-top:10mm !important;
     }
     
     body.pdf-export .report-table input {
