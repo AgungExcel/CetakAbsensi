@@ -168,10 +168,12 @@
     .report-table thead th.col-dept { text-align: left !important; padding-left: 4px; }
     
     /* FIX 1: Padding Atas-Bawah diturunkan dari 4px ke 2.5px agar 31+ baris muat di 1 halaman */
-    .report-table tbody td { padding: 2.5px 2px; vertical-align: middle !important; border-bottom: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; height: auto; min-height: 16px; }
+    .report-table tbody td { padding: 2.5px 2px; vertical-align: middle !important; border-bottom: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; height: auto; min-height: 16px; line-height: 1.2; }
+    .report-table tbody tr.row-single-line td { padding-top: 3px; padding-bottom: 3px; min-height: 17px; }
+    .report-table tbody tr.row-wrapped td { padding-top: 2.5px; padding-bottom: 2.5px; }
     
     /* Wrap text otomatis untuk Kolom Nama dan Departemen */
-    .report-table tbody td.col-name, .report-table tbody td.col-dept { white-space: normal !important; overflow: visible !important; word-wrap: break-word !important; overflow-wrap: break-word !important; line-height: 1.15; }
+    .report-table tbody td.col-name, .report-table tbody td.col-dept { white-space: normal !important; overflow: visible !important; word-wrap: break-word !important; overflow-wrap: break-word !important; line-height: 1.2; }
 
     /* PRESISI LEBAR KOLOM 100% FULL (Overtime & Clock Out dijauhkan, Dept geser kiri) */
     .report-table .col-code { width: 9%; }
@@ -918,20 +920,52 @@
 
     function formatOvertimeValue(value){
       if (value === null || value === undefined || value === '') return '0.0';
-      if (typeof value === 'number') return value.toFixed(1);
       const clean = String(value).trim().replace(',', '.');
       if (!clean || clean.toLowerCase() === 'nan') return '0.0';
-      const numeric = Number(clean);
-      if (!Number.isNaN(numeric)) return numeric.toFixed(1);
-      const matched = clean.match(/-?\d+(?:\.\d+)?/);
-      if (matched) {
-        const parsed = Number(matched[0]);
-        if (!Number.isNaN(parsed)) return parsed.toFixed(1);
+
+      let numeric = null;
+      if (typeof value === 'number' && !Number.isNaN(value)) numeric = value;
+      if (numeric === null) {
+        const parsed = Number(clean);
+        if (!Number.isNaN(parsed)) numeric = parsed;
       }
-      return '0.0';
+      if (numeric === null) {
+        const matched = clean.match(/-?\d+(?:\.\d+)?/);
+        if (matched) {
+          const parsed = Number(matched[0]);
+          if (!Number.isNaN(parsed)) numeric = parsed;
+        }
+      }
+      if (numeric === null) return '0.0';
+
+      if (numeric < 0) numeric = 0;
+      const roundedToHalf = Math.round(numeric * 2) / 2;
+      return roundedToHalf.toFixed(1);
     }
 
     function buildUniqueKey(row){ return [row.code || row.name || '', row.clockDate || '', row.clockIn || '', row.clockOut || '', row.overtime || '', row.remarks || ''].join('|'); }
+
+    function getCellLineCount(cell){
+      if (!cell) return 1;
+      const computed = window.getComputedStyle(cell);
+      let lineHeight = parseFloat(computed.lineHeight);
+      if (Number.isNaN(lineHeight)) lineHeight = parseFloat(computed.fontSize || '12') * 1.2;
+      const contentHeight = Math.max(cell.scrollHeight || 0, cell.getBoundingClientRect().height || 0);
+      return Math.max(1, Math.round(contentHeight / Math.max(lineHeight, 1)));
+    }
+
+    function applyConditionalRowSpacing(scope = document){
+      const tables = scope.querySelectorAll ? scope.querySelectorAll('.report-table tbody') : [];
+      tables.forEach(tbody => {
+        tbody.querySelectorAll('tr').forEach(row => {
+          const nameCell = row.querySelector('td.col-name');
+          const deptCell = row.querySelector('td.col-dept');
+          const hasWrappedCell = getCellLineCount(nameCell) > 1 || getCellLineCount(deptCell) > 1;
+          row.classList.toggle('row-wrapped', hasWrappedCell);
+          row.classList.toggle('row-single-line', !hasWrappedCell);
+        });
+      });
+    }
 
     function dedupeRows(rows){
       const map = new Map();
@@ -1285,6 +1319,7 @@
         container.style.position = 'absolute'; container.style.top = '0'; container.style.left = '0'; container.style.zIndex = '-9999';
         container.innerHTML = pageChunks.map((chunk, pageIdx) => buildReportPageHtml(chunk, group.code, systemCode, version, pageIdx + 1, pageChunks.length)).join('<div style="page-break-after:always;"></div>');
         document.body.appendChild(container);
+        applyConditionalRowSpacing(container);
 
         try {
           const safeName = sanitizeFileName(`${group.code}_${group.name || 'Tanpa Nama'}`) || group.code;
@@ -1790,6 +1825,7 @@
         <div class="report-footer-box"><strong>Record Count</strong><span>${rows.length}</span></div>
         <div class="report-version">Version: ${escapeHtml(version)}</div>
       `;
+      requestAnimationFrame(() => applyConditionalRowSpacing(el.reportRoot));
     }
 
     function resetCurrent(){
@@ -1902,6 +1938,10 @@
       const nextYear = String(el.dbYearSelect.value || '').trim(); if (!nextYear || nextYear === appState.selectedYear) return;
       appState.selectedYear = nextYear; clearYearScopedState(); hideSearchSuggestions(); hideBulkEmployeeSuggestions(); resetUploadProgress();
       loadAppAndSheets();
+    });
+
+    window.addEventListener('resize', () => {
+      if (el.reportRoot && el.reportRoot.children.length) requestAnimationFrame(() => applyConditionalRowSpacing(el.reportRoot));
     });
 
     window.addEventListener('DOMContentLoaded', () => {
