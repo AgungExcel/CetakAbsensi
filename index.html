@@ -103,6 +103,25 @@
     
     .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: auto; padding-top: 10px; border-top: 1px solid #f1f5f9; }
     .action-grid .btn-print, .action-grid .btn-pdf { grid-column: span 1; }
+
+    .label-with-sync { display:flex; align-items:center; gap:8px; }
+    .sheet-sync-indicator {
+      width: 11px;
+      height: 11px;
+      border-radius: 999px;
+      background: #94a3b8;
+      box-shadow: 0 0 0 4px rgba(148,163,184,0.14);
+      flex: 0 0 11px;
+      transition: background .2s ease, box-shadow .2s ease, transform .2s ease;
+    }
+    .sheet-sync-indicator[data-status="idle"] { background:#94a3b8; box-shadow:0 0 0 4px rgba(148,163,184,0.14); }
+    .sheet-sync-indicator[data-status="syncing"] { background:#f97316; box-shadow:0 0 0 4px rgba(249,115,22,0.16); transform:scale(1.05); }
+    .sheet-sync-indicator[data-status="synced"] { background:#16a34a; box-shadow:0 0 0 4px rgba(22,163,74,0.15); }
+    .sheet-sync-indicator[data-status="error"] { background:#dc2626; box-shadow:0 0 0 4px rgba(220,38,38,0.15); }
+    .btn-refresh.sync-idle { background:#f1f5f9; color:#334155; border:1px solid #cbd5e1; box-shadow:none; }
+    .btn-refresh.sync-syncing { background:linear-gradient(135deg, #f59e0b, #ea580c); color:#fff; border:none; box-shadow:0 4px 12px rgba(249,115,22,0.22); }
+    .btn-refresh.sync-synced { background:linear-gradient(135deg, #16a34a, #15803d); color:#fff; border:none; box-shadow:0 4px 12px rgba(22,163,74,0.22); }
+    .btn-refresh.sync-error { background:linear-gradient(135deg, #dc2626, #b91c1c); color:#fff; border:none; box-shadow:0 4px 12px rgba(220,38,38,0.22); }
     
     /* Panel Settings Sections */
     .settings-section { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; }
@@ -298,9 +317,23 @@
       margin: 0; /* Hapus margin browser agar tidak dobel dengan padding kertas */
     }
     @media print {
-      body { background: #fff; padding: 0; margin: 0; display: block; overflow: visible; height: auto; }
+      html, body {
+        background: #fff !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        display: block !important;
+        overflow: visible !important;
+        height: auto !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .toast, .search-suggest, .search-box-wrap .search-suggest, #toast { display: none !important; visibility: hidden !important; }
       .sidebar { display: none !important; }
       .main-stage { padding: 0; background: none; overflow: visible; display: block; }
+      .paper, .report, .report-table {
+        text-rendering: geometricPrecision !important;
+        -webkit-font-smoothing: antialiased !important;
+      }
       .paper { 
         box-shadow: none !important; 
         width: 210mm !important; 
@@ -329,14 +362,23 @@
     }
 
     /* 2. Aturan Khusus PDF Engine (Digunakan saat html2pdf merender) */
-    body.pdf-export, body.pdf-export html {
+    html.pdf-export, body.pdf-export {
       overflow: visible !important;
       height: auto !important;
+      background: #fff !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
     }
     body.pdf-export .app {
       display: block !important;
       height: auto !important;
       overflow: visible !important;
+    }
+    body.pdf-export .toast,
+    body.pdf-export .search-suggest,
+    body.pdf-export #toast {
+      display: none !important;
+      visibility: hidden !important;
     }
     body.pdf-export .sidebar {
       display: none !important;
@@ -357,7 +399,10 @@
       max-height: 294mm !important;
       overflow: hidden !important;
       box-sizing: border-box !important;
-      padding: 10mm 15mm 10mm !important; 
+      padding: 10mm 15mm 10mm !important;
+      background: #fff !important;
+      text-rendering: geometricPrecision !important;
+      -webkit-font-smoothing: antialiased !important;
     }
     
     /* Version tetap mengikuti tinggi konten saat export PDF */
@@ -404,7 +449,10 @@
         </div>
 
         <div class="control-group">
-          <label>Pilih Periode</label>
+          <label class="label-with-sync">
+            <span>Pilih Periode</span>
+            <span id="sheetSyncIndicator" class="sheet-sync-indicator" data-status="idle" title="Belum sinkron" aria-label="Belum sinkron"></span>
+          </label>
           <select id="sheetSelect" disabled>
             <option value="">Memuat daftar file...</option>
           </select>
@@ -585,7 +633,8 @@
       employeeRowsMap: new Map(), employeeMetaMap: new Map(),
       employeeOptions: [], sheetPeriod: { start: '', end: '' },
       sheetCache: new Map(), headerLayout: null, searchSuggestIndex: -1,
-      searchDebounceTimer: null, bulkEntries: [], bulkSuggestIndex: -1, bulkEmployeeSearchCode: ''
+      searchDebounceTimer: null, bulkEntries: [], bulkSuggestIndex: -1, bulkEmployeeSearchCode: '',
+      syncStatus: 'idle'
     };
 
     const aliases = {
@@ -606,7 +655,7 @@
       btnSettings: document.getElementById('btnSettings'),
       btnCloseSettings: document.getElementById('btnCloseSettings'),
       
-      dbYearSelect: document.getElementById('dbYearSelect'), sheetSelect: document.getElementById('sheetSelect'),
+      dbYearSelect: document.getElementById('dbYearSelect'), sheetSelect: document.getElementById('sheetSelect'), sheetSyncIndicator: document.getElementById('sheetSyncIndicator'),
       searchInput: document.getElementById('searchInput'), searchSuggest: document.getElementById('searchSuggest'),
       employeeSelect: document.getElementById('employeeSelect'), bulkEntryPeriod: document.getElementById('bulkEntryPeriod'),
       bulkEmployeeInput: document.getElementById('bulkEmployeeInput'), bulkEmployeeSuggest: document.getElementById('bulkEmployeeSuggest'),
@@ -641,6 +690,36 @@
       toast.className = `toast show ${type}`;
       clearTimeout(toastTimeout);
       toastTimeout = setTimeout(() => { toast.classList.remove('show'); }, 4000);
+    }
+    function hideToastNow() {
+      const toast = document.getElementById('toast');
+      clearTimeout(toastTimeout);
+      toast.classList.remove('show');
+    }
+
+    const SYNC_STATUS_META = {
+      idle: { label: 'Belum sinkron', hint: 'Pilih periode untuk memuat data dari database.', button: '🔄 Refresh', buttonClass: 'sync-idle' },
+      syncing: { label: 'Sedang sinkronisasi', hint: 'Sedang sinkronisasi dengan database.', button: '🟠 Sinkronisasi...', buttonClass: 'sync-syncing' },
+      synced: { label: 'Sudah sinkron', hint: 'Preview sudah sinkron dengan database.', button: '✅ Sinkron', buttonClass: 'sync-synced' },
+      error: { label: 'Gagal sinkron', hint: 'Periksa koneksi lalu klik Refresh.', button: '⚠️ Ulangi Sinkron', buttonClass: 'sync-error' }
+    };
+
+    function setSyncStatus(status, hint = '') {
+      const nextStatus = SYNC_STATUS_META[status] ? status : 'idle';
+      const meta = SYNC_STATUS_META[nextStatus];
+      const statusText = hint || meta.hint;
+      appState.syncStatus = nextStatus;
+      if (el.sheetSyncIndicator) {
+        el.sheetSyncIndicator.dataset.status = nextStatus;
+        el.sheetSyncIndicator.title = `${meta.label} • ${statusText}`;
+        el.sheetSyncIndicator.setAttribute('aria-label', meta.label);
+      }
+      if (el.btnSync) {
+        el.btnSync.classList.remove('sync-idle', 'sync-syncing', 'sync-synced', 'sync-error');
+        el.btnSync.classList.add(meta.buttonClass);
+        el.btnSync.innerHTML = meta.button;
+        el.btnSync.title = `${meta.label} • ${statusText}`;
+      }
     }
 
     function formatNumber(num){ return Number(num || 0).toLocaleString('id-ID'); }
@@ -1194,19 +1273,102 @@
     function removeBulkEntry(id){ appState.bulkEntries = appState.bulkEntries.filter(entry => entry.id !== id); renderBulkEntryList(); }
     function clearBulkEntries(){ appState.bulkEntries = []; renderBulkEntryList(); }
 
-    function sanitizeFileName(value){ return String(value || '').replace(/[\\/:*?"<>|]+/g, ' ').replace(/\s+/g, ' ').trim(); }
+    function sanitizeFileName(value){ return String(value || '').replace(/[\/:*?"<>|]+/g, ' ').replace(/\s+/g, ' ').trim(); }
     function buildUniqueRowKey(row){ return String(row.uniqueKey || buildUniqueKey(row)); }
     function chunkRows(rows, size = 25){ const chunks = []; for (let i = 0; i < rows.length; i += size) { chunks.push(rows.slice(i, i + size)); } return chunks; }
+    function normalizeFileNamePart(value, fallback = '') {
+      const normalized = String(value || '')
+        .normalize('NFD')
+        .replace(/[̀-ͯ]/g, '')
+        .toUpperCase()
+        .replace(/[^A-Z0-9]+/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '');
+      return normalized || fallback;
+    }
+    function normalizePeriodFileLabel(periodLabel, fallbackYear = '') {
+      const raw = String(periodLabel || '').trim();
+      if (!raw) return fallbackYear ? `00-${fallbackYear}` : 'TANPA-PERIODE';
+      const lower = raw.toLowerCase();
+      const yearMatch = lower.match(/(20\d{2})/);
+      const fallbackYearValue = String(fallbackYear || appState.selectedYear || '').trim();
+      const year = yearMatch ? yearMatch[1] : fallbackYearValue;
+
+      let match = lower.match(/(20\d{2})\D{0,4}(0?[1-9]|1[0-2])/);
+      if (match) return `${pad(match[2])}-${match[1]}`;
+      match = lower.match(/(0?[1-9]|1[0-2])\D{0,4}(20\d{2})/);
+      if (match) return `${pad(match[1])}-${match[2]}`;
+      match = lower.match(/(?:bulan|month|periode|period)\D{0,4}(0?[1-9]|1[0-2])/);
+      if (match && year) return `${pad(match[1])}-${year}`;
+
+      const monthAliases = [
+        ['january', '01'], ['januari', '01'], ['jan', '01'],
+        ['february', '02'], ['februari', '02'], ['feb', '02'],
+        ['march', '03'], ['maret', '03'], ['mar', '03'],
+        ['april', '04'], ['apr', '04'],
+        ['mei', '05'], ['may', '05'],
+        ['june', '06'], ['juni', '06'], ['jun', '06'],
+        ['july', '07'], ['juli', '07'], ['jul', '07'],
+        ['august', '08'], ['agustus', '08'], ['agu', '08'], ['ags', '08'], ['aug', '08'],
+        ['september', '09'], ['sept', '09'], ['sep', '09'],
+        ['october', '10'], ['oktober', '10'], ['oct', '10'], ['okt', '10'],
+        ['november', '11'], ['nov', '11'],
+        ['december', '12'], ['desember', '12'], ['dec', '12'], ['des', '12']
+      ];
+      for (const [alias, month] of monthAliases) {
+        const regex = new RegExp(`\b${alias}\b`, 'i');
+        if (regex.test(lower)) return year ? `${month}-${year}` : month;
+      }
+
+      return normalizeFileNamePart(raw, 'TANPA-PERIODE');
+    }
+    function buildPeriodFileLabel(periods = []) {
+      const list = Array.from(new Set((Array.isArray(periods) ? periods : [periods]).map(item => normalizePeriodFileLabel(item)).filter(Boolean)));
+      if (!list.length) return 'TANPA-PERIODE';
+      if (list.length === 1) return list[0];
+      return `${list[0]}+${list[list.length - 1]}`;
+    }
+    function buildCurrentPeriodLabel(rows = []) {
+      const selectedPeriod = normalizePeriodFileLabel(appState.selectedSheet || '', appState.selectedYear || '');
+      if (selectedPeriod && selectedPeriod !== 'TANPA-PERIODE') return selectedPeriod;
+      const dates = rows.map(row => parseToDate(row.clockDate)).filter(Boolean).sort((a,b) => a - b);
+      if (!dates.length) return 'TANPA-PERIODE';
+      return `${pad(dates[0].getMonth() + 1)}-${dates[0].getFullYear()}`;
+    }
+    function buildPdfFileName(code, name, periodLabel, ext = 'pdf') {
+      const base = [
+        normalizeFileNamePart(code),
+        normalizeFileNamePart(name),
+        normalizePeriodFileLabel(periodLabel || '', appState.selectedYear || '')
+      ].filter(Boolean).join('-') || 'ATTENDANCE';
+      return `${base}.${ext}`;
+    }
+    function setPdfExportMode(enabled) {
+      document.documentElement.classList.toggle('pdf-export', !!enabled);
+      document.body.classList.toggle('pdf-export', !!enabled);
+      if (enabled) hideToastNow();
+    }
+    function getPdfExportOptions(filename) {
+      const deviceScale = typeof window !== 'undefined' && window.devicePixelRatio ? window.devicePixelRatio : 1;
+      const preferredScale = Math.min(4, Math.max(3, deviceScale * 2));
+      return {
+        margin: 0,
+        filename,
+        image: { type: 'png', quality: 1 },
+        html2canvas: {
+          scale: preferredScale,
+          useCORS: true,
+          logging: false,
+          backgroundColor: '#ffffff',
+          letterRendering: true,
+          removeContainer: true
+        },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', compress: false }
+      };
+    }
 
     async function exportElementToPdfBlob(element, filename){
-      // Parameter Margin PDF diset 0 karena jarak padding kertas sudah mewakilinya
-      return await html2pdf().set({
-        margin: 0,
-        filename: filename, 
-        image: { type: 'jpeg', quality: 1 },
-        html2canvas: { scale: 2, useCORS: true, logging: false }, 
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-      }).from(element).outputPdf('blob');
+      return await html2pdf().set(getPdfExportOptions(filename)).from(element).outputPdf('blob');
     }
 
     function downloadBlob(blob, filename){
@@ -1220,12 +1382,15 @@
       const dates = rows.map(r => parseToDate(r.clockDate)).filter(Boolean).sort((a,b) => a - b);
       const start = dates.length ? formatDateDDMMYYYY(dates[0]) : '';
       const end = dates.length ? formatDateDDMMYYYY(dates[dates.length - 1]) : '';
-      const generatedDate = formatGeneratedDate(new Date()); const headerStyle = buildHeaderStyleVars(appState.headerLayout);
+      const generatedDate = formatGeneratedDate(new Date());
+      const headerStyle = buildHeaderStyleVars(appState.headerLayout);
 
       const body = rows.map(row => `
         <tr>
-          <td class="col-code">${escapeHtml(row.code)}</td><td class="col-name">${escapeHtml(row.name)}</td>
-          <td class="col-dept">${escapeHtml(row.department)}</td><td class="col-date">${escapeHtml(formatDateDDMMYYYY(row.clockDate))}</td>
+          <td class="col-code">${escapeHtml(row.code)}</td>
+          <td class="col-name">${escapeHtml(row.name)}</td>
+          <td class="col-dept">${escapeHtml(row.department)}</td>
+          <td class="col-date">${escapeHtml(formatDateDDMMYYYY(row.clockDate))}</td>
           <td class="col-in"><input type="text" data-field="clockIn" data-key="${escapeHtml(row.uniqueKey)}" value="${escapeHtml(row.clockIn)}" placeholder="" /></td>
           <td class="col-out"><input type="text" data-field="clockOut" data-key="${escapeHtml(row.uniqueKey)}" value="${escapeHtml(row.clockOut)}" placeholder="" /></td>
           <td class="col-ot"><input type="text" data-field="overtime" data-key="${escapeHtml(row.uniqueKey)}" value="${escapeHtml(formatOvertimeValue(row.overtime))}" placeholder="0.0" /></td>
@@ -1237,35 +1402,50 @@
         <div class="paper bulk-paper">
           <div class="report" style="padding: 0;">
             <div class="report-header" style="${headerStyle}">
-              <div class="report-company">Hop Lun</div><div class="report-title">Report Attendance Worker</div>
+              <div class="report-company">Hop Lun</div>
+              <div class="report-title">Report Attendance Worker</div>
               <div class="report-meta-band">
                 <div class="report-meta-left">${escapeHtml(generatedDate)}</div>
                 <div class="report-period">Period: ${escapeHtml(start)} to ${escapeHtml(end)}. All Records</div>
                 <div class="report-meta-right">${escapeHtml(systemCode)} - Page ${pageNumber} of ${totalPages}</div>
+              </div>
+              <div class="report-range">Range: ((Employee Code='${escapeHtml(employeeCode)}'))</div>
             </div>
-            <div class="report-range">Range: ((Employee Code='${escapeHtml(employeeCode)}'))</div>
+            <table class="report-table">
+              <colgroup><col class="col-code"><col class="col-name"><col class="col-dept"><col class="col-date"><col class="col-in"><col class="col-out"><col class="col-ot"><col class="col-remarks"></colgroup>
+              <thead><tr><th class="col-code">Employee<br>Code</th><th class="col-name">Employee<br>Name</th><th class="col-dept">Department</th><th class="col-date">Clock Date</th><th class="col-in">Clock In</th><th class="col-out">Clock Out</th><th class="col-ot">Overtime</th><th class="col-remarks">Remarks</th></tr></thead>
+              <tbody>${body}</tbody>
+            </table>
+            <div class="report-footer-box"><strong>Record Count</strong><span>${rows.length}</span></div>
+            <div class="report-version">Version: ${escapeHtml(version)}</div>
           </div>
-          <table class="report-table">
-            <colgroup><col class="col-code"><col class="col-name"><col class="col-dept"><col class="col-date"><col class="col-in"><col class="col-out"><col class="col-ot"><col class="col-remarks"></colgroup>
-            <thead><tr><th class="col-code">Employee<br>Code</th><th class="col-name">Employee<br>Name</th><th class="col-dept">Department</th><th class="col-date">Clock Date</th><th class="col-in">Clock In</th><th class="col-out">Clock Out</th><th class="col-ot">Overtime</th><th class="col-remarks">Remarks</th></tr></thead>
-            <tbody>${body}</tbody>
-          </table>
-          <div class="report-footer-box"><strong>Record Count</strong><span>${rows.length}</span></div>
-          <div class="report-version">Version: ${escapeHtml(version)}</div>
         </div>
-          <div class="report-meta-right">${escapeHtml(systemCode)} - Page 1 of 1</div>
-        </div>
-        <div class="report-range">Range: ((Employee Code='${escapeHtml(first.code)}'))</div>
-      </div>
-      <table class="report-table">
-        <colgroup><col class="col-code"><col class="col-name"><col class="col-dept"><col class="col-date"><col class="col-in"><col class="col-out"><col class="col-ot"><col class="col-remarks"></colgroup>
-        <thead><tr><th class="col-code">Employee<br>Code</th><th class="col-name">Employee<br>Name</th><th class="col-dept">Department</th><th class="col-date">Clock Date</th><th class="col-in">Clock In</th><th class="col-out">Clock Out</th><th class="col-ot">Overtime</th><th class="col-remarks">Remarks</th></tr></thead>
-        <tbody>${body}</tbody>
-      </table>
-      <div class="report-footer-box"><strong>Record Count</strong><span>${rows.length}</span></div>
-      <div class="report-version">Version: ${escapeHtml(version)}</div>
-    `;
-  }
+      `;
+    }
+
+    async function getRowsForSheet(sheetName, forceRefresh = false) {
+      const safeSheetName = String(sheetName || '').trim();
+      if (!safeSheetName) return [];
+      if (!forceRefresh && appState.sheetCache.has(safeSheetName)) return cloneRows(appState.sheetCache.get(safeSheetName));
+
+      const url = `${WEB_APP_URL}?action=read&year=${encodeURIComponent(appState.selectedYear || '')}&sheetName=${encodeURIComponent(safeSheetName)}`;
+      let payload = null;
+      try { payload = await fetchJson(url); } catch (_error) { payload = await jsonp(url); }
+      const normalized = dedupeRows(parseApiPayload(payload));
+      appState.sheetCache.set(safeSheetName, cloneRows(normalized));
+      return cloneRows(normalized);
+    }
+
+    async function verifyUploadAfterFallback(sheetName, attempts = 5, waitMs = 1400) {
+      for (let attempt = 0; attempt < attempts; attempt++) {
+        try {
+          const rows = await getRowsForSheet(sheetName, true);
+          if (Array.isArray(rows)) return true;
+        } catch (_error) {}
+        if (attempt < attempts - 1) await sleep(waitMs);
+      }
+      return false;
+    }
 
     async function downloadBulkPdf(){
       const entries = (appState.bulkEntries || []).slice();
@@ -1274,10 +1454,8 @@
 
       if (!entries.length) return showToast('Masukkan dulu item ke list cetak banyak.', 'warn');
       if (typeof JSZip === 'undefined') return showToast('Library ZIP belum termuat. Coba refresh halaman.', 'error');
-      showToast('Menyiapkan file cetak banyak...', 'info');
-
       // Aktifkan mode styling statis untuk export (Input menjadi teks)
-      document.body.classList.add('pdf-export');
+      setPdfExportMode(true);
 
       const groupedByEmployee = new Map();
       entries.forEach(entry => {
@@ -1292,7 +1470,7 @@
 
       for (let index = 0; index < groups.length; index++) {
         const group = groups[index];
-        showToast(`Membuat PDF ${index + 1}/${groups.length}: ${group.code}`, 'info');
+        setSyncStatus('syncing', `Membuat PDF ${index + 1}/${groups.length}: ${group.code}`);
 
         const collectedRows = []; const rowKeySet = new Set();
         for (const period of group.periods) {
@@ -1322,19 +1500,21 @@
         applyConditionalRowSpacing(container);
 
         try {
-          const safeName = sanitizeFileName(`${group.code}_${group.name || 'Tanpa Nama'}`) || group.code;
+          const periodLabel = buildPeriodFileLabel(group.periods);
+          const safeName = buildPdfFileName(group.code, group.name || 'Tanpa Nama', periodLabel).replace(/\.pdf$/i, '');
           const pdfBlob = await exportElementToPdfBlob(container, safeName);
           zip.file(`${safeName}.pdf`, pdfBlob); fileCount += 1;
         } finally { document.body.removeChild(container); }
         await yieldToUI();
       }
 
-      document.body.classList.remove('pdf-export');
+      setPdfExportMode(false);
 
       if (!fileCount) return showToast('Tidak ada data yang cocok untuk list cetak tersebut.', 'warn');
       const zipBlob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE' });
       const zipName = `Cetak_Banyak_${formatGeneratedDate(new Date()).replace(/[^0-9A-Za-z_-]+/g, '_')}.zip`;
       downloadBlob(zipBlob, zipName);
+      setSyncStatus('synced', `${fileCount} file PDF berhasil dibuat dalam ZIP.`);
       showToast(`${fileCount} file PDF berhasil dibuat dalam ZIP.`, 'success');
     }
 
@@ -1399,66 +1579,67 @@
     async function loadAppAndSheets() {
       const year = appState.selectedYear;
       el.sheetSelect.disabled = true;
-      
-      // CACHE ENGINE: Baca dari LocalStorage untuk kecepatan 0 detik
+
       const cachedSheets = localStorage.getItem(`sheets_${year}`);
       let isLoadedFromCache = false;
-      
+
       if (cachedSheets) {
-          try {
-              const sheetsFound = JSON.parse(cachedSheets);
-              if (sheetsFound.length > 0) {
-                  populateSheetDropdown(sheetsFound);
-                  isLoadedFromCache = true;
-              }
-          } catch(e){}
+        try {
+          const sheetsFound = JSON.parse(cachedSheets);
+          if (sheetsFound.length > 0) {
+            populateSheetDropdown(sheetsFound);
+            isLoadedFromCache = true;
+          }
+        } catch (_error) {}
       }
 
-      if (!isLoadedFromCache) showToast(`Memuat Database Drive tahun ${year || '-'}...`, 'info');
-      
-      // Latar belakang ambil data terbaru dari server tanpa mengganggu interaksi Anda
+      if (!isLoadedFromCache) setSyncStatus('syncing', `Membaca daftar periode database ${year || '-'}.`);
+
       const url = `${WEB_APP_URL}?action=getSheets&year=${encodeURIComponent(year || '')}`;
       fetchJson(url).then(payload => {
-          if (payload && payload.sheets && Array.isArray(payload.sheets) && payload.sheets.length > 0) {
-              const newSheetsStr = JSON.stringify(payload.sheets);
-              if (cachedSheets !== newSheetsStr) {
-                  localStorage.setItem(`sheets_${year}`, newSheetsStr);
-                  populateSheetDropdown(payload.sheets);
-                  if (isLoadedFromCache) showToast('Daftar periode diperbarui otomatis.', 'success');
-              }
+        if (payload && payload.sheets && Array.isArray(payload.sheets) && payload.sheets.length > 0) {
+          const newSheetsStr = JSON.stringify(payload.sheets);
+          if (cachedSheets !== newSheetsStr) {
+            localStorage.setItem(`sheets_${year}`, newSheetsStr);
+            populateSheetDropdown(payload.sheets);
           } else if (!isLoadedFromCache) {
-             el.sheetSelect.innerHTML = `<option value="">Belum ada file</option>`;
-             if (payload && payload.ok !== false) showToast(`Folder Drive ${year} masih kosong.`, 'warn');
+            populateSheetDropdown(payload.sheets);
           }
-      }).catch(error => { 
-          if (!isLoadedFromCache) {
-             showToast('Gagal terhubung! Pastikan URL Web App benar.', 'error'); 
-             el.sheetSelect.innerHTML = `<option value="">Koneksi Error</option>`;
-          }
+        } else if (!isLoadedFromCache) {
+          el.sheetSelect.innerHTML = `<option value="">Belum ada file</option>`;
+          setSyncStatus('error', `Database ${year || '-'} belum memiliki file periode.`);
+        }
+      }).catch(_error => {
+        if (!isLoadedFromCache) {
+          setSyncStatus('error', 'Gagal terhubung ke database. Pastikan URL Web App benar.');
+          el.sheetSelect.innerHTML = `<option value="">Koneksi Error</option>`;
+        }
       });
     }
 
     function populateSheetDropdown(sheetsFound) {
-        appState.sheetNames = sheetsFound;
-        el.sheetSelect.innerHTML = sheetsFound.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
-        el.sheetSelect.disabled = false; 
-        updateBulkPeriodOptions();
-        
-        if (appState.selectedSheet && sheetsFound.includes(appState.selectedSheet)) el.sheetSelect.value = appState.selectedSheet;
-        else { el.sheetSelect.value = sheetsFound[0]; appState.selectedSheet = sheetsFound[0]; }
-        
-        syncFromGSheet(false);
+      appState.sheetNames = sheetsFound;
+      el.sheetSelect.innerHTML = sheetsFound.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
+      el.sheetSelect.disabled = false;
+      updateBulkPeriodOptions();
+
+      if (appState.selectedSheet && sheetsFound.includes(appState.selectedSheet)) el.sheetSelect.value = appState.selectedSheet;
+      else { el.sheetSelect.value = sheetsFound[0]; appState.selectedSheet = sheetsFound[0]; }
+
+      syncFromGSheet(false);
     }
 
     async function syncFromGSheet(forceRefresh = false){
       const sheetName = el.sheetSelect.value.trim(); if(!sheetName) return;
       appState.selectedSheet = sheetName;
       if (!forceRefresh && appState.sheetCache.has(sheetName)) {
-        applyIndexedState(cloneRows(appState.sheetCache.get(sheetName)), false); applySearch(true);
-        showToast(`Data ${sheetName} dibuka dari cache lokal.`, 'success'); return;
+        applyIndexedState(cloneRows(appState.sheetCache.get(sheetName)), false);
+        applySearch(true);
+        setSyncStatus('synced', `Preview ${sheetName} siap. Klik Refresh bila ingin ambil data paling baru.`);
+        return;
       }
       const url = `${WEB_APP_URL}?action=read&year=${encodeURIComponent(appState.selectedYear || '')}&sheetName=${encodeURIComponent(sheetName)}`;
-      showToast(`Mengambil data ${sheetName} dari Drive ${appState.selectedYear || '-'}...`, 'info');
+      setSyncStatus('syncing', `Mengambil data ${sheetName} dari database ${appState.selectedYear || '-'}.`);
       el.btnSync.disabled = true; el.sheetSelect.disabled = true;
 
       try {
@@ -1466,26 +1647,27 @@
         try { payload = await fetchJson(url); } catch (_error) { payload = await jsonp(url); }
         const rows = parseApiPayload(payload); const normalized = dedupeRows(rows);
         appState.sheetCache.set(sheetName, cloneRows(normalized)); applyIndexedState(cloneRows(normalized), true); applySearch(true);
-        if (normalized.length === 0) showToast(`File "${sheetName}" kosong.`, 'warn');
-        else {
-          const periodText = appState.sheetPeriod.start && appState.sheetPeriod.end ? ` | Periode ${formatDateDDMMYYYY(appState.sheetPeriod.start)} s/d ${formatDateDDMMYYYY(appState.sheetPeriod.end)}` : '';
-          showToast(`Berhasil! ${normalized.length.toLocaleString('id-ID')} baris diunduh dari Drive.`, 'success');
-        }
-      } catch (error) { showToast(`Gagal mengunduh: ${error.message}`, 'error'); } 
-      finally { el.btnSync.disabled = false; el.sheetSelect.disabled = false; }
+        const start = appState.sheetPeriod.start ? formatDateDDMMYYYY(appState.sheetPeriod.start) : '';
+        const end = appState.sheetPeriod.end ? formatDateDDMMYYYY(appState.sheetPeriod.end) : '';
+        const periodSummary = start && end ? `${start} s/d ${end}` : sheetName;
+        setSyncStatus('synced', `Sinkron selesai • ${formatNumber(normalized.length)} baris • ${periodSummary}`);
+      } catch (error) {
+        setSyncStatus('error', `Gagal mengunduh data ${sheetName}: ${error.message}`);
+        showToast(`Gagal mengunduh: ${error.message}`, 'error');
+      } finally { el.btnSync.disabled = false; el.sheetSelect.disabled = false; }
     }
 
     function makeSafeSheetName(name){
-      return String(name || '').replace(/[\\\/\?\*\[\]:]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 95) || `Upload-${new Date().getFullYear()}`;
+      return String(name || '').replace(/[\\/\?\*\[\]:]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 95) || `Upload-${new Date().getFullYear()}`;
     }
 
     el.excelFileInput.addEventListener('change', (e) => {
       const file = e.target.files[0]; if (!file) return;
       const guessedYear = guessYearFromText(file.name) || new Date().getFullYear().toString();
       el.uploadYearInput.value = guessedYear;
-      
+
       if(file) {
-        const nameWithoutExt = file.name.replace(/\.[^/.]+$/, ""); 
+        const nameWithoutExt = file.name.replace(/\.[^/.]+$/, "");
         el.uploadSheetName.value = makeSafeSheetName(nameWithoutExt);
       }
     });
@@ -1727,49 +1909,46 @@
     // FITUR AUTO-SAVE OTOMATIS SAAT EDIT TABEL KERTAS
     // =========================================================================
     let autoSaveTimer = null;
-    
-    // Mendengarkan ketikan namun baru menyimpan saat user memindahkan kursor / selesai mengetik ('change')
+
     el.paperTarget.addEventListener('change', (event) => {
       if(event.target.tagName === 'INPUT') {
         const key = event.target.dataset.key; const field = event.target.dataset.field; const value = event.target.value;
         if (field === 'overtime') event.target.value = formatOvertimeValue(value);
-        const row = appState.rowMapByKey.get(key); 
-        
+        const row = appState.rowMapByKey.get(key);
+
         if (row) {
           row[field] = field === 'overtime' ? formatOvertimeValue(value) : value;
-          
-          // Trigger Auto Save
           clearTimeout(autoSaveTimer);
-          showToast('Data diubah. Menyimpan otomatis...', 'info');
-          
+          setSyncStatus('syncing', 'Perubahan data sedang disimpan ke database...');
+
           autoSaveTimer = setTimeout(async () => {
              try {
                 const payload = {
                   action: 'upload', actionType: 'upload', sheetName: appState.selectedSheet,
-                  mode: 'replace_period', 
+                  mode: 'replace_period',
                   rows: appState.workingRows, databaseYear: appState.selectedYear,
                   createSheetIfMissing: true, autoCreateSheet: true, createTargetSheet: true,
                   chunkIndex: 1, totalChunks: 1
                 };
-                
+
                 const url = WEB_APP_URL + (WEB_APP_URL.includes('?') ? '&' : '?') + 'action=upload';
                 const response = await fetch(url, {
                   method: 'POST',
                   headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                   body: JSON.stringify(payload)
                 });
-                
+
                 if (response.ok) {
-                   showToast('Auto-Save Berhasil!', 'success');
                    appState.sheetCache.set(appState.selectedSheet, cloneRows(appState.workingRows));
                    appState.sourceRows = cloneRows(appState.workingRows);
+                   setSyncStatus('synced', 'Perubahan time in, time out, OT, dan remarks sudah tersimpan.');
                 } else {
-                   showToast('Auto-Save Gagal. Cek internet Anda.', 'error');
+                   setSyncStatus('error', 'Penyimpanan perubahan gagal. Cek internet lalu klik Refresh.');
                 }
-             } catch(e) {
-                showToast('Gagal terhubung untuk Auto-Save.', 'error');
+             } catch(_error) {
+                setSyncStatus('error', 'Gagal terhubung saat menyimpan perubahan.');
              }
-          }, 1500); 
+          }, 1500);
         }
       }
     });
@@ -1840,33 +2019,21 @@
       if (!rows.length) return;
 
       const first = rows[0];
-      const filename = `${first.code} - ${first.name}.pdf`;
-      
+      const periodLabel = buildCurrentPeriodLabel(rows);
+      const filename = buildPdfFileName(first.code, first.name, periodLabel);
       const oldShadow = el.paperTarget.style.boxShadow;
       el.paperTarget.style.boxShadow = 'none';
+      hideToastNow();
+      setPdfExportMode(true);
 
-      showToast('Menyiapkan file PDF otomatis...', 'info');
-
-      // Tambahkan class khusus agar rendering PDF membuat kotak input jadi datar
-      document.body.classList.add('pdf-export');
-
-      const opt = { 
-        margin: 0, // KUNCI UTAMA: Margin dinolkan karena padding kertas asli (22mm dll) sudah cukup
-        filename: filename, 
-        image: { type: 'jpeg', quality: 1 }, 
-        html2canvas: { scale: 2, useCORS: true, logging: false }, 
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
-      };
-      
-      html2pdf().set(opt).from(el.paperTarget).save().then(() => { 
-        el.paperTarget.style.boxShadow = oldShadow; 
-        document.body.classList.remove('pdf-export');
-        showToast(`PDF Berhasil Terunduh`, 'success'); 
-      }).catch(err => { 
-        console.error(err); 
-        el.paperTarget.style.boxShadow = oldShadow; 
-        document.body.classList.remove('pdf-export');
-        showToast('Gagal membuat file PDF.', 'error'); 
+      html2pdf().set(getPdfExportOptions(filename)).from(el.paperTarget).save().then(() => {
+        el.paperTarget.style.boxShadow = oldShadow;
+        setPdfExportMode(false);
+      }).catch(err => {
+        console.error(err);
+        el.paperTarget.style.boxShadow = oldShadow;
+        setPdfExportMode(false);
+        showToast('Gagal membuat file PDF.', 'error');
       });
     }
 
@@ -1885,6 +2052,7 @@
     
     el.btnPrint.addEventListener('click', () => {
       if(!getSelectedRows().length) { showToast("Pilih ID karyawan terlebih dahulu!", "warn"); return; }
+      hideToastNow();
       window.print();
     });
 
@@ -1945,8 +2113,11 @@
     });
 
     window.addEventListener('DOMContentLoaded', () => {
-      setHeaderLayout(loadHeaderLayout(), false); resetUploadProgress(); hideSearchSuggestions(); 
-      setTimeout(() => { initDataFetching(); }, 100); 
+      setHeaderLayout(loadHeaderLayout(), false);
+      resetUploadProgress();
+      hideSearchSuggestions();
+      setSyncStatus('idle');
+      setTimeout(() => { initDataFetching(); }, 100);
     });
 
   </script>
